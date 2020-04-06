@@ -1,4 +1,7 @@
+import numpy as np
 import solver
+
+np.set_printoptions(linewidth=150,precision=4)
 
 
 def connect(s1,p1,s2,p2):
@@ -24,15 +27,32 @@ BS1=solver.Structure(model=solver.BeamSplitter(1.55))
 
 connect(BS1,'b0',WG1,'a0')
 
+pin_mapping={
+    'a0': (BS1,'a0'),
+    'a1': (BS1,'a1'),
+    'b0': (WG1,'b0'),
+    'b1': (BS1,'b1'),
+}
+
 print('\nWaveguide:')
-print(WG1.pin_dic)
+WG1.print_pindic()
 print(WG1.Smatrix)
 
 print('\nBeam splitter:')
-print(BS1.pin_dic)
+BS1.print_pindic()
 print(BS1.Smatrix)
 
 MERGED=BS1.join(WG1)
+
+print('\nMerged Structure:')
+MERGED.print_pindic()
+print(MERGED.Smatrix)
+
+print('\nNew Structure with model:')
+new=solver.Structure(model=MERGED.return_model(pin_mapping))
+new.print_pindic()
+print(new.Smatrix)
+
 
 quit()
 
@@ -42,6 +62,15 @@ connect(BS2,'a0',WG1,'b0')
 connect(BS2,'a1',WG2,'b0')
 
 st_list=[BS1,BS2,WG1,WG2]
-solve(st_list)
+full=solve(st_list)
+
+print('\nNew Structure with model:')
+new=Structure(model=full.return_model())
+new.print_pindic()
+print(new.Smatrix)
+
+
+
+#full.print_pindic()
 
 

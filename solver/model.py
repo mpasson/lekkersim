@@ -3,16 +3,16 @@ from scattering import S_matrix
 
 
 class model:
-    def __init__(self,pin_list,args=()):
+    def __init__(self,pin_list=[],args=()):
         self.pin_dic={}
         for i,pin in enumerate(pin_list):
             self.pin_dic[pin]=i
-        self.N=len(self.pin_list)
+        self.N=len(pin_list)
         self.S=np.identity(self.N,complex)
         self.args=args
 
     def create_S(self):
-        self.S=np.identity(self.N,complex)
+        return self.S
         
                 
 class waveguide(model):

@@ -2,6 +2,7 @@ import numpy as np
 from scattering import S_matrix
 from copy import deepcopy
 from copy import copy
+import solver.model as model
 
 class Structure():
     def __init__(self,pin_list=[],model=None):
@@ -24,6 +25,15 @@ class Structure():
                 self.pin_dic[(self,pin)]=i
                 self.Smatrix=model.create_S()
 
+    def print_pindic(self):
+        for (st,pin),i in self.pin_dic.items():
+            print ('(%50s, %5s) : %3i' % (st,pin,i) )
+
+    def print_conn(self):
+        for (st1,pin1),(st2,pin2) in self.conn_dict.items():
+            print ('(%50s, %5s) --> (%50s, %5s)' % (st1,pin1,st2,pin2) )
+
+
 
     def add_pin(self,pin):
         if pin in self.pin_list:
@@ -44,7 +54,7 @@ class Structure():
     def sel_output(self,pin_list):
         self.out_list=[]
         self.in_list=copy(self.pin_list)
-        print(self.in_list)
+        #print(self.in_list)
         for pin in pin_list:
             self.out_list.append(pin)
             self.in_list.remove(pin)
@@ -52,13 +62,14 @@ class Structure():
 
 
     def split_in_out(self,in_pins,out_pins):
+        #print('Splitting structure: ',self)
         N=len(in_pins)
         M=len(out_pins)
         self.Sproc=S_matrix(N,M)
         for i,p in enumerate(in_pins): 
             self.in_pins[p]=i
             for j,q in enumerate(in_pins): 
-                self.Sproc.S12[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
+                self.Sproc.S21[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
         for i,p in enumerate(in_pins): 
             for j,q in enumerate(out_pins): 
                 self.Sproc.S22[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
@@ -68,7 +79,7 @@ class Structure():
                 self.Sproc.S11[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
         for i,p in enumerate(out_pins): 
             for j,q in enumerate(out_pins): 
-                self.Sproc.S21[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
+                self.Sproc.S12[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
 
 
     def get_S_back(self):
@@ -111,7 +122,7 @@ class Structure():
         pin_list=[]
         target_list=[st]+st.structures
         for (loc_c,loc_name),(tar_c,tar_name) in self.conn_dict.items():
-            if st is  tar_c:
+            if tar_c in target_list:
                 pin_list.append((loc_c,loc_name))
         return  pin_list
         
@@ -138,34 +149,34 @@ class Structure():
         #print(tar_in)
         #Checking connectivity
         if len(loc_out)!=len(tar_in):
-            raise Exception('Connectivity not symmetric')             
+            raise Exception('Connectivity problem: Different number of pins')             
         for pin1 in loc_out:
             if pin1!=st.conn_dict[self.conn_dict[pin1]]:
-                raise Exception('Connectivity not symmetric') 
+                raise Exception('Connectivity problem: Not Symmetric') 
         #Correct ordering of connection pins
         tar_in=[]
         for pin in loc_out:
             tar_in.append(self.conn_dict[pin])
 
         #getting list of pins for local and target
-        print(loc_out)
+        #print(loc_out)
         self.sel_output(loc_out)
         st.sel_input(tar_in)
-        print('Structure:',self)
-        print('In pins:',self.in_list)
-        print('Out pins:',self.out_list)
+        #print('Structure:',self)
+        #print('In pins:',self.in_list)
+        #print('Out pins:',self.out_list)
 
-        print('Structure:',st)
-        print('In pins:',st.in_list)
-        print('Out pins:',st.out_list)
+        #print('Structure:',st)
+        #print('In pins:',st.in_list)
+        #print('Out pins:',st.out_list)
 
 
         #Splittig scattering matrces of local and target
         self.split_in_out(self.in_list,self.out_list)
         st.split_in_out(st.in_list,st.out_list)
 
-        print(self.Sproc)
-        self.Sproc.S_print()     
+        #print(self.Sproc)
+        #self.Sproc.S_print()     
 
         #Joining S matrices for new one
         new_st.Sproc=self.Sproc.add(st.Sproc)
@@ -201,9 +212,33 @@ class Structure():
             if (st1 not in new_st.connected_to) and (st1 not in new_st.structures):
                 new_st.connected_to.append(st1)
 
+        #upgrading connection_dic
+        for (st_source,pin_source),(st_target,pin_target) in {**self.conn_dict,**st.conn_dict}.items():
+            if not ((st_source in new_st.structures) and (st_target in new_st.structures)):
+                new_st.conn_dict[(st_source,pin_source)]=(st_target,pin_target)
 
         return new_st
 
+
+    def get_model(self,pin_mapping):
+        Smod=np.zeros((self.N,self.N),complex)
+        if len(pin_mapping)!=len(self.pin_dic):
+            raise Exception('Not all pins mapped correctly')
+        pin_dic={}
+        for i,pin_name in enumerate(pin_mapping):
+            pin_dic[pin_name]=i
+            #print(i,pin_name,pin_mapping[pin_name])
+            for j,pin_namej in enumerate(pin_mapping):
+                Smod[i,j]=self.Smatrix[self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]]
+        MOD=model.model(pin_list=list(pin_dic.keys()))
+        MOD.pin_dic=pin_dic
+        MOD.N=len(pin_dic)
+        MOD.S=Smod
+        return MOD    
+
+
+    def get_T(self,pin1,pin2):
+        return np.abs(self.Smatrix[self.pin_dic[(self,pin1)],self.pin_dic[(self,pin2)]])**2.0
 
     
 
