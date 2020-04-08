@@ -43,6 +43,22 @@ class BeamSplitter(model):
         self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]])
         return self.S
 
+class GeneralBeamSplitter(model):
+    def __init__(self,lam,ratio=0.5):
+        self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
+        self.N=4
+        self.S=np.identity(self.N,complex)
+        self.lam=lam
+        self.ratio=ratio
+    
+    def create_S(self):
+        c=np.sqrt(self.ratio)
+        t=np.sqrt(1.0-self.ratio)
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[:2,2:]=np.array([[t,c],[c,-t]])
+        self.S[2:,:2]=np.array([[t,c],[c,-t]])
+        return self.S
+
 
 
 
