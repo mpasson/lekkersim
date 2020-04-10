@@ -2,9 +2,10 @@ import numpy as np
 from scattering import S_matrix
 from copy import deepcopy
 from copy import copy
-import solver.model as model
+import solver.model as mod
 
-class Structure():
+
+class Structure:
     def __init__(self,pin_list=[],model=None):
         self.pin_list=[]
         self.pin_dic={}
@@ -23,7 +24,10 @@ class Structure():
             for pin,i in model.pin_dic.items():
                 self.pin_list.append((self,pin))
                 self.pin_dic[(self,pin)]=i
-                self.Smatrix=model.create_S()
+
+    def createS(self):
+        if self.model is not None:
+            self.Smatrix=self.model.create_S()
 
     def print_pindic(self):
         for (st,pin),i in self.pin_dic.items():
@@ -33,6 +37,8 @@ class Structure():
         for (st1,pin1),(st2,pin2) in self.conn_dict.items():
             print ('(%50s, %5s) --> (%50s, %5s)' % (st1,pin1,st2,pin2) )
 
+    def reset(self):
+        self.gone_to=self
 
 
     def add_pin(self,pin):
@@ -135,6 +141,8 @@ class Structure():
         return  pin_list
 
     def join(self,st):
+        self.createS()
+        st.createS()
         #safety checks
         if st in self.structures:
             raise Exception('Cannot add structure: already containded')
@@ -230,7 +238,7 @@ class Structure():
             #print(i,pin_name,pin_mapping[pin_name])
             for j,pin_namej in enumerate(pin_mapping):
                 Smod[i,j]=self.Smatrix[self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]]
-        MOD=model.model(pin_list=list(pin_dic.keys()))
+        MOD=mod.model(pin_list=list(pin_dic.keys()))
         MOD.pin_dic=pin_dic
         MOD.N=len(pin_dic)
         MOD.S=Smod
@@ -238,6 +246,7 @@ class Structure():
 
 
     def get_T(self,pin1,pin2):
+        self.createS()
         return np.abs(self.Smatrix[self.pin_dic[(self,pin1)],self.pin_dic[(self,pin2)]])**2.0
 
     

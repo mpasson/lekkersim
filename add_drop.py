@@ -28,27 +28,35 @@ def solve(st_list):
         #print('\n')
     return st_list[0] 
 
-r=float(sys.argv[-1])
+r=0.5
+
+BS1=solver.Structure(model=solver.GeneralBeamSplitter(ratio=r))
+BS2=solver.Structure(model=solver.GeneralBeamSplitter(ratio=r))
+
+WG1=solver.Structure(model=solver.waveguide(20.0))
+WG2=solver.Structure(model=solver.waveguide(20.0))
+
+
+connect(BS1,'b1',WG1,'a0')  
+connect(BS1,'a1',WG2,'a0')
+connect(BS2,'b0',WG1,'b0')
+connect(BS2,'a0',WG2,'b0')
+
+pin_mapping={
+    'a0': (BS1,'a0'),
+    'b0': (BS1,'b0'),
+    'a1': (BS2,'a1'),
+    'b1': (BS2,'b1'),
+}
+
+sts=[BS1,BS2,WG1,WG2]
+
+
 for Lam in np.linspace(1.4,1.6,1001):
     
+    WG1.model.param_dic['Lam']=Lam
+    WG2.model.param_dic['Lam']=Lam
 
-    BS1=solver.Structure(model=solver.GeneralBeamSplitter(Lam,ratio=r))
-    BS2=solver.Structure(model=solver.GeneralBeamSplitter(Lam,ratio=r))
-
-    WG1=solver.Structure(model=solver.waveguide(Lam,1.00,20.0))
-    WG2=solver.Structure(model=solver.waveguide(Lam,1.00,20.0))
-
-    connect(BS1,'b1',WG1,'a0')  
-    connect(BS1,'a1',WG2,'a0')
-    connect(BS2,'b0',WG1,'b0')
-    connect(BS2,'a0',WG2,'b0')
-
-    pin_mapping={
-        'a0': (BS1,'a0'),
-        'b0': (BS1,'b0'),
-        'a1': (BS2,'a1'),
-        'b1': (BS2,'b1'),
-    }
 
     st_list=[BS1,BS2,WG1,WG2]
     full=solve(st_list)
@@ -61,7 +69,8 @@ for Lam in np.linspace(1.4,1.6,1001):
     #new.print_pins()
     print('%15.8f %15.8f %15.8f' % (Lam,new.get_T('a0','b0'),new.get_T('a0','a1')))
 
-
+    for st in sts:
+        st.reset()
 
 
 
