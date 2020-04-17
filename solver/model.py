@@ -13,6 +13,35 @@ class model:
 
     def create_S(self):
         return self.S
+
+    def get_T(self,pin1,pin2):
+        return np.abs(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
+
+    def get_output(self,input_dic,power=True):
+        l1=list(self.pin_dic.keys())
+        l2=list(input_dic.keys())
+        for pin in l2:
+            l1.remove(pin)
+        if l1!=[]:
+            #print('WARNING: Not all input pin provided, assumed 0')
+            pass
+            for pin in l1:
+                input_dic[pin]=0.0+0.0j
+        u=np.zeros(self.N,complex)
+        for pin,i in self.pin_dic.items():
+            u[i]=input_dic[pin]
+        #for pin,i in self.pin_dic.items():
+        #    print(pin,i,u[i])
+        d=np.dot(self.S,u)
+        out_dic={}
+        for pin,i in self.pin_dic.items():
+            if power:
+                out_dic[pin]=np.abs(d[i])**2.0
+            else:
+                out_dic[pin]=d[i]
+        return out_dic
+        
+                               
         
                 
 class waveguide(model):
@@ -35,31 +64,43 @@ class waveguide(model):
         return self.S
 
 class BeamSplitter(model):
-    def __init__(self):
+    def __init__(self,phase=0.5):
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
-        self.S=np.identity(self.N,complex)
-
-    def create_S(self):
         self.S=np.zeros((self.N,self.N),complex)
-        self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]])
-        self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]])
-        return self.S
+        self.phase=phase
+        p1=np.pi*self.phase
+        p2=np.pi*(1.0-self.phase)
+        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[1.0,np.exp(1.0j*p2)]])
+        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[-np.exp(1.0j*p2),1.0],[1.0,-np.exp(1.0j*p1)]])
+        self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
+        self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
+
+        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]],complex)
+        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]],complex)
+        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0j,1.0],[1.0,1.0j]],complex)
+        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[-1.0j,1.0],[1.0,-1.0j]],complex)
+
+
 
 class GeneralBeamSplitter(model):
     def __init__(self,ratio=0.5):
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
-        self.S=np.identity(self.N,complex)
         self.ratio=ratio
-    
-    def create_S(self):
         c=np.sqrt(self.ratio)
         t=np.sqrt(1.0-self.ratio)
         self.S=np.zeros((self.N,self.N),complex)
         self.S[:2,2:]=np.array([[t,c],[c,-t]])
         self.S[2:,:2]=np.array([[t,c],[c,-t]])
-        return self.S
+    
+class Splitter1x2(model):
+    def __init__(self):
+        self.pin_dic={'a0':0,'b0':1,'b1':2}        
+        self.N=3
+        self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
+
+    
 
 
 
