@@ -84,15 +84,19 @@ class BeamSplitter(model):
 
 
 class GeneralBeamSplitter(model):
-    def __init__(self,ratio=0.5):
+    def __init__(self,ratio=0.5,phase=0.5):
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
         self.ratio=ratio
+        self.phase=phase
+        p1=np.pi*self.phase
         c=np.sqrt(self.ratio)
         t=np.sqrt(1.0-self.ratio)
         self.S=np.zeros((self.N,self.N),complex)
-        self.S[:2,2:]=np.array([[t,c],[c,-t]])
-        self.S[2:,:2]=np.array([[t,c],[c,-t]])
+        #self.S[:2,2:]=np.array([[t,c],[c,-t]])
+        #self.S[2:,:2]=np.array([[t,c],[c,-t]])
+        self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
+        self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
     
 class Splitter1x2(model):
     def __init__(self):

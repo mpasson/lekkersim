@@ -3,10 +3,10 @@ import solver
 import sys 
 
 
-r=0.5
+r=0.1
 
-BS1=solver.Structure(model=solver.BeamSplitter(phase=0.5))
-BS2=solver.Structure(model=solver.BeamSplitter(phase=0.5))
+BS1=solver.Structure(model=solver.GeneralBeamSplitter(ratio=r,phase=0.5))
+BS2=solver.Structure(model=solver.GeneralBeamSplitter(ratio=r,phase=0.5))
 
 #BS1=solver.Structure(model=solver.GeneralBeamSplitter(ratio=r))
 #BS2=solver.Structure(model=solver.GeneralBeamSplitter(ratio=r))
