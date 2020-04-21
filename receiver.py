@@ -43,6 +43,6 @@ new=full.get_model(pin_mapping)
 #print(2*'%15.8f' % (1.55,new.get_T('a0','b0')))
 
 for p in np.linspace(0.0,2.0,201):
-    input_dic={'r0':1.0+1.0j,'a0':np.exp(1.0j*np.pi*p)}
+    input_dic={'r0':0.0+0.0j,'a0':np.exp(1.0j*np.pi*p)}
     out=new.get_output(input_dic)
     print(7*'%8.4f' % (p,out['t0'],out['t1'],out['b0'],out['b1'],out['t0']-out['t1'],out['b0']-out['b1']))

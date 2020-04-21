@@ -71,10 +71,10 @@ class BeamSplitter(model):
         self.phase=phase
         p1=np.pi*self.phase
         p2=np.pi*(1.0-self.phase)
-        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[1.0,np.exp(1.0j*p2)]])
-        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[-np.exp(1.0j*p2),1.0],[1.0,-np.exp(1.0j*p1)]])
-        self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
-        self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
+        self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[-np.exp(-1.0j*p1),1.0]])
+        self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(-1.0j*p1),1.0]])
+        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
+        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
 
         #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]],complex)
         #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]],complex)
