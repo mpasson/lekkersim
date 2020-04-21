@@ -249,8 +249,13 @@ class Structure:
         self.createS()
         return np.abs(self.Smatrix[self.pin_dic[(self,pin1)],self.pin_dic[(self,pin2)]])**2.0
 
-    
-
+    def get_output(self,input_dic,power=True):
+        try: 
+            ret=self.model.get_output(input_dic,power=power)
+            return ret    
+        except AttributeError:
+            raise ValueError('This structure does not have a model')
+            
         
 
     

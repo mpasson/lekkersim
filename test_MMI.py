@@ -33,6 +33,14 @@ Sol.connect(BS2,'b1',WG2,'b0')
 #Sol.connect(SP2,'b1',WG2,'b0')
 
 
+for p in np.linspace(0.0,1.0,101):
+    input_dic={'a0':np.exp(1.0j*np.pi*p)}
+    out1=BS1.get_output(input_dic,power=False)
+    input_dic={'a1':np.exp(1.0j*np.pi*p)}
+    out2=BS1.get_output(input_dic,power=False)
+
+    print(5*'%8.4f' % (p, np.angle(out1['b0'])/np.pi, np.angle(out1['b1'])/np.pi, np.angle(out2['b0'])/np.pi, np.angle(out2['b1'])/np.pi))
+quit()
 
 pin_mapping={
 #    'a0': (BS1,'a0'),
