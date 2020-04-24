@@ -3,10 +3,12 @@ from scattering import S_matrix
 from copy import deepcopy
 from copy import copy
 import solver.model as mod
+from solver.sol import Solver
+
 
 
 class Structure:
-    def __init__(self,pin_list=[],model=None):
+    def __init__(self,pin_list=[],model=None,solver=None):
         self.pin_list=[]
         self.pin_dic={}
         for i,pin in enumerate(pin_list):
@@ -24,9 +26,19 @@ class Structure:
             for pin,i in model.pin_dic.items():
                 self.pin_list.append((self,pin))
                 self.pin_dic[(self,pin)]=i
+        if solver is not None:
+            for pin,i in solver.pin_mapping:
+                self.pin_list.append((self,pin))
+        self.solver=solver
+
 
     def createS(self):
         if self.model is not None:
+            self.Smatrix=self.model.create_S()
+        if self.solver is not None:
+            self.model=self.solver.solve()
+            for pin,i in self.model.pin_dic.items():
+                self.pin_dic[(self,pin)]=i
             self.Smatrix=self.model.create_S()
 
     def print_pindic(self):
@@ -228,8 +240,10 @@ class Structure:
         return new_st
 
 
-    def get_model(self,pin_mapping):
+    def get_model(self,pin_mapping=None):
         Smod=np.zeros((self.N,self.N),complex)
+        if pin_mapping is None:
+            pin_mapping=self.solver.pin_mapping
         if len(pin_mapping)!=len(self.pin_dic):
             raise Exception('Not all pins mapped correctly')
         pin_dic={}
@@ -244,6 +258,9 @@ class Structure:
         MOD.S=Smod
         return MOD    
 
+    def return_model(self):
+        return self.model
+
 
     def get_T(self,pin1,pin2):
         self.createS()
@@ -257,7 +274,6 @@ class Structure:
             raise ValueError('This structure does not have a model')
             
         
-
     
 
 

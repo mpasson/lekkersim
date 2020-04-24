@@ -1,5 +1,7 @@
 import numpy as np
 from scattering import S_matrix
+import solver.structure
+from solver.sol import sol_list
 
 
 class model:
@@ -40,7 +42,13 @@ class model:
             else:
                 out_dic[pin]=d[i]
         return out_dic
-        
+
+    def put(self,pins=None,pint=None):
+        ST=solver.structure.Structure(model=self)
+        sol_list[-1].add_structure(ST)
+        if (pins is not None) and (pint is not None):
+            sol_list[-1].connect(ST,pins,pint[0],pint[1])
+        return ST
                                
         
                 
@@ -71,15 +79,10 @@ class BeamSplitter(model):
         self.phase=phase
         p1=np.pi*self.phase
         p2=np.pi*(1.0-self.phase)
-        self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[-np.exp(-1.0j*p1),1.0]])
-        self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(-1.0j*p1),1.0]])
-        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
-        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(1.0j*p2),1.0]])
-
-        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]],complex)
-        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,1.0],[1.0,-1.0]],complex)
-        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0j,1.0],[1.0,1.0j]],complex)
-        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[-1.0j,1.0],[1.0,-1.0j]],complex)
+        #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[-np.exp(-1.0j*p1),1.0]])
+        #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(-1.0j*p1),1.0]])
+        self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[-1.0,np.exp(-1.0j*p1)]])
+        self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[np.exp(-1.0j*p1),1.0],[-1.0,np.exp(1.0j*p1)]])
 
 
 
@@ -95,8 +98,10 @@ class GeneralBeamSplitter(model):
         self.S=np.zeros((self.N,self.N),complex)
         #self.S[:2,2:]=np.array([[t,c],[c,-t]])
         #self.S[2:,:2]=np.array([[t,c],[c,-t]])
-        self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
-        self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
+        #self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
+        #self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
+        self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]])
+        self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
     
 class Splitter1x2(model):
     def __init__(self):

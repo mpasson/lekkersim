@@ -1,12 +1,16 @@
 import numpy as np
 from copy import copy
 
+
+
+
 class Solver:
     def __init__(self,structures=[],connections={},param_dic={}):
         self.structures=structures
         self.connections=connections
         self.connections_list=[]
         self.param_dic=param_dic
+        self.pin_mapping={}
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
@@ -19,6 +23,13 @@ class Solver:
         for pin in self.connections_list:
             self.free_pins.remove(pin)
 
+    def __enter__(self):
+        sol_list.append(self)
+        return self
+
+    def __exit__(self,*args):
+        sol_list.remove(self)
+        
 
     def add_structure(self,structure):
         if structure not in self.structures: 
@@ -47,8 +58,13 @@ class Solver:
             try:
                 pinname=list(self.pin_mapping.keys())[list(self.pin_mapping.values()).index((st,pin))]
                 print ('(%50s, %5s) --> %5s' % (st,pin,pinname))
-            except AttributeError:
+            except ValueError:
                 print ('(%50s, %5s)' % (st,pin))
+
+    def show_connections(self):
+        for c1,c2 in self.connections.items():
+                print ('(%50s, %5s) <--> (%50s, %5s)' % (c1+c2))
+
                
 
     def show_pin_mapping(self):
@@ -60,7 +76,7 @@ class Solver:
             
 
     def map_pins(self,pin_mapping):
-        self.pin_mapping=pin_mapping
+        self.pin_mapping.update(pin_mapping)
 
 
     def solve(self):
@@ -91,9 +107,29 @@ class Solver:
         self.Final=st_list[0]
         for st in self.structures:
             st.reset()
-        return st_list[0] 
+        mod=st_list[0].get_model(self.pin_mapping)
+        return mod
 
 
     def set_param(self,name,value=None):
         self.param_dic[name]=value
+
+    #def put(self,pins=None,pint=None):
+    #    ST=solver.structure.Structure(solver=self)
+    #    sol_list[-1].add_structure(ST)
+    #    if (pins is not None) and (pint is not None):
+    #        sol_list[-1].connect(ST,pins,pint[0],pint[1])
+    #    return ST
+
+
+main=Solver()
+sol_list=[main]
+
+def putpin(name,tup):
+    sol_list[-1].map_pins({name:tup})
+
+def connect(tup1,tup2):
+    sol_list[-1].connect(tup1[0],tup1[1],tup2[0],tup2[1])
+
+
 
