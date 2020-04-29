@@ -54,47 +54,48 @@ new=Sol.solve()
 #    print(7*'%8.4f' % (p,out['t0'],out['t1'],out['b0'],out['b1'],out['t0']-out['t1'],out['b0']-out['b1']))
 
 pdf=PdfPages('Phase.pdf')
-for p in np.linspace(0.0,2.0,201):
-    plt.figure()
-    input_dic={'r0':0.0+0.0j,'a0':np.exp(1.0j*np.pi*p)}
-    out=new.get_output(input_dic)
-    top=out['t0']-out['t1']
-    bottom=out['b0']-out['b1']
-    plt.plot([top],[bottom],'k.',label='00',markersize=12)
+for p in np.linspace(0.0,2.0,21):
+    for i in np.linspace(0.0,2.0,11):
+        plt.figure()
+        input_dic={'r0':0.0+0.0j,'a0':i*np.exp(1.0j*np.pi*p)}
+        out=new.get_output(input_dic)
+        top=out['t0']-out['t1']
+        bottom=out['b0']-out['b1']
+        plt.plot([top],[bottom],'k.',label='00',markersize=12)
 
-    input_dic={'r0':1.0+0.0j,'a0':np.exp(1.0j*np.pi*p)}
-    out=new.get_output(input_dic)
-    top=out['t0']-out['t1']
-    bottom=out['b0']-out['b1']
-    plt.plot([top],[bottom],'r.',label='10',markersize=12)
+        input_dic={'r0':1.0+0.0j,'a0':i*np.exp(1.0j*np.pi*p)}
+        out=new.get_output(input_dic)
+        top=out['t0']-out['t1']
+        bottom=out['b0']-out['b1']
+        plt.plot([top],[bottom],'r.',label='10',markersize=12)
 
-    input_dic={'r0':0.0+1.0j,'a0':np.exp(1.0j*np.pi*p)}
-    out=new.get_output(input_dic)
-    top=out['t0']-out['t1']
-    bottom=out['b0']-out['b1']
-    plt.plot([top],[bottom],'g.',label='10',markersize=12)
+        input_dic={'r0':0.0+1.0j,'a0':i*np.exp(1.0j*np.pi*p)}
+        out=new.get_output(input_dic)
+        top=out['t0']-out['t1']
+        bottom=out['b0']-out['b1']
+        plt.plot([top],[bottom],'g.',label='10',markersize=12)
 
-    input_dic={'r0':1.0+1.0j,'a0':np.exp(1.0j*np.pi*p)}
-    out=new.get_output(input_dic)
-    top=out['t0']-out['t1']
-    bottom=out['b0']-out['b1']
-    plt.plot([top],[bottom],'b.',label='10',markersize=12)
+        input_dic={'r0':1.0+1.0j,'a0':i*np.exp(1.0j*np.pi*p)}
+        out=new.get_output(input_dic)
+        top=out['t0']-out['t1']
+        bottom=out['b0']-out['b1']
+        plt.plot([top],[bottom],'b.',label='10',markersize=12)
 
-    plt.legend()
-    plt.xlim(-1.5,1.5)
-    plt.ylim(-1.5,1.5)
+        plt.legend()
+        plt.xlim(-1.5,1.5)
+        plt.ylim(-1.5,1.5)
 
-    x=np.cos(np.linspace(0.0,2.0*np.pi,201))
-    y=np.sin(np.linspace(0.0,2.0*np.pi,201))
-    plt.plot(x,y,'b-')
+        x=np.cos(np.linspace(0.0,2.0*np.pi,201))
+        y=np.sin(np.linspace(0.0,2.0*np.pi,201))
+        plt.plot(x,y,'b-')
 
-    x=np.sqrt(2.0)*np.cos(np.linspace(0.0,2.0*np.pi,201))
-    y=np.sqrt(2.0)*np.sin(np.linspace(0.0,2.0*np.pi,201))
-    plt.plot(x,y,'b-')
+        x=np.sqrt(2.0)*np.cos(np.linspace(0.0,2.0*np.pi,201))
+        y=np.sqrt(2.0)*np.sin(np.linspace(0.0,2.0*np.pi,201))
+        plt.plot(x,y,'b-')
 
 
-    #print(7*'%8.4f' % (p,out['t0'],out['t1'],out['b0'],out['b1'],out['t0']-out['t1'],out['b0']-out['b1']))
-    pdf.savefig()
-    plt.close()
+        #print(7*'%8.4f' % (p,out['t0'],out['t1'],out['b0'],out['b1'],out['t0']-out['t1'],out['b0']-out['b1']))
+        pdf.savefig()
+        plt.close()
     
 pdf.close()

@@ -2,8 +2,6 @@ import numpy as np
 from copy import copy
 
 
-
-
 class Solver:
     def __init__(self,structures=[],connections={},param_dic={}):
         self.structures=structures
@@ -24,11 +22,16 @@ class Solver:
             self.free_pins.remove(pin)
 
     def __enter__(self):
+        self.structures=[]
+        self.connections={}
+        self.connections_list=[]
+        self.param_dic={}
+        self.pin_mapping={}
         sol_list.append(self)
         return self
 
     def __exit__(self,*args):
-        sol_list.remove(self)
+        sol_list.pop()
         
 
     def add_structure(self,structure):
@@ -54,16 +57,28 @@ class Solver:
 
 
     def show_free_pins(self):
+        print('Free pins of solver: %50s)' % (self))
         for st,pin in self.free_pins:
             try:
                 pinname=list(self.pin_mapping.keys())[list(self.pin_mapping.values()).index((st,pin))]
                 print ('(%50s, %5s) --> %5s' % (st,pin,pinname))
             except ValueError:
                 print ('(%50s, %5s)' % (st,pin))
+        print('')
+
+    def show_structures(self):
+        print('Structures and pins of solver: %50s)' % (self))
+        for st in self.structures:
+            print ('%50s' % (st))
+        print('')
+    
+
 
     def show_connections(self):
+        print('Connection of solver: %50s)' % (self))
         for c1,c2 in self.connections.items():
                 print ('(%50s, %5s) <--> (%50s, %5s)' % (c1+c2))
+        print('')
 
                
 
@@ -83,6 +98,10 @@ class Solver:
         for st in self.structures:
             try:
                 st.model.param_dic.update(self.param_dic)
+            except AttributeError:
+                pass
+            try:
+                st.solver.param_dic.update(self.param_dic)
             except AttributeError:
                 pass
         st_list=copy(self.structures)
@@ -122,8 +141,7 @@ class Solver:
     #    return ST
 
 
-main=Solver()
-sol_list=[main]
+sol_list=[Solver()]
 
 def putpin(name,tup):
     sol_list[-1].map_pins({name:tup})

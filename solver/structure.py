@@ -27,7 +27,7 @@ class Structure:
                 self.pin_list.append((self,pin))
                 self.pin_dic[(self,pin)]=i
         if solver is not None:
-            for pin,i in solver.pin_mapping:
+            for pin in solver.pin_mapping:
                 self.pin_list.append((self,pin))
         self.solver=solver
 

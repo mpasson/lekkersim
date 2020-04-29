@@ -2,6 +2,7 @@ import numpy as np
 from scattering import S_matrix
 import solver.structure
 from solver.sol import sol_list
+from copy import deepcopy
 
 
 class model:

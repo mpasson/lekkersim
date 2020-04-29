@@ -32,7 +32,7 @@ Sol.connect(BS2,'b1',WG2,'b0')
 #Sol.connect(SP2,'b0',WG1,'b0')
 #Sol.connect(SP2,'b1',WG2,'b0')
 
-
+'''
 for p in np.linspace(0.0,1.0,101):
     input_dic={'a0':np.exp(1.0j*np.pi*p)}
     out1=BS1.get_output(input_dic,power=False)
@@ -41,6 +41,27 @@ for p in np.linspace(0.0,1.0,101):
 
     print(5*'%8.4f' % (p, np.angle(out1['b0'])/np.pi, np.angle(out1['b1'])/np.pi, np.angle(out2['b0'])/np.pi, np.angle(out2['b1'])/np.pi))
 quit()
+'''
+for i in [0.0,1.0]:
+    for j in [0.0,1.0]:
+        input_dic={'a0':i+1.0j*j}
+        out1=BS1.get_output(input_dic,power=False)
+        print(6*'%8.4f' % (i,j, out1['b0'].real, out1['b0'].imag, out1['b1'].real, out1['b1'].imag))
+
+print('')
+
+for i in [0.0,1.0]:
+    for j in [0.0,1.0]:
+        input_dic={'b0':i+1.0j*j}
+        out1=SP1.get_output(input_dic,power=False)
+        print(4*'%8.4f' % (i,j, out1['a0'].real, out1['a0'].imag))
+
+
+quit()
+
+
+
+
 
 pin_mapping={
 #    'a0': (BS1,'a0'),
