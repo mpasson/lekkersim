@@ -3,7 +3,6 @@ from scattering import S_matrix
 from copy import deepcopy
 from copy import copy
 import solver.model as mod
-from solver.sol import Solver
 
 
 

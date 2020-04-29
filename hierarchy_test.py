@@ -33,30 +33,16 @@ def ring(R):
 #sol.show_connections()
 #sol.show_free_pins()
 
-R20_1=ring(10.0)
-R30_1=ring(12.0)
+R20_1=ring(20.0)
+R30_1=ring(24.0)
 
 #R20_1.show_free_pins()
 #print(R20_1.pin_mapping)
 
 
 with solver.Solver() as DOUBLE:
-    R1=solver.Structure(solver=R20_1)
-    R2=solver.Structure(solver=R30_1)
-
-    #print('inside with:',solver.sol_list)
-    #DOUBLE.show_structures()
-    #DOUBLE.show_connections()
-    #DOUBLE.show_free_pins()
-
-    DOUBLE.add_structure(R1)
-    DOUBLE.add_structure(R2)
-
-    #DOUBLE.show_structures()
-    #DOUBLE.show_connections()
-    #DOUBLE.show_free_pins()
-
-    solver.connect((R1,'a1'),(R2,'b0'))
+    R1=R20_1.put()
+    R2=R30_1.put('b0',(R1,'a1'))
 
     solver.putpin('a0',(R1,'a0'))
     solver.putpin('a1',(R2,'a0'))
@@ -68,7 +54,7 @@ with solver.Solver() as DOUBLE:
 
 
 
-for Lam in np.linspace(1.4,1.8,2001):
+for Lam in np.linspace(1.5,1.6,2001):
     
     R20_1.set_param('Lam',value=Lam)
     R30_1.set_param('Lam',value=Lam)

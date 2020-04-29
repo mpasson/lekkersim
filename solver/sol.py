@@ -1,6 +1,8 @@
 import numpy as np
 from copy import copy
+from solver.structure import Structure
 
+sol_list=[]
 
 class Solver:
     def __init__(self,structures=[],connections={},param_dic={}):
@@ -133,15 +135,16 @@ class Solver:
     def set_param(self,name,value=None):
         self.param_dic[name]=value
 
-    #def put(self,pins=None,pint=None):
-    #    ST=solver.structure.Structure(solver=self)
-    #    sol_list[-1].add_structure(ST)
-    #    if (pins is not None) and (pint is not None):
-    #        sol_list[-1].connect(ST,pins,pint[0],pint[1])
-    #    return ST
+    def put(self,pins=None,pint=None):
+        ST=Structure(solver=self)
+        sol_list[-1].add_structure(ST)
+        if (pins is not None) and (pint is not None):
+            sol_list[-1].connect(ST,pins,pint[0],pint[1])
+        return ST
 
 
-sol_list=[Solver()]
+#sol_list=[Solver()]
+from solver import sol_list
 
 def putpin(name,tup):
     sol_list[-1].map_pins({name:tup})
