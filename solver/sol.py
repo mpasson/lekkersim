@@ -1,8 +1,8 @@
 import numpy as np
 from copy import copy
 from solver.structure import Structure
+from solver import sol_list
 
-sol_list=[]
 
 class Solver:
     def __init__(self,structures=[],connections={},param_dic={}):
@@ -141,10 +141,6 @@ class Solver:
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
         return ST
-
-
-#sol_list=[Solver()]
-from solver import sol_list
 
 def putpin(name,tup):
     sol_list[-1].map_pins({name:tup})

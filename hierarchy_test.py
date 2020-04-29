@@ -21,23 +21,11 @@ def ring(R):
         solver.putpin('b0',(BS1,'b0'))
         solver.putpin('b1',(BS2,'a1'))
         solver.putpin('a1',(BS2,'b1'))
-        #sol.show_structures()
-        #sol.show_connections()
 
     return sol
     
-
-#BS=solver.BeamSplitter(phase=0.5)
-#BS1=BS.put()
-
-#sol.show_connections()
-#sol.show_free_pins()
-
 R20_1=ring(20.0)
 R30_1=ring(24.0)
-
-#R20_1.show_free_pins()
-#print(R20_1.pin_mapping)
 
 
 with solver.Solver() as DOUBLE:
