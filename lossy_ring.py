@@ -2,10 +2,11 @@ import numpy as np
 import solver
 from copy import deepcopy
 
-def ring(R):
+def ring(R,k=0.0):
     with solver.Solver() as sol:
-        BS=solver.GeneralBeamSplitter(phase=0.5,ratio=0.1)
-        WG=solver.waveguide(2.0*np.pi*R,n=1.0+0.001j)
+        loss=1.0-np.exp(-8.0*np.pi**2.0*R*k/1.55)
+        BS=solver.GeneralBeamSplitter(phase=0.5,ratio=loss)
+        WG=solver.waveguide(2.0*np.pi*R,n=1.0+1.0j*k)
 
         BS1=BS.put()
         WG1=WG.put('a0',(BS1,'b1'))
@@ -17,7 +18,7 @@ def ring(R):
 
     return sol
     
-R20_1=ring(20.0)
+R20_1=ring(20.0,k=0.0001)
 R30_1=ring(24.0)
 
 
