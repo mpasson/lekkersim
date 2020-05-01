@@ -4,9 +4,6 @@ from copy import deepcopy
 
 def ring(R):
     with solver.Solver() as sol:
-        #print('inside with:',solver.sol_list)
-        #sol.show_structures()
-        #sol.show_connections()
         BS=solver.GeneralBeamSplitter(phase=0.5,ratio=0.1)
         WG=solver.waveguide(np.pi*R)
 
@@ -42,7 +39,7 @@ with solver.Solver() as DOUBLE:
 
 
 
-for Lam in np.linspace(1.5,1.6,2001):
+for Lam in np.linspace(1.5,1.6,1001):
     
     R20_1.set_param('Lam',value=Lam)
     R30_1.set_param('Lam',value=Lam)
@@ -54,4 +51,4 @@ for Lam in np.linspace(1.5,1.6,2001):
     D=DOUBLE.solve()
 
 
-    print('%15.8f %15.8f %15.8f %15.8f %15.8f %15.8f %15.8f' % (Lam,R20.get_T('a0','b0'),R20.get_T('a0','a1'),R30.get_T('a0','b0'),R30.get_T('a0','a1'),D.get_T('a0','b0'),D.get_T('a0','b2')))
+    print('%15.8f %15.8f %15.8f %15.8f %15.8f %15.8f %15.8f %15.8f'  % (Lam,R20.get_T('a0','b0'),R20.get_T('a0','a1'),R30.get_T('a0','b0'),R30.get_T('a0','a1'),D.get_T('a0','b0'),D.get_T('a0','a1'),D.get_T('a0','b2')))
