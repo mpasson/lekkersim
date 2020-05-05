@@ -44,12 +44,12 @@ quit()
 '''
 for i in [0.0,1.0]:
     for j in [0.0,1.0]:
-        input_dic={'a0':i+1.0j*j}
+        input_dic={'a0':i, 'a1':j}
         out1=BS1.get_output(input_dic,power=False)
         print(6*'%8.4f' % (i,j, out1['b0'].real, out1['b0'].imag, out1['b1'].real, out1['b1'].imag))
 
 print('')
-
+quit()
 for i in [0.0,1.0]:
     for j in [0.0,1.0]:
         input_dic={'b0':i+1.0j*j}

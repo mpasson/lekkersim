@@ -110,7 +110,20 @@ class Splitter1x2(model):
         self.N=3
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
 
-    
+class PhaseShifter(model):
+    def __init__(self,param_name='PS'):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.pn=param_name
+        self.param_dic={}
+        self.param_dic[param_name]=0.5    
+
+
+    def create_S(self):
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[0,1]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
+        self.S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
+        return self.S
 
 
 
