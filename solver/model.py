@@ -53,7 +53,7 @@ class model:
                                
         
                 
-class waveguide(model):
+class Waveguide(model):
     def __init__(self,L,lam=1.0,n=1.0):
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
@@ -125,6 +125,42 @@ class PhaseShifter(model):
         self.S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
         return self.S
 
+class PolRot(model):
+    def __init__(self,angle=None,angle_name='angle'):
+        self.pin_dic={'a0_TE':0, 'a0_TM':1, 'b0_TE':2, 'b0_TM':3}        
+        self.N=4
+        if angle is None:
+            self.fixed=False
+            self.angle_name=angle_name
+            self.param_dic={angle_name: 0.0}
+        else:
+            self.fixed=True
+            c=np.cos(np.pi*angle/180.0)
+            s=np.sin(np.pi*angle/180.0)
+            self.S=np.zeros((self.N,self.N),complex)
+            self.S[:2,2:]=np.array([[c,s],[-s,c]])
+            self.S[2:,:2]=np.array([[c,-s],[s,c]])
+
+    def create_S(self):
+        if self.fixed:
+            return self.S
+        else:
+            angle=self.param_dic[self.angle_name]
+            c=np.cos(np.pi*angle/180.0)
+            s=np.sin(np.pi*angle/180.0)
+            S=np.zeros((self.N,self.N),complex)
+            S[:2,2:]=np.array([[c,s],[-s,c]])
+            S[2:,:2]=np.array([[c,-s],[s,c]])
+            return S
+
+class Attenuator(model):
+    def __init__(self,loss=0.0):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.loss=loss
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[0,1]=10.0**(-0.1*loss)
+        self.S[1,0]=10.0**(-0.1*loss)
 
 
 
