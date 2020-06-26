@@ -4,6 +4,7 @@ from solver.structure import Structure
 from solver import sol_list
 
 
+        
 class Solver:
     def __init__(self,structures=[],connections={},param_dic={}):
         self.structures=structures

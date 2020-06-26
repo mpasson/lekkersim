@@ -5,7 +5,6 @@ from copy import copy
 import solver.model as mod
 
 
-
 class Structure:
     def __init__(self,pin_list=[],model=None,solver=None):
         self.pin_list=[]
@@ -30,6 +29,10 @@ class Structure:
                 self.pin_list.append((self,pin))
         self.solver=solver
 
+    @property
+    def pin(self):
+        dic={pin:(self,pin) for sl,pin in self.pin_list}
+        return dic
 
     def createS(self):
         if self.model is not None:

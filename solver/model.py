@@ -110,6 +110,15 @@ class Splitter1x2(model):
         self.N=3
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
 
+class Splitter1x2Gen(model):
+    def __init__(self,cross=0.0,phase=0.0):
+        self.pin_dic={'a0':0,'b0':1,'b1':2}        
+        self.N=3
+        c=np.sqrt(cross)
+        t=np.sqrt(0.5-cross)
+        p1=np.pi*phase
+        self.S=np.array([[0.0,t,t],[t,0.0,c*np.exp(1.0j*p1)],[t,c*np.exp(-1.0j*p1),0.0]],complex)
+
 class PhaseShifter(model):
     def __init__(self,param_name='PS'):
         self.pin_dic={'a0':0,'b0':1}        
@@ -162,6 +171,23 @@ class Attenuator(model):
         self.S[0,1]=10.0**(-0.1*loss)
         self.S[1,0]=10.0**(-0.1*loss)
 
+class Mirror(model):
+    def __init__(self,ref=0.5,phase=0.0):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.ref=ref
+        self.phase=phase
+        t=np.sqrt(self.ref)
+        c=np.sqrt(1.0-self.ref)
+        p1=np.pi*self.phase
+        self.S=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]],complex)
 
 
+class PerfectMirror(model):
+    def __init__(self,phase=0.0):
+        self.pin_dic={'a0':0}        
+        self.N=1
+        self.phase=phase
+        p1=np.pi*self.phase
+        self.S=np.array([[np.exp(1.0j*p1)]],complex)
 
