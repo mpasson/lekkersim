@@ -20,6 +20,13 @@ class model:
     def get_T(self,pin1,pin2):
         return np.abs(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
 
+    def get_PH(self,pin1,pin2):
+        return np.angle(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])
+
+    def get_A(self,pin1,pin2):
+        return self.S[self.pin_dic[pin1],self.pin_dic[pin2]]
+
+
     def get_output(self,input_dic,power=True):
         l1=list(self.pin_dic.keys())
         l2=list(input_dic.keys())
@@ -44,8 +51,8 @@ class model:
                 out_dic[pin]=d[i]
         return out_dic
 
-    def put(self,pins=None,pint=None):
-        ST=solver.structure.Structure(model=self)
+    def put(self,pins=None,pint=None,param_mapping={}):
+        ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
@@ -78,6 +85,7 @@ class BeamSplitter(model):
         self.N=4
         self.S=np.zeros((self.N,self.N),complex)
         self.phase=phase
+        self.param_dic={}
         p1=np.pi*self.phase
         p2=np.pi*(1.0-self.phase)
         #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[-np.exp(-1.0j*p1),1.0]])
@@ -97,6 +105,7 @@ class GeneralBeamSplitter(model):
         c=np.sqrt(self.ratio)
         t=np.sqrt(1.0-self.ratio)
         self.S=np.zeros((self.N,self.N),complex)
+        self.param_dic={}
         #self.S[:2,2:]=np.array([[t,c],[c,-t]])
         #self.S[2:,:2]=np.array([[t,c],[c,-t]])
         #self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
@@ -109,11 +118,13 @@ class Splitter1x2(model):
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
         self.N=3
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
+        self.param_dic={}
 
 class Splitter1x2Gen(model):
     def __init__(self,cross=0.0,phase=0.0):
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
         self.N=3
+        self.param_dic={}
         c=np.sqrt(cross)
         t=np.sqrt(0.5-cross)
         p1=np.pi*phase
@@ -121,6 +132,7 @@ class Splitter1x2Gen(model):
 
 class PhaseShifter(model):
     def __init__(self,param_name='PS'):
+        self.param_dic={}
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.pn=param_name
@@ -138,6 +150,7 @@ class PolRot(model):
     def __init__(self,angle=None,angle_name='angle'):
         self.pin_dic={'a0_TE':0, 'a0_TM':1, 'b0_TE':2, 'b0_TM':3}        
         self.N=4
+        self.param_dic={}
         if angle is None:
             self.fixed=False
             self.angle_name=angle_name
@@ -164,6 +177,7 @@ class PolRot(model):
 
 class Attenuator(model):
     def __init__(self,loss=0.0):
+        self.param_dic={}
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.loss=loss
@@ -174,6 +188,7 @@ class Attenuator(model):
 class Mirror(model):
     def __init__(self,ref=0.5,phase=0.0):
         self.pin_dic={'a0':0,'b0':1}        
+        self.param_dic={}
         self.N=2
         self.ref=ref
         self.phase=phase
@@ -185,9 +200,24 @@ class Mirror(model):
 
 class PerfectMirror(model):
     def __init__(self,phase=0.0):
-        self.pin_dic={'a0':0}        
+        self.pin_dic={'a0':0}      
+        self.param_dic={}  
         self.N=1
         self.phase=phase
         p1=np.pi*self.phase
         self.S=np.array([[np.exp(1.0j*p1)]],complex)
+
+class FPR_NxM(model):
+    def __init__(self,N,M,phi=0.1):
+        self.param_dic={}  
+        self.pin_dic={f'a{i}':i for i in range(N)}
+        self.pin_dic.update({f'b{i}': N+i for i in range(M)}) 
+        Sint=np.zeros((N,M),complex)
+        for i in range(N):
+            for j in range(M):     
+                Sint[i,j]=np.exp(-1.0j*np.pi*phi*(i-0.5*N+0.5)*(j-0.5*M+0.5))
+        Sint2=np.conj(np.transpose(Sint))
+        self.S=np.concatenate([np.concatenate([np.zeros((N,N),complex),Sint/np.sqrt(M)],axis=1),np.concatenate([Sint2/np.sqrt(N),np.zeros((M,M),complex)],axis=1)],axis=0)        
+
+
 

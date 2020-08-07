@@ -1,5 +1,6 @@
 import numpy as np
 from copy import copy
+from copy import deepcopy
 from solver.structure import Structure
 from solver import sol_list
 
@@ -99,14 +100,7 @@ class Solver:
 
     def solve(self):
         for st in self.structures:
-            try:
-                st.model.param_dic.update(self.param_dic)
-            except AttributeError:
-                pass
-            try:
-                st.solver.param_dic.update(self.param_dic)
-            except AttributeError:
-                pass
+            st.update_params(self.param_dic)
         st_list=copy(self.structures)
         while len(st_list)!=1:
             source_st=st_list[0].gone_to
@@ -136,8 +130,8 @@ class Solver:
     def set_param(self,name,value=None):
         self.param_dic[name]=value
 
-    def put(self,pins=None,pint=None):
-        ST=Structure(solver=self)
+    def put(self,pins=None,pint=None,param_mapping={}):
+        ST=Structure(solver=deepcopy(self),param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])

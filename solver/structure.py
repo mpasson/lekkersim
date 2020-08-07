@@ -6,7 +6,7 @@ import solver.model as mod
 
 
 class Structure:
-    def __init__(self,pin_list=[],model=None,solver=None):
+    def __init__(self,pin_list=[],model=None,solver=None,param_mapping={}):
         self.pin_list=[]
         self.pin_dic={}
         for i,pin in enumerate(pin_list):
@@ -28,11 +28,27 @@ class Structure:
             for pin in solver.pin_mapping:
                 self.pin_list.append((self,pin))
         self.solver=solver
+        self.param_mapping={}
+        for oldname,newname in param_mapping.items():
+            self.param_mapping[newname]=oldname
 
     @property
     def pin(self):
         dic={pin:(self,pin) for sl,pin in self.pin_list}
         return dic
+
+    def update_params(self,param_dic):
+        update_dic=deepcopy(param_dic)
+        for newname,oldname in self.param_mapping.items():
+            update_dic[oldname]=update_dic.pop(newname)
+        if self.model is not None:
+            self.model.param_dic.update(update_dic)
+        if self.solver is not None:
+            self.solver.param_dic.update(update_dic)
+
+    
+                
+
 
     def createS(self):
         if self.model is not None:
