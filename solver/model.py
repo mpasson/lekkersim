@@ -79,6 +79,27 @@ class Waveguide(model):
         self.S[1,0]=np.exp(2.0j*np.pi*n/lam*self.L)
         return self.S
 
+class GeneralWaveguide(model):
+    def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.Neff=Neff
+        self.param_dic={}
+        self.param_dic['R']=R
+        self.param_dic['w']=w
+        self.param_dic['wl']=wl
+        self.param_dic['pol']=pol
+        
+    def create_S(self):
+        wl=self.param_dic['wl']
+        n=self.Neff(**param_dic)
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
+        self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
+        return self.S
+        
+
+
 class BeamSplitter(model):
     def __init__(self,phase=0.5):
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        

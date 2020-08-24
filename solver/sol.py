@@ -8,10 +8,10 @@ from solver import sol_list
         
 class Solver:
     def __init__(self,structures=[],connections={},param_dic={}):
-        self.structures=structures
-        self.connections=connections
+        self.structures=[]
+        self.connections={}
         self.connections_list=[]
-        self.param_dic=param_dic
+        self.param_dic={}
         self.pin_mapping={}
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
@@ -47,7 +47,9 @@ class Solver:
             raise ValueError('Structure already present')
         
     def connect(self,structure1,pin1,structure2,pin2):
-        if (structure1,pin1) in self.connections_list: 
+        if (structure1,pin1) in self.connections_list:
+            if  (structure1,pin1) in self.connections and self.connections[(structure1,pin1)]==(structure2,pin2) : return
+            if  (structure2,pin2) in self.connections and self.connections[(structure2,pin2)]==(structure1,pin1) : return
             raise ValueError('Pin already connected')
         if (structure2,pin2) in self.connections_list: 
             raise ValueError('Pin already connected')
@@ -98,10 +100,13 @@ class Solver:
         self.pin_mapping.update(pin_mapping)
 
 
-    def solve(self):
+    def solve(self,**kwargs):
+        self.param_dic.update(kwargs)
         for st in self.structures:
             st.update_params(self.param_dic)
         st_list=copy(self.structures)
+        if len(st_list)==1:
+            st_list[0].createS()
         while len(st_list)!=1:
             source_st=st_list[0].gone_to
             tar_st=st_list[0].connected_to[0].gone_to

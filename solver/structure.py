@@ -58,6 +58,7 @@ class Structure:
             for pin,i in self.model.pin_dic.items():
                 self.pin_dic[(self,pin)]=i
             self.Smatrix=self.model.create_S()
+        self.N=np.shape(self.Smatrix)[0]
 
     def print_pindic(self):
         for (st,pin),i in self.pin_dic.items():
@@ -263,6 +264,13 @@ class Structure:
         if pin_mapping is None:
             pin_mapping=self.solver.pin_mapping
         if len(pin_mapping)!=len(self.pin_dic):
+            print('')
+            for t in pin_mapping.items():
+                print(t)
+            print('')
+            for t in self.pin_dic.items():
+                print(t)
+
             raise Exception('Not all pins mapped correctly')
         pin_dic={}
         for i,pin_name in enumerate(pin_mapping):
