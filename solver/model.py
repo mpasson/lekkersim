@@ -61,22 +61,22 @@ class model:
         
                 
 class Waveguide(model):
-    def __init__(self,L,lam=1.0,n=1.0):
+    def __init__(self,L,wl=1.0,n=1.0):
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.S=np.identity(self.N,complex)
         self.L=L        
         self.param_dic={}
-        self.param_dic['Lam']=lam
+        self.param_dic['wl']=wl
         self.param_dic['n']=n
 
 
     def create_S(self):
-        lam=self.param_dic['Lam']
+        wl=self.param_dic['wl']
         n=self.param_dic['n']
         self.S=np.zeros((self.N,self.N),complex)
-        self.S[0,1]=np.exp(2.0j*np.pi*n/lam*self.L)
-        self.S[1,0]=np.exp(2.0j*np.pi*n/lam*self.L)
+        self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
+        self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
         return self.S
 
 class GeneralWaveguide(model):
