@@ -84,6 +84,7 @@ class GeneralWaveguide(model):
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.Neff=Neff
+        self.L=L
         self.param_dic={}
         self.param_dic['R']=R
         self.param_dic['w']=w
@@ -92,7 +93,7 @@ class GeneralWaveguide(model):
         
     def create_S(self):
         wl=self.param_dic['wl']
-        n=self.Neff(**param_dic)
+        n=self.Neff(**self.param_dic)
         self.S=np.zeros((self.N,self.N),complex)
         self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
         self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
