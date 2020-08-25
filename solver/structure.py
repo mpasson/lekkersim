@@ -1,5 +1,5 @@
 import numpy as np
-from scattering import S_matrix
+from solver.scattering import S_matrix
 from copy import deepcopy
 from copy import copy
 import solver.model as mod
