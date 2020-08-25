@@ -4,3 +4,4 @@ __pycache__
 *.gnu
 *.dat
 ./*.py
+jupiter/.ipynb_checkpoints/*

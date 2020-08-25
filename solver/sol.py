@@ -147,7 +147,7 @@ class Pin():
     def __init__(self,name):
         self.name=name
 
-    def put(tup):
+    def put(self,tup):
         sol_list[-1].map_pins({self.name:tup})
 
 def putpin(name,tup):
