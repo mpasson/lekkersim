@@ -7,7 +7,7 @@ from solver import sol_list
 
         
 class Solver:
-    def __init__(self,structures=[],connections={},param_dic={}):
+    def __init__(self,structures=[],connections={},param_dic={},name=None):
         self.structures=[]
         self.connections={}
         self.connections_list=[]
@@ -24,6 +24,7 @@ class Solver:
                 self.free_pins.append(pin)
         for pin in self.connections_list:
             self.free_pins.remove(pin)
+        self.name=name
 
     def __enter__(self):
         self.structures=[]
@@ -37,6 +38,12 @@ class Solver:
     def __exit__(self,*args):
         sol_list.pop()
         
+    def __str__(self):
+        if self.name is None:
+            return f'Solver object (id={id(self)})'
+        else:
+            return f'Solver of {self.name} (id={id(self)})'
+
 
     def add_structure(self,structure):
         if structure not in self.structures: 
@@ -157,4 +164,24 @@ def connect(tup1,tup2):
     sol_list[-1].connect(tup1[0],tup1[1],tup2[0],tup2[1])
 
 
+class solver_printer():
+    def __init__(self):
+        self.space=''
+
+    def print(self,solver):
+        print(f'{self.space}{solver}')
+        for s in solver.structures:
+            if s.solver is not None:
+                self.space=self.space+'  '
+                self.print(s.solver)
+                self.space=self.space[:-2]    
+            elif s.model is not None:
+                print(f'{self.space}  {s.model}')
+            else:
+                print(f'{self.space}  {s}')
+
+printer_helper=solver_printer()
+solver_print=printer_helper.print
+
+ 
 

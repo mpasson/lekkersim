@@ -32,6 +32,14 @@ class Structure:
         for oldname,newname in param_mapping.items():
             self.param_mapping[newname]=oldname
 
+    def __str__(self):
+        if self.model is not None:
+            return f'Structure (id={id(self)}) containing {str(self.model)}'
+        elif self.solver is not None:
+            return f'Structure (id={id(self)}) containing {str(self.solver)}'
+        else:
+            return f"{self.__class__.__name__} instance at {id(self)}>" 
+
     @property
     def pin(self):
         dic={pin:(self,pin) for sl,pin in self.pin_list}

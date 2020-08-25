@@ -57,8 +57,10 @@ class model:
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
         return ST
-                               
-        
+
+    def __str__(self):
+        return f'Model object (id={id(self)}) with pins: {list(self.pin_dic)}'
+                                       
                 
 class Waveguide(model):
     def __init__(self,L,wl=1.0,n=1.0):
@@ -68,16 +70,19 @@ class Waveguide(model):
         self.L=L        
         self.param_dic={}
         self.param_dic['wl']=wl
-        self.param_dic['n']=n
+        self.n=n
 
 
     def create_S(self):
         wl=self.param_dic['wl']
-        n=self.param_dic['n']
+        n=self.n
         self.S=np.zeros((self.N,self.N),complex)
         self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
         self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
         return self.S
+
+    def __str__(self):
+        return f'Model of waveguide of lenght {self.L:.3f} and index {self.n:.3f} (id={id(self)})'  
 
 class GeneralWaveguide(model):
     def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None):
@@ -98,7 +103,9 @@ class GeneralWaveguide(model):
         self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
         self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
         return self.S
-        
+
+    def __str__(self):
+        return f'Model of waveguide of lenght {self.L:.3} (id={id(self)})'        
 
 
 class BeamSplitter(model):
@@ -134,6 +141,9 @@ class GeneralBeamSplitter(model):
         #self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
         self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]])
         self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
+
+    def __str__(self):
+        return f'Model of beam-splitter with ratio {self.ratio:.3} (id={id(self)})'      
     
 class Splitter1x2(model):
     def __init__(self):
@@ -167,6 +177,9 @@ class PhaseShifter(model):
         self.S[0,1]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
         self.S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
         return self.S
+
+    def __str__(self):
+        return f'Model of variable phase shifter (id={id(self)})'  
 
 class PolRot(model):
     def __init__(self,angle=None,angle_name='angle'):
