@@ -53,6 +53,27 @@ class Solver:
         else:
             raise ValueError('Structure already present')
         
+    def remove_structure(self,structure):
+        if structure not in self.structures:
+            raise Exception('Structure {structure} is not in solver {self}')
+        self.structures.remove(structure)
+        for st in structure.connected_to:
+            st.remove_connections(structure)
+        copy_dic=copy(self.connections)
+        for (st1,pin1),(st2,pin2) in copy_dic.items():
+            if st1 is structure: self.connections.pop((st1,pin1))
+            if st2 is structure: self.connections.pop((st1,pin1))
+        copy_dic=copy(self.free_pins)
+        for st,pin in copy_dic:
+            if st is structure: self.free_pins.remove((st,pin))
+        copy_dic=copy(self.pin_mapping)
+        for pinname,(st,pin) in copy_dic.items():
+            if st is structure: self.pin_mapping.pop(pinname)
+                
+        
+            
+
+
     def connect(self,structure1,pin1,structure2,pin2):
         if (structure1,pin1) in self.connections_list:
             if  (structure1,pin1) in self.connections and self.connections[(structure1,pin1)]==(structure2,pin2) : return
@@ -164,7 +185,7 @@ def connect(tup1,tup2):
     sol_list[-1].connect(tup1[0],tup1[1],tup2[0],tup2[1])
 
 
-class solver_printer():
+class helper():
     def __init__(self):
         self.space=''
 
@@ -180,8 +201,24 @@ class solver_printer():
             else:
                 print(f'{self.space}  {s}')
 
-printer_helper=solver_printer()
-solver_print=printer_helper.print
+    def prune(self,solver):
+        #print(f'Entered in {solver}')
+        not_empty=[]
+        copy_list=copy(solver.structures)
+        for st in copy_list:
+            if st.model is not None:
+                not_empty.append(st)
+                continue
+            if st.solver is not None:
+                if self.prune(st.solver):
+                    solver.remove_structure(st)
+                else:
+                    not_empty.append(st)
+        return len(not_empty)==0
+
+help=helper()
+solver_print=help.print
+prune=help.prune
 
  
 

@@ -163,6 +163,27 @@ class Structure:
         if target not in self.connected_to:
            self.connected_to.append(target)
 
+    def remove_pin(self,pin):
+        if (self,pin) in self.conn_dict:
+            self.conn_dict.pop((self,pin))
+        else:
+            raise Exception(f'Pin {pin} not in conn_dict')
+        if (self,pin) in self.pin_list:
+            self.pin_list.remove((self,pin))
+            self.pin_dic.pop((self,pin))
+        else:
+            raise Exception(f'Pin {pin} not in conn_dict')
+
+
+    def remove_connections(self,target):
+        if target not in self.connected_to:
+            raise Exception(f'Structure {target} is not connected to {self}. Impossible to remove.')
+        self.connected_to.remove(target)
+        copy_dic=copy(self.conn_dict)
+        for (s,pin),(t,tpin) in copy_dic.items():
+            if t is target:
+                self.remove_pin(pin)
+
     def get_out_to(self,st):
         pin_list=[]
         target_list=[st]+st.structures
@@ -272,6 +293,7 @@ class Structure:
         if pin_mapping is None:
             pin_mapping=self.solver.pin_mapping
         if len(pin_mapping)!=len(self.pin_dic):
+            print(self.solver)
             print('')
             for t in pin_mapping.items():
                 print(t)
