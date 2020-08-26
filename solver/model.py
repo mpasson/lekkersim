@@ -254,5 +254,28 @@ class FPR_NxM(model):
         Sint2=np.conj(np.transpose(Sint))
         self.S=np.concatenate([np.concatenate([np.zeros((N,N),complex),Sint/np.sqrt(M)],axis=1),np.concatenate([Sint2/np.sqrt(N),np.zeros((M,M),complex)],axis=1)],axis=0)        
 
+class Ring(model):
+    def __init__(self,R,n,alpha,t):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.S=np.identity(self.N,complex)
+        self.R=R        
+        self.n=n
+        self.alpha=alpha
+        self.t=t
 
+        self.param_dic={}
+        self.param_dic['wl']=None
+
+
+    def create_S(self):
+        wl=self.param_dic['wl']
+        n=self.n
+        t=self.t
+        ex=np.exp(-4.0j*np.pi**2.0/wl*n*self.R)
+        b=(-self.alpha+t*ex)/(-self.alpha*t+ex)
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[0,1]=b
+        self.S[1,0]=b
+        return self.S
 
