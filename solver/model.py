@@ -152,6 +152,9 @@ class Splitter1x2(model):
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
         self.param_dic={}
 
+    def __str__(self):
+        return f'Model of 1x2 splitter (id={id(self)})'      
+
 class Splitter1x2Gen(model):
     def __init__(self,cross=0.0,phase=0.0):
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
