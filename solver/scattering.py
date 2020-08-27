@@ -1,5 +1,5 @@
 import numpy as np
-import scipy.linalg as linalg
+import numpy.linalg as linalg
 
 class S_matrix:
     def __init__(self,N,M):

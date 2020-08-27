@@ -46,9 +46,11 @@ class Structure:
         return dic
 
     def update_params(self,param_dic):
+        #print(self,param_dic,self.param_mapping)
         update_dic=deepcopy(param_dic)
         for newname,oldname in self.param_mapping.items():
-            update_dic[oldname]=update_dic.pop(newname)
+            if newname in param_dic:
+                update_dic[oldname]=update_dic.pop(newname)
         if self.model is not None:
             self.model.param_dic.update(update_dic)
         if self.solver is not None:

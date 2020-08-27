@@ -279,3 +279,26 @@ class Ring(model):
         self.S[1,0]=b
         return self.S
 
+class TH_PhaseShifter(model):
+    def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None, param_name='PS'):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.Neff=Neff
+        self.L=L
+        self.pn=param_name
+        self.param_dic={}
+        self.param_dic['R']=R
+        self.param_dic['w']=w
+        self.param_dic['wl']=wl
+        self.param_dic['pol']=pol
+        self.param_dic[param_name]=0.0
+
+    def create_S(self):
+        wl=self.param_dic['wl']
+        n=self.Neff(**self.param_dic)
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[0,1]=np.exp(1.0j*np.pi*(2.0*n/wl*self.L+self.param_dic[self.pn]))
+        self.S[1,0]=np.exp(1.0j*np.pi*(2.0*n/wl*self.L+self.param_dic[self.pn]))
+        return self.S
+
+
