@@ -55,6 +55,7 @@ class Structure:
             self.model.param_dic.update(update_dic)
         if self.solver is not None:
             self.solver.param_dic.update(update_dic)
+            #self.solver.update_params(update_dic)
 
     
                 

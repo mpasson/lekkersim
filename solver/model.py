@@ -172,7 +172,7 @@ class PhaseShifter(model):
         self.N=2
         self.pn=param_name
         self.param_dic={}
-        self.param_dic[param_name]=0.5    
+        self.param_dic[param_name]=0.0    
 
 
     def create_S(self):

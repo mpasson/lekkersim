@@ -44,6 +44,12 @@ class Solver:
         else:
             return f'Solver of {self.name} (id={id(self)})'
 
+#    def update_params(self,update_dic):
+#        self.param_dic.update(self.default_params)
+#        self.param_dic.update(update_dic)
+#        print(f'{self.param_dic}')
+#        for st in self.structures:
+#            st.update_params(self.param_dic)
 
     def add_structure(self,structure):
         if structure not in self.structures: 
@@ -170,6 +176,9 @@ class Solver:
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
         return ST
 
+    def inspect(self):
+        help.print(self)
+
 
 class Pin():
     def __init__(self,name):
@@ -203,6 +212,8 @@ class helper():
 
     def prune(self,solver):
         #print(f'Entered in {solver}')
+        if not isinstance(solver,Solver):
+            return False
         not_empty=[]
         copy_list=copy(solver.structures)
         for st in copy_list:
