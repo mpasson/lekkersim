@@ -107,6 +107,38 @@ class GeneralWaveguide(model):
     def __str__(self):
         return f'Model of waveguide of lenght {self.L:.3} (id={id(self)})'        
 
+class MultiPolWave(model):
+    def __init__(self,L,Neff,pol_list=[0],R=None,w=None, wl=None):
+        self.pin_dic={}
+        self.pol_list=pol_list
+        self.mp=len(pol_list)
+        for i,pol in enumerate(pol_list):
+            self.pin_dic[f'a0_pol{i}']=i        
+            self.pin_dic[f'b0_pol{i}']=i+self.mp      
+
+        self.N=2*self.mp
+        self.Neff=Neff
+        self.L=L
+        self.param_dic={}
+        self.param_dic['R']=R
+        self.param_dic['w']=w
+        self.param_dic['wl']=wl
+
+    def create_S(self):
+        R=self.param_dic['R']
+        w=self.param_dic['w']
+        wl=self.param_dic['wl']
+        mp=self.mp
+        St=np.zeros((mp,mp),complex)
+        for i,pol in enumerate(self.pol_list):
+            n=self.Neff(wl=wl,w=w,R=R,pol=pol)
+            St[i,i]=np.exp(2.0j*np.pi*n/wl*self.L)
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[:mp,-mp:]=St
+        self.S[-mp:,:mp]=St
+        return self.S
+    
+
 
 class BeamSplitter(model):
     def __init__(self,phase=0.5):
