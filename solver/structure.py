@@ -65,7 +65,7 @@ class Structure:
         if self.model is not None:
             self.Smatrix=self.model.create_S()
         if self.solver is not None:
-            self.model=self.solver.solve()
+            self.model=self.solver.solve(**self.solver.param_dic)
             for pin,i in self.model.pin_dic.items():
                 self.pin_dic[(self,pin)]=i
             self.Smatrix=self.model.create_S()

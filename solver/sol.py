@@ -7,12 +7,13 @@ from solver import sol_list
 
         
 class Solver:
-    def __init__(self,structures=[],connections={},param_dic={},name=None):
+    def __init__(self,structures=[],connections={},param_dic={},default_params={},name=None):
         self.structures=[]
         self.connections={}
         self.connections_list=[]
         self.param_dic={}
         self.pin_mapping={}
+        self.default_params=default_params
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
@@ -43,13 +44,6 @@ class Solver:
             return f'Solver object (id={id(self)})'
         else:
             return f'Solver of {self.name} (id={id(self)})'
-
-#    def update_params(self,update_dic):
-#        self.param_dic.update(self.default_params)
-#        self.param_dic.update(update_dic)
-#        print(f'{self.param_dic}')
-#        for st in self.structures:
-#            st.update_params(self.param_dic)
 
     def add_structure(self,structure):
         if structure not in self.structures: 
@@ -135,6 +129,7 @@ class Solver:
 
 
     def solve(self,**kwargs):
+        self.param_dic.update(self.default_params)
         self.param_dic.update(kwargs)
         for st in self.structures:
             st.update_params(self.param_dic)
@@ -192,6 +187,9 @@ def putpin(name,tup):
 
 def connect(tup1,tup2):
     sol_list[-1].connect(tup1[0],tup1[1],tup2[0],tup2[1])
+
+def set_default_params(dic):
+    sol_list[-1].default_params=dic
 
 
 class helper():
