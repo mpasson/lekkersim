@@ -134,11 +134,17 @@ class Solver:
         for st in self.structures:
             st.update_params(self.param_dic)
         st_list=copy(self.structures)
-        if len(st_list)==1:
-            st_list[0].createS()
+        for st in st_list:
+            if len(st.connected_to)==0:
+                st.createS()
+        #if len(st_list)==1:
+        #    st_list[0].createS()
         while len(st_list)!=1:
             source_st=st_list[0].gone_to
-            tar_st=st_list[0].connected_to[0].gone_to
+            if len(st_list[0].connected_to)==0:
+                tar_st=st_list[1]
+            else:
+                tar_st=st_list[0].connected_to[0].gone_to
             #print('Started join step')
             #print('Source structure: %50s inside %50s' % (source_st,source_st.gone_to))
             #print('Target structure: %50s inside %50s' % (tar_st,tar_st.gone_to))
