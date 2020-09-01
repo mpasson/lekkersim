@@ -5,6 +5,18 @@ from solver import sol_list
 from copy import deepcopy
 
 
+def diag_blocks(array_list):
+    for A in array_list:
+        if np.shape(A)[0]!=np.shape(A)[1]: raise ValueError('Matrix is not square')
+    Nl=[np.shape(A)[0] for A in array_list]
+    N=sum(Nl)
+    M=np.zeros((N,N), dtype=complex)
+    m=0
+    for n,A in zip(Nl,array_list):
+        M[m:m+n,m:m+n]=A
+        m+=n
+    return M
+
 class model:
     def __init__(self,pin_list=[],param_dic={}):
         self.pin_dic={}
@@ -94,7 +106,10 @@ class GeneralWaveguide(model):
         self.param_dic['R']=R
         self.param_dic['w']=w
         self.param_dic['wl']=wl
-        self.param_dic['pol']=pol
+        if pol is None:
+            self.param_dic['pol']=0
+        else:
+            self.param_dic['pol']=pol
         
     def create_S(self):
         wl=self.param_dic['wl']
@@ -175,7 +190,35 @@ class GeneralBeamSplitter(model):
         self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
 
     def __str__(self):
-        return f'Model of beam-splitter with ratio {self.ratio:.3} (id={id(self)})'      
+        return f'Model of beam-splitter with ratio {self.ratio:.3} (id={id(self)})'
+
+
+class GeneralBeamSplitterMultiPol(model):
+    def __init__(self,pol_list=[0],ratio=0.5,phase=0.5):
+        self.n_pol=len(pol_list)
+        self.pol_list=pol_list
+        #self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}
+        self.pin_dic={}
+        for i,pol in enumerate(pol_list):
+            self.pin_dic[f'a0_pol{pol}']=4*i
+            self.pin_dic[f'a1_pol{pol}']=4*i+1
+            self.pin_dic[f'b0_pol{pol}']=4*i+2
+            self.pin_dic[f'b1_pol{pol}']=4*i+3
+
+        self.N=4*self.n_pol
+        self.ratio=ratio
+        self.phase=phase
+        self.param_dic={}
+        p1=np.pi*self.phase
+        c=np.sqrt(self.ratio)
+        t=np.sqrt(1.0-self.ratio)
+        S=np.zeros((4,4),complex)
+        S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]])
+        S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
+        self.S=diag_blocks(self.n_pol*[S])
+
+    def __str__(self):
+        return f'Model of beam-splitter ratio {self.ratio:.3}, pol_list={self.pol_list} (id={id(self)})'
     
 class Splitter1x2(model):
     def __init__(self):
@@ -198,9 +241,17 @@ class Splitter1x2Gen(model):
         self.S=np.array([[0.0,t,t],[t,0.0,c*np.exp(1.0j*p1)],[t,c*np.exp(-1.0j*p1),0.0]],complex)
 
 class PhaseShifter(model):
-    def __init__(self,param_name='PS'):
+    def __init__(self,param_name='PS',pol_list=None):
         self.param_dic={}
-        self.pin_dic={'a0':0,'b0':1}        
+        self.pol_list=pol_list
+        if pol_list is None:
+            self.pin_dic={'a0':0,'b0':1}
+        else:
+            self.pin_dic={}
+            for i,pol in enumerate(pol_list):
+                self.pin_dic[f'a0_pol{pol}']=2*i
+                self.pin_dic[f'b0_pol{pol}']=2*i+1
+
         self.N=2
         self.pn=param_name
         self.param_dic={}
@@ -208,9 +259,13 @@ class PhaseShifter(model):
 
 
     def create_S(self):
-        self.S=np.zeros((self.N,self.N),complex)
-        self.S[0,1]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
-        self.S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
+        S=np.zeros((self.N,self.N),complex)
+        S[0,1]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
+        S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
+        if self.pol_list is not None:
+            self.S=diag_blocks(len(self.pol_list)*[S])
+        else:
+            self.S=S
         return self.S
 
     def __str__(self):
@@ -335,5 +390,4 @@ class TH_PhaseShifter(model):
         self.S[0,1]=np.exp(1.0j*np.pi*(2.0*n/wl*self.L+self.param_dic[self.pn]))
         self.S[1,0]=np.exp(1.0j*np.pi*(2.0*n/wl*self.L+self.param_dic[self.pn]))
         return self.S
-
 
