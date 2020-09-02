@@ -70,6 +70,12 @@ class model:
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
         return ST
 
+
+    def solve(self,**kargs):
+        self.param_dic.update(kargs)
+        self.create_S()
+        return self
+
     def __str__(self):
         return f'Model object (id={id(self)}) with pins: {list(self.pin_dic)}'
                                        
@@ -273,7 +279,7 @@ class PhaseShifter(model):
 
 class PolRot(model):
     def __init__(self,angle=None,angle_name='angle'):
-        self.pin_dic={'a0_TE':0, 'a0_TM':1, 'b0_TE':2, 'b0_TM':3}        
+        self.pin_dic={'a0_pol0':0, 'a0_pol1':1, 'b0_pol0':2, 'b0_pol1':3}        
         self.N=4
         self.param_dic={}
         if angle is None:
@@ -282,8 +288,8 @@ class PolRot(model):
             self.param_dic={angle_name: 0.0}
         else:
             self.fixed=True
-            c=np.cos(np.pi*angle/180.0)
-            s=np.sin(np.pi*angle/180.0)
+            c=np.cos(np.pi*angle)
+            s=np.sin(np.pi*angle)
             self.S=np.zeros((self.N,self.N),complex)
             self.S[:2,2:]=np.array([[c,s],[-s,c]])
             self.S[2:,:2]=np.array([[c,-s],[s,c]])
@@ -293,8 +299,8 @@ class PolRot(model):
             return self.S
         else:
             angle=self.param_dic[self.angle_name]
-            c=np.cos(np.pi*angle/180.0)
-            s=np.sin(np.pi*angle/180.0)
+            c=np.cos(np.pi*angle)
+            s=np.sin(np.pi*angle)
             S=np.zeros((self.N,self.N),complex)
             S[:2,2:]=np.array([[c,s],[-s,c]])
             S[2:,:2]=np.array([[c,-s],[s,c]])
