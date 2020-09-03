@@ -1,3 +1,18 @@
+#-------------------------------------------
+#
+# GenSol Package
+#
+# Python tool for simulation of abstract photonic circuits
+#
+# @author: Marco Passoni
+#
+#-------------------------------------------
+
+
+"""File containing the model calls and related methods
+"""
+
+
 import numpy as np
 from solver.scattering import S_matrix
 import solver.structure
@@ -6,6 +21,14 @@ from copy import deepcopy
 
 
 def diag_blocks(array_list):
+    """Function building a block diagonal array for list of array
+
+    Args:
+        array_list (list): list of ndarrays. Each array is a 2D square array.
+
+    Returns:
+         ndarray: 2D array with the arrays in array_list as blocks in the diagonal
+    """
     for A in array_list:
         if np.shape(A)[0]!=np.shape(A)[1]: raise ValueError('Matrix is not square')
     Nl=[np.shape(A)[0] for A in array_list]
@@ -18,7 +41,18 @@ def diag_blocks(array_list):
     return M
 
 class model:
+    """Class model
+        It contains the model (definition of the scattering matrix) for each base photonic building block
+        This is the general template for the class, no model is defined here. 
+        Each model is a separate class based on the main one.
+
+    """
     def __init__(self,pin_list=[],param_dic={}):
+        """Creator of the class
+        Args:
+            pin_list (list): list of strings containing the model's pin names 
+            param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
+        """
         self.pin_dic={}
         for i,pin in enumerate(pin_list):
             self.pin_dic[pin]=i
@@ -27,19 +61,54 @@ class model:
         self.param_dic=param_dic
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         return self.S
 
     def get_T(self,pin1,pin2):
+        """Function for returning the energy transmission between two ports
+        If the two ports are the same the returned value has the meaning of relection
+        Args:
+            pin1 (str): Name of input pin
+            pin2 (str): Name of output pin
+        Returns:
+            float: Energy transmission between the ports            
+        """
         return np.abs(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
 
     def get_PH(self,pin1,pin2):
+        """Function for returning the phase of the transmission between two ports
+        If the two ports are the same the returned value has the meaning of relection
+        Args:
+            pin1 (str): Name of input pin
+            pin2 (str): Name of output pin
+        Returns:
+            float: Phase of the transmission between the ports            
+        """
         return np.angle(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])
 
     def get_A(self,pin1,pin2):
+        """Function for returning complex amplitude of the transmission between two ports
+        If the two ports are the same the returned value has the meaning of relection
+        Args:
+            pin1 (str): Name of input pin
+            pin2 (str): Name of output pin
+        Returns:
+            float: Complex amplitude of the transmission between the ports            
+        """
         return self.S[self.pin_dic[pin1],self.pin_dic[pin2]]
 
 
     def get_output(self,input_dic,power=True):
+        """Returns the outputs from all ports of the model given the inputs amplitudes
+        Args:
+            input_dic (dict): dictionary {pin_name (str) : input_amplitude (complex)}. Dictionary containing the complex amplitudes at each input port. Missing port are assumed wiht amplitude 0.0
+            power (bool): If True, returned values are power transmissions. If False, complex amplitudes are instead returned. Default is True
+        Returns:
+            dict: Dictionary containing the outputs in the form {pin_name (str) : output (float or complex)}
+        """
         l1=list(self.pin_dic.keys())
         l2=list(input_dic.keys())
         for pin in l2:
@@ -64,6 +133,16 @@ class model:
         return out_dic
 
     def put(self,pins=None,pint=None,param_mapping={}):
+        """Function for putting a model in a Solver object, and eventually specify connections
+        This function creates a Structure object for the model and place it in the current active Solver
+        If both pins and pint are provided, the connection also is made. 
+        Args:
+            pins (str): pin of model to be connected
+            pint (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to which to connect pins of model
+            param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters
+        Returns:
+            Structure: the Structure instance created from the model
+        """
         ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
@@ -72,16 +151,33 @@ class model:
 
 
     def solve(self,**kargs):
+        """Function for returning the solved model
+        This function is to align the behavior of the Model and Solver class.
+        Args: 
+            kwargs: dictionary of the parameters {param_name (str) : param_value (usually float)}
+        Returns:
+            Model: solved model of self
+        """
         self.param_dic.update(kargs)
         self.create_S()
         return self
 
     def __str__(self):
+        """Formatter function for printing
+        """
         return f'Model object (id={id(self)}) with pins: {list(self.pin_dic)}'
                                        
                 
 class Waveguide(model):
-    def __init__(self,L,wl=1.0,n=1.0):
+    """Model of a simple waveguide
+    """
+    def __init__(self,L,n=1.0,wl=1.0):
+        """Creator
+        Args:
+            L (float) : length of the waveguide
+            n (float or complex): effective index of the waveguide
+            wl (float) : default wavelength of the waveguide
+        """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.S=np.identity(self.N,complex)
@@ -92,6 +188,10 @@ class Waveguide(model):
 
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         wl=self.param_dic['wl']
         n=self.n
         self.S=np.zeros((self.N,self.N),complex)
@@ -100,10 +200,23 @@ class Waveguide(model):
         return self.S
 
     def __str__(self):
+        """Formatter function for printing
+        """
         return f'Model of waveguide of lenght {self.L:.3f} and index {self.n:.3f} (id={id(self)})'  
 
 class GeneralWaveguide(model):
+    """Model of dispersive waveguide
+    """
     def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None):
+        """Creator
+        Args:
+            L (float) : length of the waveguide
+            Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+            wl (float) : default wavelength of the waveguide
+            w  (float) : default width of the waveguide
+            R  (float) : default bending radius of the waveguide
+            pol (int)  : default mode of the waveguide
+        """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.Neff=Neff
@@ -118,6 +231,10 @@ class GeneralWaveguide(model):
             self.param_dic['pol']=pol
         
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         wl=self.param_dic['wl']
         n=self.Neff(**self.param_dic)
         self.S=np.zeros((self.N,self.N),complex)
@@ -126,10 +243,23 @@ class GeneralWaveguide(model):
         return self.S
 
     def __str__(self):
+        """Formatter function for printing
+        """
         return f'Model of waveguide of lenght {self.L:.3} (id={id(self)})'        
 
 class MultiPolWave(model):
+    """Model of multimode dispersive waveguide
+    """
     def __init__(self,L,Neff,pol_list=[0],R=None,w=None, wl=None):
+        """Creator
+        Args:
+            L (float) : length of the waveguide
+            Neff (function) : function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+            pol_list (list)  : list of int cotaining the relevant modes of the waveguide
+            wl (float) : default wavelength of the waveguide
+            w  (float) : default width of the waveguide
+            R  (float) : default bending radius of the waveguide
+        """
         self.pin_dic={}
         self.pol_list=pol_list
         self.mp=len(pol_list)
@@ -146,6 +276,10 @@ class MultiPolWave(model):
         self.param_dic['wl']=wl
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         R=self.param_dic['R']
         w=self.param_dic['w']
         wl=self.param_dic['wl']
@@ -162,7 +296,13 @@ class MultiPolWave(model):
 
 
 class BeamSplitter(model):
+    """Model of 50/50 beam splitter
+    """
     def __init__(self,phase=0.5):
+        """Creator
+        Args:
+            phase (float) : phase shift of the coupled ray (in unit of py)
+        """
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
         self.S=np.zeros((self.N,self.N),complex)
@@ -178,7 +318,14 @@ class BeamSplitter(model):
 
 
 class GeneralBeamSplitter(model):
+    """Model of variable ration beam splitter
+    """
     def __init__(self,ratio=0.5,phase=0.5):
+        """Creator
+        Args:
+            ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
+            phase (float) : phase shift of the coupled ray (in unit of py)
+        """
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
         self.ratio=ratio
@@ -196,11 +343,21 @@ class GeneralBeamSplitter(model):
         self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
 
     def __str__(self):
+        """Formatter function for printing
+        """
         return f'Model of beam-splitter with ratio {self.ratio:.3} (id={id(self)})'
 
 
 class GeneralBeamSplitterMultiPol(model):
+    """Model of multimode variable ration beam splitter
+    """
     def __init__(self,pol_list=[0],ratio=0.5,phase=0.5):
+        """Creator
+        Args:
+            ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
+            phase (float) : phase shift of the coupled ray (in unit of py)
+            pol_list (list)  : list of int cotaining the relevant modes
+        """
         self.n_pol=len(pol_list)
         self.pol_list=pol_list
         #self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}
@@ -224,10 +381,16 @@ class GeneralBeamSplitterMultiPol(model):
         self.S=diag_blocks(self.n_pol*[S])
 
     def __str__(self):
+        """Formatter function for printing
+        """
         return f'Model of beam-splitter ratio {self.ratio:.3}, pol_list={self.pol_list} (id={id(self)})'
     
 class Splitter1x2(model):
+    """Model of 1x2 Splitter
+    """
     def __init__(self):
+        """Creator
+        """
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
         self.N=3
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
@@ -237,7 +400,14 @@ class Splitter1x2(model):
         return f'Model of 1x2 splitter (id={id(self)})'      
 
 class Splitter1x2Gen(model):
+    """Model of 1x2 Splitter with possible reflection between the 2 port side. TODO: verify this model makes sense
+    """
     def __init__(self,cross=0.0,phase=0.0):
+        """Creator
+        Args:
+            cross (float) : ratio of reflection (power ratio)
+            phase (float) : phase shift of the reflected ray (in unit of py)
+        """
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
         self.N=3
         self.param_dic={}
@@ -247,7 +417,14 @@ class Splitter1x2Gen(model):
         self.S=np.array([[0.0,t,t],[t,0.0,c*np.exp(1.0j*p1)],[t,c*np.exp(-1.0j*p1),0.0]],complex)
 
 class PhaseShifter(model):
+    """Model of multimode variable phase shifter
+    """
     def __init__(self,param_name='PS',pol_list=None):
+        """Creator
+        Args:
+            param_name (str) : name of the parameter of the Phase Shifter
+            pol_list (list)  : list of int cotaining the relevant modes
+        """
         self.param_dic={}
         self.pol_list=pol_list
         if pol_list is None:
@@ -265,6 +442,10 @@ class PhaseShifter(model):
 
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         S=np.zeros((self.N,self.N),complex)
         S[0,1]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
         S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
@@ -275,10 +456,20 @@ class PhaseShifter(model):
         return self.S
 
     def __str__(self):
+        """Formatter function for printing
+        """
         return f'Model of variable phase shifter (id={id(self)})'  
 
 class PolRot(model):
+    """Model of a 2 modes polarization rotator
+    """
     def __init__(self,angle=None,angle_name='angle'):
+        """Creator:
+        If angle is provided the rotation is fixed to that value. If not, the rotation is assumed variable and the angle will be fetched form the parameter dictionary.
+        Args:
+            angle (float) : fixed value of the rotation angle (in pi units). Default is None
+            angle_name (str) : name of the angle parameter
+        """
         self.pin_dic={'a0_pol0':0, 'a0_pol1':1, 'b0_pol0':2, 'b0_pol1':3}        
         self.N=4
         self.param_dic={}
@@ -295,6 +486,10 @@ class PolRot(model):
             self.S[2:,:2]=np.array([[c,-s],[s,c]])
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         if self.fixed:
             return self.S
         else:
@@ -307,7 +502,13 @@ class PolRot(model):
             return S
 
 class Attenuator(model):
+    """Model of attenuator
+    """
     def __init__(self,loss=0.0):
+        """Creator
+        Args:
+            loss: value of the loss (in dB)
+        """
         self.param_dic={}
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
@@ -317,7 +518,14 @@ class Attenuator(model):
         self.S[1,0]=10.0**(-0.1*loss)
 
 class Mirror(model):
+    """Model of partilly reflected Mirror
+    """
     def __init__(self,ref=0.5,phase=0.0):
+        """Creator
+        Args:
+            ref (float) : ratio of reflected power
+            phase (float): phase shift of the reflected ray (in pi units)
+        """
         self.pin_dic={'a0':0,'b0':1}        
         self.param_dic={}
         self.N=2
@@ -330,7 +538,13 @@ class Mirror(model):
 
 
 class PerfectMirror(model):
+    """Model of perfect mirror (only one port), 100% reflection
+    """
     def __init__(self,phase=0.0):
+        """Creator
+        Args:
+            phase (float): phase of the reflected ray (in pi unit)
+        """
         self.pin_dic={'a0':0}      
         self.param_dic={}  
         self.N=1
@@ -338,8 +552,16 @@ class PerfectMirror(model):
         p1=np.pi*self.phase
         self.S=np.array([[np.exp(1.0j*p1)]],complex)
 
-class FPR_NxM(model):
+class FPR_NxM(model):   
+    """Model of Free Propagation Region. TODO: check this model makes sense
+    """
     def __init__(self,N,M,phi=0.1):
+        """Creator
+        Args:
+            N (int) : number of input ports
+            M (int) : number of output ports
+            phi (float) : phase difference between adjacent ports
+        """
         self.param_dic={}  
         self.pin_dic={f'a{i}':i for i in range(N)}
         self.pin_dic.update({f'b{i}': N+i for i in range(M)}) 
@@ -351,7 +573,16 @@ class FPR_NxM(model):
         self.S=np.concatenate([np.concatenate([np.zeros((N,N),complex),Sint/np.sqrt(M)],axis=1),np.concatenate([Sint2/np.sqrt(N),np.zeros((M,M),complex)],axis=1)],axis=0)        
 
 class Ring(model):
+    """Model of ring resonator filter
+    """
     def __init__(self,R,n,alpha,t):
+        """Creator
+        Args:
+            R (float) : radius of the ring
+            n (float) : effective index of the waveguide in the ring
+            alpha (float) : one trip loss coefficient (remaingin complex amplitude)
+            t (float) : transission of the beam splitter (complex amplitude)
+        """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.S=np.identity(self.N,complex)
@@ -365,6 +596,10 @@ class Ring(model):
 
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         wl=self.param_dic['wl']
         n=self.n
         t=self.t
@@ -376,7 +611,19 @@ class Ring(model):
         return self.S
 
 class TH_PhaseShifter(model):
+    """Model of thermal phase shifter (dispersive waveguide + phase shifter)
+    """
     def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None, param_name='PS'):
+        """Creator
+        Args:
+            L (float) : length of the waveguide
+            Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+            wl (float) : default wavelength of the waveguide
+            w  (float) : default width of the waveguide
+            R  (float) : default bending radius of the waveguide
+            pol (int)  : default mode of the waveguide
+            param_name (str) : name of the parameter of the Phase Shifter
+        """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
         self.Neff=Neff
@@ -390,6 +637,10 @@ class TH_PhaseShifter(model):
         self.param_dic[param_name]=0.0
 
     def create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
         wl=self.param_dic['wl']
         n=self.Neff(**self.param_dic)
         self.S=np.zeros((self.N,self.N),complex)

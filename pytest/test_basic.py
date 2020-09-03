@@ -33,8 +33,8 @@ def test_single_composition():
                 assert T.real == pytest.approx(0.0, 1e-8)
                 assert T.imag == pytest.approx(0.0, 1e-8)
             else:
-                assert T.real == pytest.approx(np.cos(2.0*np.pi/1.55*0.05), 1e-8)
-                assert T.imag == pytest.approx(np.sin(2.0*np.pi/1.55*0.05), 1e-8)
+                assert T.real == pytest.approx(np.cos(2.0*np.pi/1.55*2.5*0.05), 1e-8)
+                assert T.imag == pytest.approx(np.sin(2.0*np.pi/1.55*2.5*0.05), 1e-8)
 
 
 def test_composition():
@@ -55,5 +55,5 @@ def test_composition():
                 assert T.real == pytest.approx(0.0, 1e-8)
                 assert T.imag == pytest.approx(0.0, 1e-8)
             else:
-                assert T.real == pytest.approx(np.cos(2.0*np.pi/1.55*0.05*(j+1)), 1e-8)
-                assert T.imag == pytest.approx(np.sin(2.0*np.pi/1.55*0.05*(j+1)), 1e-8)
+                assert T.real == pytest.approx(np.cos(2.0*np.pi/1.55*2.5*0.05*(j+1)), 1e-8)
+                assert T.imag == pytest.approx(np.sin(2.0*np.pi/1.55*2.5*0.05*(j+1)), 1e-8)
