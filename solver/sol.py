@@ -1,3 +1,13 @@
+#-------------------------------------------
+#
+# GenSol Package
+#
+# Python tool for simulation of abstract photonic circuits
+#
+# @author: Marco Passoni
+#
+#------------------------------------------
+
 import numpy as np
 from copy import copy
 from copy import deepcopy
@@ -7,13 +17,16 @@ from solver import sol_list
 
         
 class Solver:
-    def __init__(self,structures=[],connections={},param_dic={},default_params={},name=None):
-        self.structures=[]
-        self.connections={}
+    """Class Solver
+    This class defines the simulations. It contains all the structures of the optical componets, and has the methods for running the simulation and accessing the results.
+    """
+    def __init__(self,structures=None, connections=None, param_dic=None, default_params=None, name=None):
+        self.structures=structures if structures is not None else []
+        self.connections=connections if connections is not None else {}
         self.connections_list=[]
-        self.param_dic={}
+        self.param_dic=param_dic if param_dic is not None else {}
         self.pin_mapping={}
-        self.default_params=default_params
+        self.default_params=default_params if default_params is not None else {}
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
@@ -28,11 +41,11 @@ class Solver:
         self.name=name
 
     def __enter__(self):
-        self.structures=[]
-        self.connections={}
-        self.connections_list=[]
-        self.param_dic={}
-        self.pin_mapping={}
+        #self.structures=[]
+        #self.connections={}
+        #self.connections_list=[]
+        #self.param_dic={}
+        #self.pin_mapping={}
         sol_list.append(self)
         return self
 
