@@ -18,6 +18,7 @@ from solver.scattering import S_matrix
 import solver.structure
 from solver import sol_list
 from copy import deepcopy
+from copy import copy
 
 
 def diag_blocks(array_list):
@@ -49,17 +50,18 @@ class model:
         Each model is a separate class based on the main one.
 
     """
-    def __init__(self,pin_list=[],param_dic={}):
+    def __init__(self,pin_list=[],param_dic={},Smatrix=None):
         """Creator of the class
         Args:
             pin_list (list): list of strings containing the model's pin names 
             param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
+            Smatrix (ndarray) : Fixed S_matrix of the model
         """
         self.pin_dic={}
         for i,pin in enumerate(pin_list):
             self.pin_dic[pin]=i
         self.N=len(pin_list)
-        self.S=np.identity(self.N,complex)
+        self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
         self.param_dic=param_dic
 
     def create_S(self):
@@ -197,6 +199,13 @@ class model:
         for pin,n in self.pin_dic.items():
             print(f'{pin:5s}:{n:5}')
         print('')
+
+    def pin_mapping(self,pin_mapping):
+        for pin in copy(self.pin_dic):
+            if pin in pin_mapping:
+                n=self.pin_dic.pop(pin)
+                self.pin_dic[pin_mapping[pin]]=n
+        return self
 
     def __str__(self):
         """Formatter function for printing
@@ -550,8 +559,8 @@ class Attenuator(model):
         self.N=2
         self.loss=loss
         self.S=np.zeros((self.N,self.N),complex)
-        self.S[0,1]=10.0**(-0.1*loss)
-        self.S[1,0]=10.0**(-0.1*loss)
+        self.S[0,1]=10.0**(-0.05*loss)
+        self.S[1,0]=10.0**(-0.05*loss)
 
 class Mirror(model):
     """Model of partilly reflected Mirror
