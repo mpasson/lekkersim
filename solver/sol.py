@@ -251,6 +251,12 @@ class Solver:
         """
         help.print(self)
 
+    def maps_all_pins(self):
+        for st,pin in self.free_pins:
+            if pin in self.pin_mapping: raise Exception('Pins double naming present, cannot map authomatically')
+            self.pin_mapping[pin]=(st,pin)
+        
+
 
 class Pin():
     """Helper class for more user friendly pin mapping (same as Nazca sintax
@@ -292,6 +298,8 @@ def set_default_params(dic):
     """
     sol_list[-1].default_params=dic
 
+def raise_pins():
+    sol_list[-1].maps_all_pins()
 
 class helper():
     """Helper class for some operation on solvers
