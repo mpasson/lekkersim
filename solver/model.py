@@ -40,6 +40,8 @@ def diag_blocks(array_list):
         m+=n
     return M
 
+
+
 class model:
     """Class model
         It contains the model (definition of the scattering matrix) for each base photonic building block
@@ -100,6 +102,32 @@ class model:
         """
         return self.S[self.pin_dic[pin1],self.pin_dic[pin2]]
 
+    def expand_S(self):
+        """Function to be substituted to create_S when expand_pol is invoked
+        Returns:
+            ndarray: Scattering matrix
+        """
+        S=self.__class__.create_S(self)
+        return diag_blocks(self.np*[S])
+
+    def expand_pol(self,pol_list=[0]):
+        """This function expands the model by adding additional modes based on pol_list.
+        For each pin a number of pins equal the the length of pol_list will be created the name will be '{pinname}_pol{pol}' for pol in pol_list
+        Args:
+            pol_list (list) : list of integers wiht the indexing of modes to be considered. Default is [0]
+        Returns:
+            Model : new model with expanded polarization 
+        """
+        self.np=len(pol_list)
+        self.pol_list=pol_list
+        new_pin_dic={}
+        for i,pol in enumerate(self.pol_list):
+            for name,n in self.pin_dic.items():
+                new_pin_dic[f'{name}_pol{pol}']=i*self.N+n
+        self.N=self.N*self.np
+        self.pin_dic=new_pin_dic
+        self.create_S=self.expand_S
+        return self
 
     def get_output(self,input_dic,power=True):
         """Returns the outputs from all ports of the model given the inputs amplitudes
@@ -161,6 +189,14 @@ class model:
         self.param_dic.update(kargs)
         self.create_S()
         return self
+
+    def show_free_pins(self):
+        """Funciton for printing pins of model
+        """
+        print(f'Pins of model {self} (id={id(self)})')
+        for pin,n in self.pin_dic.items():
+            print(f'{pin:5s}:{n:5}')
+        print('')
 
     def __str__(self):
         """Formatter function for printing
