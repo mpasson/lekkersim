@@ -481,10 +481,43 @@ class PhaseShifter(model):
         self.S=S
         return self.S
 
+class PushPullPhaseShifter(model):
+    """Model of multimode variable phase shifter
+    """
+    def __init__(self,param_name='PS'):
+        """Creator
+        Args:
+            param_name (str) : name of the parameter of the Phase Shifter
+            pol_list (list)  : list of int cotaining the relevant modes
+        """
+        self.param_dic={}
+        self.pin_dic={'a0':0,'b0':1,'a1':2,'b1': 3}
+        self.N=4
+        self.pn=param_name
+        self.param_dic={}
+        self.param_dic[param_name]=0.0    
+        self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
+
+
+    def _create_S(self):
+        """Function for returning the scattering matrix of the model
+        Returns:
+            ndarray: Scattering matrix of the model
+        """
+        S1=np.zeros((2,2),complex)
+        S1[0,1]=np.exp(0.5j*np.pi*self.param_dic[self.pn])
+        S1[1,0]=np.exp(0.5j*np.pi*self.param_dic[self.pn])
+        S2=np.zeros((2,2),complex)
+        S2[0,1]=np.exp(-0.5j*np.pi*self.param_dic[self.pn])
+        S2[1,0]=np.exp(-0.5j*np.pi*self.param_dic[self.pn])
+        self.S=diag_blocks([S1,S2])
+        return self.S
+
     def __str__(self):
         """Formatter function for printing
         """
-        return f'Model of variable phase shifter (id={id(self)})'  
+        return f'Model of variable Push-Pull phase shifter (id={id(self)})'  
 
 class PolRot(model):
     """Model of a 2 modes polarization rotator
