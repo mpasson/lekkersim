@@ -42,7 +42,6 @@ def diag_blocks(array_list):
     return M
 
 
-
 class model:
     """Class model
         It contains the model (definition of the scattering matrix) for each base photonic building block
@@ -64,8 +63,17 @@ class model:
         self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
         self.param_dic=param_dic
         self.default_params=deepcopy(param_dic)
+        self.create_S=self._create_S
 
-    def create_S(self):
+    def _expand_S(self):
+        self.N=self.N//self.np
+        S=self._create_S()
+        self.N=self.N*self.np
+        #self.S= diag_blocks(self.np*[S])
+        return diag_blocks(self.np*[S])
+
+
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -105,13 +113,6 @@ class model:
         """
         return self.S[self.pin_dic[pin1],self.pin_dic[pin2]]
 
-    def expand_S(self):
-        """Function to be substituted to create_S when expand_pol is invoked
-        Returns:
-            ndarray: Scattering matrix
-        """
-        S=self.__class__.create_S(self)
-        return diag_blocks(self.np*[S])
 
     def expand_pol(self,pol_list=[0]):
         """This function expands the model by adding additional modes based on pol_list.
@@ -127,9 +128,9 @@ class model:
         for i,pol in enumerate(self.pol_list):
             for name,n in self.pin_dic.items():
                 new_pin_dic[f'{name}_pol{pol}']=i*self.N+n
-        self.N=self.N*self.np
         self.pin_dic=new_pin_dic
-        self.create_S=self.expand_S
+        self.create_S=self._expand_S
+        self.N=self.N*self.np
         return self
 
     def get_output(self,input_dic,power=True):
@@ -241,9 +242,10 @@ class Waveguide(model):
         self.param_dic['wl']=wl
         self.n=n
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
 
-    def create_S(self):
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -286,8 +288,9 @@ class GeneralWaveguide(model):
         else:
             self.param_dic['pol']=pol
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
         
-    def create_S(self):
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -332,8 +335,9 @@ class MultiPolWave(model):
         self.param_dic['w']=w
         self.param_dic['wl']=wl
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
-    def create_S(self):
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -373,6 +377,7 @@ class BeamSplitter(model):
         self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[-1.0,np.exp(-1.0j*p1)]])
         self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[np.exp(-1.0j*p1),1.0],[-1.0,np.exp(1.0j*p1)]])
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
 
 
@@ -401,50 +406,13 @@ class GeneralBeamSplitter(model):
         #self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
         self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]])
         self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
+        self.create_S=self._create_S
 
     def __str__(self):
         """Formatter function for printing
         """
         return f'Model of beam-splitter with ratio {self.ratio:.3} (id={id(self)})'
 
-
-class GeneralBeamSplitterMultiPol(model):
-    """Model of multimode variable ration beam splitter
-    """
-    def __init__(self,pol_list=[0],ratio=0.5,phase=0.5):
-        """Creator
-        Args:
-            ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
-            phase (float) : phase shift of the coupled ray (in unit of py)
-            pol_list (list)  : list of int cotaining the relevant modes
-        """
-        self.n_pol=len(pol_list)
-        self.pol_list=pol_list
-        #self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}
-        self.pin_dic={}
-        for i,pol in enumerate(pol_list):
-            self.pin_dic[f'a0_pol{pol}']=4*i
-            self.pin_dic[f'a1_pol{pol}']=4*i+1
-            self.pin_dic[f'b0_pol{pol}']=4*i+2
-            self.pin_dic[f'b1_pol{pol}']=4*i+3
-
-        self.N=4*self.n_pol
-        self.ratio=ratio
-        self.phase=phase
-        self.param_dic={}
-        self.default_params=deepcopy(self.param_dic)
-        p1=np.pi*self.phase
-        c=np.sqrt(self.ratio)
-        t=np.sqrt(1.0-self.ratio)
-        S=np.zeros((4,4),complex)
-        S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]])
-        S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
-        self.S=diag_blocks(self.n_pol*[S])
-
-    def __str__(self):
-        """Formatter function for printing
-        """
-        return f'Model of beam-splitter ratio {self.ratio:.3}, pol_list={self.pol_list} (id={id(self)})'
     
 class Splitter1x2(model):
     """Model of 1x2 Splitter
@@ -457,6 +425,8 @@ class Splitter1x2(model):
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
         self.param_dic={}
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
+
 
     def __str__(self):
         return f'Model of 1x2 splitter (id={id(self)})'      
@@ -478,34 +448,29 @@ class Splitter1x2Gen(model):
         t=np.sqrt(0.5-cross)
         p1=np.pi*phase
         self.S=np.array([[0.0,t,t],[t,0.0,c*np.exp(1.0j*p1)],[t,c*np.exp(-1.0j*p1),0.0]],complex)
+        self.create_S=self._create_S
+
 
 class PhaseShifter(model):
     """Model of multimode variable phase shifter
     """
-    def __init__(self,param_name='PS',pol_list=None):
+    def __init__(self,param_name='PS'):
         """Creator
         Args:
             param_name (str) : name of the parameter of the Phase Shifter
             pol_list (list)  : list of int cotaining the relevant modes
         """
         self.param_dic={}
-        self.pol_list=pol_list
-        if pol_list is None:
-            self.pin_dic={'a0':0,'b0':1}
-        else:
-            self.pin_dic={}
-            for i,pol in enumerate(pol_list):
-                self.pin_dic[f'a0_pol{pol}']=2*i
-                self.pin_dic[f'b0_pol{pol}']=2*i+1
-
+        self.pin_dic={'a0':0,'b0':1}
         self.N=2
         self.pn=param_name
         self.param_dic={}
         self.param_dic[param_name]=0.0    
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
 
-    def create_S(self):
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -513,10 +478,7 @@ class PhaseShifter(model):
         S=np.zeros((self.N,self.N),complex)
         S[0,1]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
         S[1,0]=np.exp(1.0j*np.pi*self.param_dic[self.pn])
-        if self.pol_list is not None:
-            self.S=diag_blocks(len(self.pol_list)*[S])
-        else:
-            self.S=S
+        self.S=S
         return self.S
 
     def __str__(self):
@@ -549,8 +511,10 @@ class PolRot(model):
             self.S[:2,2:]=np.array([[c,s],[-s,c]])
             self.S[2:,:2]=np.array([[c,-s],[s,c]])
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
-    def create_S(self):
+
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -582,6 +546,8 @@ class Attenuator(model):
         self.S[0,1]=10.0**(-0.05*loss)
         self.S[1,0]=10.0**(-0.05*loss)
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
+
 
 class Mirror(model):
     """Model of partilly reflected Mirror
@@ -602,6 +568,8 @@ class Mirror(model):
         c=np.sqrt(1.0-self.ref)
         p1=np.pi*self.phase
         self.S=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]],complex)
+        self.create_S=self._create_S
+
 
 
 class PerfectMirror(model):
@@ -619,6 +587,8 @@ class PerfectMirror(model):
         self.phase=phase
         p1=np.pi*self.phase
         self.S=np.array([[np.exp(1.0j*p1)]],complex)
+        self.create_S=self._create_S
+
 
 class FPR_NxM(model):   
     """Model of Free Propagation Region. TODO: check this model makes sense
@@ -639,7 +609,9 @@ class FPR_NxM(model):
             for j in range(M):     
                 Sint[i,j]=np.exp(-1.0j*np.pi*phi*(i-0.5*N+0.5)*(j-0.5*M+0.5))
         Sint2=np.conj(np.transpose(Sint))
-        self.S=np.concatenate([np.concatenate([np.zeros((N,N),complex),Sint/np.sqrt(M)],axis=1),np.concatenate([Sint2/np.sqrt(N),np.zeros((M,M),complex)],axis=1)],axis=0)        
+        self.S=np.concatenate([np.concatenate([np.zeros((N,N),complex),Sint/np.sqrt(M)],axis=1),np.concatenate([Sint2/np.sqrt(N),np.zeros((M,M),complex)],axis=1)],axis=0)      
+        self.create_S=self._create_S
+  
 
 class Ring(model):
     """Model of ring resonator filter
@@ -663,9 +635,11 @@ class Ring(model):
         self.param_dic={}
         self.param_dic['wl']=None
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
 
-    def create_S(self):
+
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -706,8 +680,10 @@ class TH_PhaseShifter(model):
         self.param_dic['pol']=pol
         self.param_dic[param_name]=0.0
         self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
 
-    def create_S(self):
+
+    def _create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model

@@ -20,7 +20,7 @@ def two_pol():
     demo.xsShallow.set_Neff(func)
     demo.xsShallow.pol_list=[0,1]
     MMI=demo.mmi2x2_sh()
-    MMI.model_info['model']=sv.GeneralBeamSplitterMultiPol(pol_list=[0,1],ratio=0.5,phase=0.5)
+    MMI.model_info['model']=sv.GeneralBeamSplitter(ratio=0.5,phase=0.5).expand_pol([0,1])
     return demo.xsShallow,MMI
 
 
@@ -237,7 +237,7 @@ def test_twopol_MZM(two_pol):
         
         with sv.Solver(name='Multipol_ps') as SOL:
             WGm=sv.MultiPolWave(90.0,xsShallow.Neff,pol_list=[0,1])
-            PSm=sv.PhaseShifter(pol_list=[0,1])
+            PSm=sv.PhaseShifter().expand_pol(pol_list=[0,1])
             wg=WGm.put()
             ps=PSm.put()
 
