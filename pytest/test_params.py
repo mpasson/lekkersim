@@ -36,6 +36,107 @@ def test_single():
     assert S3.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
 
 
+def test_double():
+    ps=sv.PhaseShifter()
+
+    with sv.Solver() as S1:
+        ps1=ps.put()
+        ps2=ps.put()
+        
+        sv.Pin('a0').put(ps1.pin['a0'])
+        sv.Pin('b0').put(ps1.pin['b0'])
+        sv.Pin('a1').put(ps2.pin['a0'])
+        sv.Pin('b1').put(ps2.pin['b0'])
+
+    M=S1.solve()
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+    M=S1.solve(PS=0.5)
+    assert M.get_PH('a0','b0') == pytest.approx(0.5*np.pi, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.5*np.pi, 1e-8)
+
+def test_double2():
+    ps=sv.PhaseShifter()
+
+    with sv.Solver() as S1:
+        ps1=ps.put()
+        ps2=ps.put(param_mapping={'PS':'PS2'})
+        
+        sv.Pin('a0').put(ps1.pin['a0'])
+        sv.Pin('b0').put(ps1.pin['b0'])
+        sv.Pin('a1').put(ps2.pin['a0'])
+        sv.Pin('b1').put(ps2.pin['b0'])
+
+    M=S1.solve()
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+    M=S1.solve(PS=0.5)
+    assert M.get_PH('a0','b0') == pytest.approx(0.5*np.pi, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+    M=S1.solve(PS2=0.5)
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.5*np.pi, 1e-8)
+
+    M=S1.solve()
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+    with sv.Solver() as S2:
+        S1.put()
+        sv.raise_pins()
+
+    M=S2.solve()
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+    M=S2.solve(PS=0.5)
+    assert M.get_PH('a0','b0') == pytest.approx(0.5*np.pi, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+    M=S2.solve(PS2=0.5)
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.5*np.pi, 1e-8)
+
+    M=S2.solve()
+    assert M.get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert M.get_PH('a1','b1') == pytest.approx(0.0, 1e-8)
+
+
+
+def test_complex():
+    def func(wl,R,pol,w=1.0):
+        return 3.2
+
+    with sv.Solver(name='EOBiasSection') as ActivePhaseShifter:
+        wg = sv.MultiPolWave(500.0,func,pol_list=[0,1]).put()
+        ps = sv.PhaseShifter().expand_pol([0,1]).put()
+        
+        sv.connect(wg.pin['b0_pol0'],ps.pin['a0_pol0'])
+        sv.connect(wg.pin['b0_pol1'],ps.pin['a0_pol1'])
+        
+        sv.Pin('o1_pol0').put(wg.pin['a0_pol0'])
+        sv.Pin('o1_pol1').put(wg.pin['a0_pol1'])
+        sv.Pin('o2_pol0').put(ps.pin['b0_pol0'])
+        sv.Pin('o2_pol1').put(ps.pin['b0_pol1'])
+
+        
+    with sv.Solver(name='EOBiasTwinSection') as TwinPhaseShifter:
+        a1=ActivePhaseShifter.put(param_mapping={'PS' : 'TOP'})
+        a2=ActivePhaseShifter.put(param_mapping={'PS' : 'BOTTOM'})
+        
+        for l in [1,2]:
+            for pol in [0,1]:
+                sv.Pin(f'o{l}_pol{pol}').put(a1.pin[f'o{l}_pol{pol}'])
+                sv.Pin(f'o{l+2}_pol{pol}').put(a2.pin[f'o{l}_pol{pol}'])
+                
+    ActivePhaseShifter.solve(wl=1.55)
+    TwinPhaseShifter.solve(wl=1.55)
+    assert True
+
+
 def test_params():
     with sv.Solver(name='MZM_BB') as MZM_BB_sol:
         BM=sv.GeneralBeamSplitter()

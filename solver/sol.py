@@ -183,16 +183,17 @@ class Solver:
         Returs:
             Model : model containing the scattering matrix
         """
+        print(f'Calling solve of {self}')
         self.param_dic.update(self.default_params)
         self.param_dic.update(kwargs)
         for st in self.structures:
             st.update_params(self.param_dic)
         st_list=copy(self.structures)
-        for st in st_list:
-            if len(st.connected_to)==0:
-                st.createS()
-        #if len(st_list)==1:
-        #    st_list[0].createS()
+        #for st in st_list:
+        #    if len(st.connected_to)==0:
+        #        st.createS()
+        if len(st_list)==1:
+            st_list[0].createS()
         while len(st_list)!=1:
             source_st=st_list[0].gone_to
             if len(st_list[0].connected_to)==0:
@@ -256,6 +257,14 @@ class Solver:
         for st,pin in self.free_pins:
             if pin in self.pin_mapping: raise Exception('Pins double naming present, cannot map authomatically')
             self.pin_mapping[pin]=(st,pin)
+
+    def update_params(self,update_dic):
+        """Update the parameters of model, setting defaults when value is not provides
+        Args:
+            update_dic (dict) : dictionary of parameters in the from {param_name (str) : param_value (usually float)}
+        """
+        self.param_dic.update(self.default_params)
+        self.param_dic.update(update_dic)
         
 
 
