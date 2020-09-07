@@ -70,7 +70,7 @@ class Structure:
                 update_dic.pop(oldname)    
             if newname in param_dic:
                 update_dic[oldname]=update_dic.pop(newname)                
-        print(self,param_dic,self.param_mapping,update_dic)
+        #print(self,param_dic,self.param_mapping,update_dic)
         if self.model is not None:
             self.model.update_params(update_dic)
         if self.solver is not None:

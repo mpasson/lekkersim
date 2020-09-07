@@ -183,7 +183,7 @@ class Solver:
         Returs:
             Model : model containing the scattering matrix
         """
-        print(f'Calling solve of {self}')
+        #print(f'Calling solve of {self}')
         self.param_dic.update(self.default_params)
         self.param_dic.update(kwargs)
         for st in self.structures:
