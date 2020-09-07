@@ -63,6 +63,7 @@ class model:
         self.N=len(pin_list)
         self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
         self.param_dic=param_dic
+        self.default_params=deepcopy(param_dic)
 
     def create_S(self):
         """Function for returning the scattering matrix of the model
@@ -188,6 +189,7 @@ class model:
         Returns:
             Model: solved model of self
         """
+        self.param_dic.update(self.default_params)
         self.param_dic.update(kargs)
         self.create_S()
         return self
@@ -206,6 +208,14 @@ class model:
                 n=self.pin_dic.pop(pin)
                 self.pin_dic[pin_mapping[pin]]=n
         return self
+
+    def update_params(self,update_dic):
+        """Update the parameters of model, setting defaults when value is not provides
+        Args:
+            update_dic (dict) : dictionary of parameters in the from {param_name (str) : param_value (usually float)}
+        """
+        self.param_dic.update(self.default_params)
+        self.param_dic.update(update_dic)
 
     def __str__(self):
         """Formatter function for printing
@@ -230,6 +240,7 @@ class Waveguide(model):
         self.param_dic={}
         self.param_dic['wl']=wl
         self.n=n
+        self.default_params=deepcopy(self.param_dic)
 
 
     def create_S(self):
@@ -274,6 +285,7 @@ class GeneralWaveguide(model):
             self.param_dic['pol']=0
         else:
             self.param_dic['pol']=pol
+        self.default_params=deepcopy(self.param_dic)
         
     def create_S(self):
         """Function for returning the scattering matrix of the model
@@ -319,6 +331,7 @@ class MultiPolWave(model):
         self.param_dic['R']=R
         self.param_dic['w']=w
         self.param_dic['wl']=wl
+        self.default_params=deepcopy(self.param_dic)
 
     def create_S(self):
         """Function for returning the scattering matrix of the model
@@ -359,6 +372,7 @@ class BeamSplitter(model):
         #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(-1.0j*p1),1.0]])
         self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[-1.0,np.exp(-1.0j*p1)]])
         self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[np.exp(-1.0j*p1),1.0],[-1.0,np.exp(1.0j*p1)]])
+        self.default_params=deepcopy(self.param_dic)
 
 
 
@@ -380,6 +394,7 @@ class GeneralBeamSplitter(model):
         t=np.sqrt(1.0-self.ratio)
         self.S=np.zeros((self.N,self.N),complex)
         self.param_dic={}
+        self.default_params=deepcopy(self.param_dic)
         #self.S[:2,2:]=np.array([[t,c],[c,-t]])
         #self.S[2:,:2]=np.array([[t,c],[c,-t]])
         #self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
@@ -417,6 +432,7 @@ class GeneralBeamSplitterMultiPol(model):
         self.ratio=ratio
         self.phase=phase
         self.param_dic={}
+        self.default_params=deepcopy(self.param_dic)
         p1=np.pi*self.phase
         c=np.sqrt(self.ratio)
         t=np.sqrt(1.0-self.ratio)
@@ -440,6 +456,7 @@ class Splitter1x2(model):
         self.N=3
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
         self.param_dic={}
+        self.default_params=deepcopy(self.param_dic)
 
     def __str__(self):
         return f'Model of 1x2 splitter (id={id(self)})'      
@@ -456,6 +473,7 @@ class Splitter1x2Gen(model):
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
         self.N=3
         self.param_dic={}
+        self.default_params=deepcopy(self.param_dic)
         c=np.sqrt(cross)
         t=np.sqrt(0.5-cross)
         p1=np.pi*phase
@@ -484,6 +502,7 @@ class PhaseShifter(model):
         self.pn=param_name
         self.param_dic={}
         self.param_dic[param_name]=0.0    
+        self.default_params=deepcopy(self.param_dic)
 
 
     def create_S(self):
@@ -529,6 +548,7 @@ class PolRot(model):
             self.S=np.zeros((self.N,self.N),complex)
             self.S[:2,2:]=np.array([[c,s],[-s,c]])
             self.S[2:,:2]=np.array([[c,-s],[s,c]])
+        self.default_params=deepcopy(self.param_dic)
 
     def create_S(self):
         """Function for returning the scattering matrix of the model
@@ -561,6 +581,7 @@ class Attenuator(model):
         self.S=np.zeros((self.N,self.N),complex)
         self.S[0,1]=10.0**(-0.05*loss)
         self.S[1,0]=10.0**(-0.05*loss)
+        self.default_params=deepcopy(self.param_dic)
 
 class Mirror(model):
     """Model of partilly reflected Mirror
@@ -573,6 +594,7 @@ class Mirror(model):
         """
         self.pin_dic={'a0':0,'b0':1}        
         self.param_dic={}
+        self.default_params=deepcopy(self.param_dic)
         self.N=2
         self.ref=ref
         self.phase=phase
@@ -592,6 +614,7 @@ class PerfectMirror(model):
         """
         self.pin_dic={'a0':0}      
         self.param_dic={}  
+        self.default_params=deepcopy(self.param_dic)
         self.N=1
         self.phase=phase
         p1=np.pi*self.phase
@@ -608,6 +631,7 @@ class FPR_NxM(model):
             phi (float) : phase difference between adjacent ports
         """
         self.param_dic={}  
+        self.default_params=deepcopy(self.param_dic)
         self.pin_dic={f'a{i}':i for i in range(N)}
         self.pin_dic.update({f'b{i}': N+i for i in range(M)}) 
         Sint=np.zeros((N,M),complex)
@@ -638,6 +662,7 @@ class Ring(model):
 
         self.param_dic={}
         self.param_dic['wl']=None
+        self.default_params=deepcopy(self.param_dic)
 
 
     def create_S(self):
@@ -680,6 +705,7 @@ class TH_PhaseShifter(model):
         self.param_dic['wl']=wl
         self.param_dic['pol']=pol
         self.param_dic[param_name]=0.0
+        self.default_params=deepcopy(self.param_dic)
 
     def create_S(self):
         """Function for returning the scattering matrix of the model

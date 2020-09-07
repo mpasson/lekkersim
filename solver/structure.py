@@ -64,16 +64,17 @@ class Structure:
         Args:
             param_dic (dictionary): dcitionary {'param_name':param_value} containing value of the parameters to be updated
         """
-        #print(self,param_dic,self.param_mapping)
         update_dic=deepcopy(param_dic)
         for newname,oldname in self.param_mapping.items():
+            if oldname in update_dic:
+                update_dic.pop(oldname)    
             if newname in param_dic:
-                update_dic[oldname]=update_dic.pop(newname)
+                update_dic[oldname]=update_dic.pop(newname)                
+        #print(self,param_dic,self.param_mapping,update_dic)
         if self.model is not None:
-            self.model.param_dic.update(update_dic)
+            self.model.update_params(update_dic)
         if self.solver is not None:
             self.solver.param_dic.update(update_dic)
-            #self.solver.update_params(update_dic)
 
     
                 
@@ -107,6 +108,7 @@ class Structure:
         """Reset the mapping that keeps track of the solving
         """
         self.gone_to=self
+        self.param_dic={}
 
 
     def add_pin(self,pin):

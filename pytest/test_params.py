@@ -5,6 +5,37 @@ spec = importlib.util.spec_from_file_location("solver", "../solver/__init__.py")
 sv = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(sv)
 
+
+def test_single():
+    ps=sv.PhaseShifter()
+
+    with sv.Solver() as S1:
+        ps.put()
+        sv.raise_pins()
+
+    with sv.Solver() as S2:
+        ps.put(param_mapping={'PS':'PS2'})
+        sv.raise_pins()
+
+    with sv.Solver() as S3:
+        S1.put(param_mapping={'PS':'PS2'})
+        sv.raise_pins()
+
+    assert S1.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert S1.solve(PS=0.5).get_PH('a0','b0') == pytest.approx(0.5*np.pi, 1e-8)
+    assert S1.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+
+    assert S2.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert S2.solve(PS=0.5).get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert S2.solve(PS2=0.5).get_PH('a0','b0') == pytest.approx(0.5*np.pi, 1e-8)
+    assert S2.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+
+    assert S3.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert S3.solve(PS=0.5).get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+    assert S3.solve(PS2=0.5).get_PH('a0','b0') == pytest.approx(0.5*np.pi, 1e-8)
+    assert S3.solve().get_PH('a0','b0') == pytest.approx(0.0, 1e-8)
+
+
 def test_params():
     with sv.Solver(name='MZM_BB') as MZM_BB_sol:
         BM=sv.GeneralBeamSplitter()

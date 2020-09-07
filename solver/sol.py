@@ -217,6 +217,7 @@ class Solver:
         self.Final=st_list[0]
         for st in self.structures:
             st.reset()
+        self.param_dic={}
         mod=st_list[0].get_model(self.pin_mapping)
         return mod
 
@@ -299,7 +300,19 @@ def set_default_params(dic):
     sol_list[-1].default_params=dic
 
 def raise_pins():
+    """Raise all pins in the solver. It reuiqres unique pin naming, otherwaise an error is raised 
+    Args:
+        dic (dict): dictionary of the default parameters {param_name (str) : default_value (usually float)}
+    """
     sol_list[-1].maps_all_pins()
+
+def solve(**kwargs):
+    """Solve active solver and returns the model
+    Returns:
+        Model: Model of the active solver. 
+    """
+    return sol_list[-1].solve(**kwargs)     
+
 
 class helper():
     """Helper class for some operation on solvers
