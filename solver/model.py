@@ -19,6 +19,8 @@ import solver.structure
 from solver import sol_list
 from copy import deepcopy
 from copy import copy
+import pandas as pd
+import warnings
 
 
 def diag_blocks(array_list):
@@ -49,17 +51,15 @@ class model:
         Each model is a separate class based on the main one.
 
     """
-    def __init__(self,pin_list=[],param_dic={},Smatrix=None):
+    def __init__(self,pin_dic={},param_dic={},Smatrix=None):
         """Creator of the class
         Args:
             pin_list (list): list of strings containing the model's pin names 
             param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
             Smatrix (ndarray) : Fixed S_matrix of the model
         """
-        self.pin_dic={}
-        for i,pin in enumerate(pin_list):
-            self.pin_dic[pin]=i
-        self.N=len(pin_list)
+        self.pin_dic=pin_dic
+        self.N=len(pin_dic)
         self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
         self.param_dic=param_dic
         self.default_params=deepcopy(param_dic)
@@ -89,7 +89,8 @@ class model:
         Returns:
             float: Energy transmission between the ports            
         """
-        return np.abs(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
+        if np.shape(self.S)[0] > 1: warnings.warn('You are using get_T on a parametric solve. First value is returned, nut get_data should be used instead')
+        return np.abs(self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
 
     def get_PH(self,pin1,pin2):
         """Function for returning the phase of the transmission between two ports
@@ -100,7 +101,8 @@ class model:
         Returns:
             float: Phase of the transmission between the ports            
         """
-        return np.angle(self.S[self.pin_dic[pin1],self.pin_dic[pin2]])
+        if np.shape(self.S)[0] > 1: warnings.warn('You are using get_PH on a parametric solve. First value is returned, nut get_data should be used instead')
+        return np.angle(self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]])
 
     def get_A(self,pin1,pin2):
         """Function for returning complex amplitude of the transmission between two ports
@@ -111,7 +113,8 @@ class model:
         Returns:
             float: Complex amplitude of the transmission between the ports            
         """
-        return self.S[self.pin_dic[pin1],self.pin_dic[pin2]]
+        if np.shape(self.S)[0] > 1: warnings.warn('You are using get_A on a parametric solve. First value is returned, nut get_data should be used instead')
+        return self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]]
 
 
     def expand_pol(self,pol_list=[0]):
@@ -155,7 +158,7 @@ class model:
             u[i]=input_dic[pin]
         #for pin,i in self.pin_dic.items():
         #    print(pin,i,u[i])
-        d=np.dot(self.S,u)
+        d=np.dot(self.S[0,:,:],u)
         out_dic={}
         for pin,i in self.pin_dic.items():
             if power:
@@ -191,9 +194,22 @@ class model:
             Model: solved model of self
         """
         self.param_dic.update(self.default_params)
-        self.param_dic.update(kargs)
-        self.create_S()
-        return self
+        ns=1
+        for name in kargs:
+            kargs[name]=np.reshape(kargs[name],-1)
+            if len(kargs[name])==1: continue
+            if ns==1:
+                ns=len(kargs[name])
+            else:
+                if ns!=len(kargs[name]): raise Exception('Different lengths between parameter arrays')
+        up_dic={}
+        S_list=[]
+        for i in range(ns):
+            for name,values in kargs.items():
+                up_dic[name]=values[0] if len(values)==1 else values[i]
+            self.param_dic.update(up_dic)
+            S_list.append(self.create_S())
+        return SolvedModel(pin_dic=self.pin_dic,param_dic=kargs,Smatrix=np.array(S_list))
 
     def show_free_pins(self):
         """Funciton for printing pins of model
@@ -223,7 +239,36 @@ class model:
         """
         return f'Model object (id={id(self)}) with pins: {list(self.pin_dic)}'
                                        
-                
+               
+class SolvedModel(model):
+    def __init__(self,pin_dic={},param_dic={},Smatrix=None):
+        self.pin_dic=pin_dic
+        self.N=len(pin_dic)
+        self.S= Smatrix
+        self.solved_params=deepcopy(param_dic)
+        self.ns=np.shape(Smatrix)[0]
+        self.create_S=self._create_S
+
+
+    def get_data(self,pin1,pin2):
+        params={}
+        if self.ns==1:
+            params=deepcopy(self.solved_params)
+        else:
+            for name,values in self.solved_params.items():
+                if len(values)==1:
+                    params[name]=np.array([values[0] for i in range(self.ns)])
+                elif len(values)==self.ns:
+                    params[name]=values
+                else:
+                    raise Exception('Not able to convert to pandas')
+        params['T']=np.abs(self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
+        params['Phase']=np.angle(self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]])
+        params['Amplitude']=self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]]
+        pan=pd.DataFrame.from_dict(params)
+        return pan
+
+ 
 class Waveguide(model):
     """Model of a simple waveguide
     """

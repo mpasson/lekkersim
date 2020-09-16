@@ -29,6 +29,8 @@ class Structure:
         self.gone_to=self
         self.N=len(pin_list) 
         self.model=model   
+        self.sn=1
+        self.param_dic={}
         if model is not None:
             for pin,i in model.pin_dic.items():
                 self.pin_list.append((self,pin))
@@ -71,6 +73,7 @@ class Structure:
             if newname in param_dic:
                 update_dic[oldname]=update_dic.pop(newname)                
         #print(self,param_dic,self.param_mapping,update_dic)
+        self.param_dic=update_dic
         if self.model is not None:
             self.model.update_params(update_dic)
         if self.solver is not None:
@@ -81,13 +84,15 @@ class Structure:
         """Creates the scattering matrix of the components
         """
         if self.model is not None:
-            self.Smatrix=self.model.create_S()
+            self.Smatrix=self.model.solve(**self.param_dic).create_S()
         if self.solver is not None:
-            self.model=self.solver.solve(**self.solver.param_dic)
-            for pin,i in self.model.pin_dic.items():
+            model=self.solver.solve(**self.param_dic)
+            for pin,i in model.pin_dic.items():
                 self.pin_dic[(self,pin)]=i
-            self.Smatrix=self.model.create_S()
-        self.N=np.shape(self.Smatrix)[0]
+            self.Smatrix=model.create_S()
+        self.N=np.shape(self.Smatrix)[-1]
+        self.ns=np.shape(self.Smatrix)[0]
+        return self.Smatrix
 
     def print_pindic(self):
         """Print the mappping between the pins and the entries of the scatterng matrix
@@ -155,27 +160,27 @@ class Structure:
         #print('Splitting structure: ',self)
         N=len(in_pins)
         M=len(out_pins)
-        self.Sproc=S_matrix(N,M)
+        self.Sproc=S_matrix(N,M,ns=self.ns)
         for i,p in enumerate(in_pins): 
             self.in_pins[p]=i
             for j,q in enumerate(in_pins): 
-                self.Sproc.S21[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
+                self.Sproc.S21[:,i,j]=self.Smatrix[:,self.pin_dic[p],self.pin_dic[q]]
         for i,p in enumerate(in_pins): 
             for j,q in enumerate(out_pins): 
-                self.Sproc.S22[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
+                self.Sproc.S22[:,i,j]=self.Smatrix[:,self.pin_dic[p],self.pin_dic[q]]
         for i,p in enumerate(out_pins): 
             self.out_pins[p]=i
             for j,q in enumerate(in_pins): 
-                self.Sproc.S11[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
+                self.Sproc.S11[:,i,j]=self.Smatrix[:,self.pin_dic[p],self.pin_dic[q]]
         for i,p in enumerate(out_pins): 
             for j,q in enumerate(out_pins): 
-                self.Sproc.S12[i,j]=self.Smatrix[self.pin_dic[p],self.pin_dic[q]]
+                self.Sproc.S12[:,i,j]=self.Smatrix[:,self.pin_dic[p],self.pin_dic[q]]
 
 
     def get_S_back(self):
         """Recreates the scattering matrix as ndarray
         """
-        self.Smatrix=np.vstack([np.hstack([self.Sproc.S21,self.Sproc.S22]),np.hstack([self.Sproc.S11,self.Sproc.S12])])
+        self.Smatrix=np.concatenate([np.concatenate([self.Sproc.S21,self.Sproc.S22],axis=-1),np.concatenate([self.Sproc.S11,self.Sproc.S12],axis=-1)],axis=-2)
         N=self.Sproc.N
         for pin,i in self.in_pins.items():
             self.pin_dic[pin]=i
@@ -365,6 +370,8 @@ class Structure:
         for (st_source,pin_source),(st_target,pin_target) in {**self.conn_dict,**st.conn_dict}.items():
             if not ((st_source in new_st.structures) and (st_target in new_st.structures)):
                 new_st.conn_dict[(st_source,pin_source)]=(st_target,pin_target)
+        
+        if self.ns==st.ns : new_st.ns=self.ns
 
         return new_st
 
@@ -376,7 +383,7 @@ class Structure:
         Returns:
             Model : model object containing the scattering matrix od the structure
         """
-        Smod=np.zeros((self.N,self.N),complex)
+        Smod=np.zeros((self.ns,self.N,self.N),complex)
         if pin_mapping is None:
             pin_mapping=self.solver.pin_mapping
         if len(pin_mapping)!=len(self.pin_dic):
@@ -394,11 +401,8 @@ class Structure:
             pin_dic[pin_name]=i
             #print(i,pin_name,pin_mapping[pin_name])
             for j,pin_namej in enumerate(pin_mapping):
-                Smod[i,j]=self.Smatrix[self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]]
-        MOD=mod.model(pin_list=list(pin_dic.keys()))
-        MOD.pin_dic=pin_dic
-        MOD.N=len(pin_dic)
-        MOD.S=Smod
+                Smod[:,i,j]=self.Smatrix[:,self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]]
+        MOD=mod.SolvedModel(pin_dic=pin_dic,param_dic=self.param_dic,Smatrix=Smod)
         return MOD    
 
     #def return_model(self):

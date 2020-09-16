@@ -184,8 +184,12 @@ class Solver:
             Model : model containing the scattering matrix
         """
         #print(f'Calling solve of {self}')
+        #for par,value in kwargs.items():
+        #    kwargs[par]=np.reshape(value,-1)
         self.param_dic.update(self.default_params)
         self.param_dic.update(kwargs)
+        for par,value in self.param_dic.items():
+            self.param_dic[par]=np.reshape(value,-1)
         for st in self.structures:
             st.update_params(self.param_dic)
         st_list=copy(self.structures)
@@ -218,8 +222,9 @@ class Solver:
         self.Final=st_list[0]
         for st in self.structures:
             st.reset()
-        self.param_dic={}
         mod=st_list[0].get_model(self.pin_mapping)
+        mod.solved_params=deepcopy(self.param_dic)
+        self.param_dic={}
         return mod
 
 

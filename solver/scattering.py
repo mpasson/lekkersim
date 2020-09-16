@@ -14,7 +14,7 @@ import numpy.linalg as linalg
 class S_matrix:
     """Class implmenting the scattering matrix object and recursion alghoritms for joining two of them
     """
-    def __init__(self,N,M):
+    def __init__(self,N,M,ns=None):
         """Creator
         Args:
             N (int) : number of "left" ports
@@ -22,20 +22,26 @@ class S_matrix:
         """
         self.N=N
         self.M=M
-        self.S11=np.zeros((M,N),complex)
-        self.S22=np.zeros((N,M),complex)
-        self.S12=np.zeros((M,M),complex)
-        self.S21=np.zeros((N,N),complex)
-
+        if ns is None:
+            self.S11=np.zeros((M,N),complex)
+            self.S22=np.zeros((N,M),complex)
+            self.S12=np.zeros((M,M),complex)
+            self.S21=np.zeros((N,N),complex)
+        else:
+            self.ns=ns
+            self.S11=np.zeros((ns,M,N),complex)
+            self.S22=np.zeros((ns,N,M),complex)
+            self.S12=np.zeros((ns,M,M),complex)
+            self.S21=np.zeros((ns,N,N),complex)
 
     #OLD RECURSION VERSION
     #def add(self,s):
-    #    T1=np.dot(linalg.inv(np.identity(self.N,complex)-np.dot(self.S12,s.S21)),self.S11)
-    #    T2=np.dot(linalg.inv(np.identity(self.N,complex)-np.dot(s.S21,self.S12)),s.S22)
-    #    self.S11=np.dot(s.S11,T1)
-    #    self.S12=s.S12+np.dot(np.dot(s.S11,self.S12),T2)
-    #    self.S21=self.S21+np.dot(np.dot(self.S22,s.S21),T1)
-    #    self.S22=np.dot(self.S22,T2)
+    #    T1=np.matmul(linalg.inv(np.identity(self.N,complex)-np.matmul(self.S12,s.S21)),self.S11)
+    #    T2=np.matmul(linalg.inv(np.identity(self.N,complex)-np.matmul(s.S21,self.S12)),s.S22)
+    #    self.S11=np.matmul(s.S11,T1)
+    #    self.S12=s.S12+np.matmul(np.matmul(s.S11,self.S12),T2)
+    #    self.S21=self.S21+np.matmul(np.matmul(self.S22,s.S21),T1)
+    #    self.S22=np.matmul(self.S22,T2)
 
     #NEW RECURSION VERSION
     def add(self,s):
@@ -48,13 +54,13 @@ class S_matrix:
         if self.M!=s.N:
             raise Exception('Trying to concatenate matrices with different intermediate dimension')
         I=np.identity(self.M,complex)
-        T1=np.dot(s.S11,linalg.inv(I-np.dot(self.S12,s.S21)))
-        T2=np.dot(self.S22,linalg.inv(I-np.dot(s.S21,self.S12)))
+        T1=np.matmul(s.S11,linalg.inv(I-np.matmul(self.S12,s.S21)))
+        T2=np.matmul(self.S22,linalg.inv(I-np.matmul(s.S21,self.S12)))
         S=S_matrix(self.N,s.M)
-        S.S21=self.S21+np.dot(np.dot(T2,s.S21),self.S11)
-        S.S11=np.dot(T1,self.S11)
-        S.S12=s.S12   +np.dot(np.dot(T1,self.S12),s.S22)             
-        S.S22=np.dot(T2,s.S22)
+        S.S21=self.S21+np.matmul(np.matmul(T2,s.S21),self.S11)
+        S.S11=np.matmul(T1,self.S11)
+        S.S12=s.S12   +np.matmul(np.matmul(T1,self.S12),s.S22)             
+        S.S22=np.matmul(T2,s.S22)
         return S
   
 
@@ -108,37 +114,37 @@ class S_matrix:
         return np.vstack([np.hstack([self.S11,self.S12]),np.hstack([self.S21,self.S22])])
 
 #    def output(self,u1,d2):
-#        u2=np.add(np.dot(self.S11,u1),np.dot(self.S12,d2))
-#        d1=np.add(np.dot(self.S21,u1),np.dot(self.S22,d2))
+#        u2=np.add(np.matmul(self.S11,u1),np.matmul(self.S12,d2))
+#        d1=np.add(np.matmul(self.S21,u1),np.matmul(self.S22,d2))
 #        return (u2,d1)
 
 #    def left(self,u1,d1):
-#        d2=linalg.solve(self.S22,d1-np.dot(self.S21,u1))
-#        u2=np.add(np.dot(self.S11,u1),np.dot(self.S21,d2))
+#        d2=linalg.solve(self.S22,d1-np.matmul(self.S21,u1))
+#        u2=np.add(np.matmul(self.S11,u1),np.matmul(self.S21,d2))
 #        return (u2,d2)
 
 #    def int_f(self,S2,u):
 #        ID=np.identity(self.N)
-#        ut=np.dot(self.S11,u)
-#        uo=linalg.solve(ID-np.dot(self.S12,S2.S21),ut)
-#        do=linalg.solve(ID-np.dot(S2.S21,self.S12),np.dot(S2.S21,ut))
+#        ut=np.matmul(self.S11,u)
+#        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),ut)
+#        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),np.matmul(S2.S21,ut))
 #        return (uo,do)
 
 #    def int_f_tot(self,S2,u,d):
 #        ID=np.identity(self.N)
-#        ut=np.dot(self.S11,u)
-#        dt=np.dot(S2.S22,d)
-#        uo=linalg.solve(ID-np.dot(self.S12,S2.S21),np.add(ut,np.dot(self.S12,dt)))
-#        do=linalg.solve(ID-np.dot(S2.S21,self.S12),np.add(np.dot(S2.S21,ut),dt))
+#        ut=np.matmul(self.S11,u)
+#        dt=np.matmul(S2.S22,d)
+#        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),np.add(ut,np.matmul(self.S12,dt)))
+#        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),np.add(np.matmul(S2.S21,ut),dt))
 #        return (uo,do)
 
 
 #    def int_complete(self,S2,u,d):
 #        ID=np.identity(self.N)
-#        ut=np.dot(self.S11,u)
-#        dt=np.dot(S2.S22,d)
-#        uo=linalg.solve(ID-np.dot(self.S12,S2.S21),ut+np.dot(self.S12,dt))
-#        do=linalg.solve(ID-np.dot(S2.S21,self.S12),dt+np.dot(S2.S21,ut))
+#        ut=np.matmul(self.S11,u)
+#        dt=np.matmul(S2.S22,d)
+#        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),ut+np.matmul(self.S12,dt))
+#        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),dt+np.matmul(S2.S21,ut))
 #        return (uo,do)
 
             
