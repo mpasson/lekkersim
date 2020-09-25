@@ -21,6 +21,8 @@ from copy import deepcopy
 from copy import copy
 import pandas as pd
 import warnings
+from scipy.interpolate import interp1d
+import io
 
 
 def diag_blocks(array_list):
@@ -772,4 +774,60 @@ class TH_PhaseShifter(model):
         self.S[0,1]=np.exp(1.0j*np.pi*(2.0*n/wl*self.L+self.param_dic[self.pn]))
         self.S[1,0]=np.exp(1.0j*np.pi*(2.0*n/wl*self.L+self.param_dic[self.pn]))
         return self.S
+
+
+class AWGfromVPI(model):
+    def __init__(self,filename,fsr=1.1):
+        with open(filename) as f:
+            data=f.read()
+
+            data=data.split('\n\n')[2:]
+
+        coeff={}
+        pins=[]
+        for t in data:
+            if 'NullTransferFunction' in t: continue
+            p=t.split('\n')
+            if len(p)==1: continue 
+            pin_in=p[0]
+            pin_out=p[1]
+            if 'TM' in pin_in: continue
+            if 'TM' in pin_out: continue
+            pin_in=pin_in.split(' ')[2][0]+pin_in.split(' ')[2][-1]
+            pin_out=pin_out.split(' ')[2][0]+pin_out.split(' ')[2][-1]
+            if pin_in not in pins: pins.append(pin_in)
+            if pin_out not in pins: pins.append(pin_out)
+            dd=io.StringIO(t)
+            ar=np.loadtxt(dd)
+            LAM=ar[:,0]
+            #print(pin_in,pin_out)
+            coeff[(pin_in,pin_out)]=np.sqrt(ar[:,1])*np.exp(1.0j*np.pi/180*0*ar[:,2])
+
+        pins.sort()
+        #print(pins)
+        S=np.zeros((len(LAM),len(pins),len(pins)),dtype=complex)
+        for i,ipin in enumerate(pins):
+            for j,jpin in enumerate(pins):
+                if (ipin,jpin) in coeff: S[:,i,j]=coeff[(ipin,jpin)] 
+
+
+        self.pin_dic={pin : i for i,pin in enumerate(pins)}
+        self.N=len(pins)
+        self.param_dic={}
+        self.default_params={}
+        self.create_S=self._create_S
+
+        self.S_func=interp1d(LAM,S,axis=0)
+
+        self.fsr=(LAM[-1]-LAM[0])/1.1
+        self.lamc=(LAM[-1]+LAM[0])/2.0
+
+
+    def _create_S(self):
+        lam=self.param_dic['wl']
+        self.S=self.S_func(self.lamc-0.5*self.fsr+np.mod(lam-self.lamc+0.5*self.fsr,self.fsr))
+        return self.S
+
+
+
 

@@ -7,6 +7,7 @@ Open source tool for simulation of photonic circuit.
 For now nothing special. Just make sure the folder solver is in PYTHONPATH. The package depends on the following python packages:
 
 - NumPy (tested on 1.18.2)
+- SciPy (tested on 1.4.1)
 - Pandas (tested on 1.0.3)
 
 ## Example
