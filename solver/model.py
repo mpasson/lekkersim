@@ -82,6 +82,24 @@ class model:
         """
         return self.S
 
+    def print_S(self):
+        """Function for nice printing of scattering matrix in agreement with pins
+        """
+        a=list(self.pin_dic.keys())
+        a.sort()
+        S=self.create_S()[0,:,:]
+        st='            '
+        for p in a:
+            st+=f' {p:8} '
+        st+='\n'
+        for pi in a:
+            st+=f' {pi:8} '
+            for pj in a:
+                st+=f' {np.abs(S[self.pin_dic[pi],self.pin_dic[pj]]):8.4f} '
+            st+='\n'
+        print(st)
+           
+
     def get_T(self,pin1,pin2):
         """Function for returning the energy transmission between two ports
         If the two ports are the same the returned value has the meaning of relection
