@@ -283,6 +283,7 @@ class SolvedModel(model):
                 else:
                     raise Exception('Not able to convert to pandas')
         params['T']=np.abs(self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
+        params['dB']=20.0*np.log10(np.abs(self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]]))
         params['Phase']=np.angle(self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]])
         params['Amplitude']=self.S[:,self.pin_dic[pin1],self.pin_dic[pin2]]
         pan=pd.DataFrame.from_dict(params)
