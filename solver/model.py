@@ -289,6 +289,41 @@ class SolvedModel(model):
         pan=pd.DataFrame.from_dict(params)
         return pan
 
+
+    def get_full_output(self, input_dic, power=True):
+        params={}
+        if self.ns==1:
+            params=deepcopy(self.solved_params)
+        else:
+            for name,values in self.solved_params.items():
+                if len(values)==1:
+                    params[name]=np.array([values[0] for i in range(self.ns)])
+                elif len(values)==self.ns:
+                    params[name]=values
+                else:
+                    raise Exception('Not able to convert to pandas')
+
+        l1=list(self.pin_dic.keys())
+        l2=list(input_dic.keys())
+        for pin in l2:
+            l1.remove(pin)
+        if l1!=[]:
+            #print('WARNING: Not all input pin provided, assumed 0')
+            pass
+            for pin in l1:
+                input_dic[pin]=0.0+0.0j
+        u=np.zeros(self.N,complex)
+        for pin,i in self.pin_dic.items():
+            u[i]=input_dic[pin]
+
+        output=np.matmul(self.S,u)
+
+        for pin,i in self.pin_dic.items():
+            params[pin]=np.abs(output[:,i])**2.0 if power else output[:,i] 
+        pan=pd.DataFrame.from_dict(params)
+        return pan
+
+
  
 class Waveguide(model):
     """Model of a simple waveguide
@@ -450,7 +485,7 @@ class BeamSplitter(model):
 class GeneralBeamSplitter(model):
     """Model of variable ration beam splitter
     """
-    def __init__(self,ratio=0.5,phase=0.5):
+    def __init__(self,ratio=0.5,t=None,phase=0.5):
         """Creator
         Args:
             ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
@@ -462,7 +497,7 @@ class GeneralBeamSplitter(model):
         self.phase=phase
         p1=np.pi*self.phase
         c=np.sqrt(self.ratio)
-        t=np.sqrt(1.0-self.ratio)
+        t=np.sqrt(1.0-self.ratio) if t is None else np.sqrt(t)
         self.S=np.zeros((self.N,self.N),complex)
         self.param_dic={}
         self.default_params=deepcopy(self.param_dic)
