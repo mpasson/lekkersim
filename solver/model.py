@@ -82,9 +82,10 @@ class model:
         """
         return self.S
 
-    def print_S(self):
+    def print_S(self, func=None):
         """Function for nice printing of scattering matrix in agreement with pins
         """
+        func = (lambda x:x) if func is None else func
         a=list(self.pin_dic.keys())
         a.sort()
         S=self.create_S()[0,:,:]
@@ -95,7 +96,8 @@ class model:
         for pi in a:
             st+=f' {pi:8} '
             for pj in a:
-                st+=f' {np.abs(S[self.pin_dic[pi],self.pin_dic[pj]]):8.4f} '
+                pr=func(S[self.pin_dic[pi],self.pin_dic[pj]])
+                st+=f' {pr:8.4f} '
             st+='\n'
         print(st)
            
