@@ -363,6 +363,26 @@ class Waveguide(model):
         """
         return f'Model of waveguide of lenght {self.L:.3f} and index {self.n:.3f} (id={id(self)})'  
 
+class UserWaveguide(model):
+    def __init__(self, L , func, param_dic):
+        self.pin_dic={'a0':0,'b0':1}        
+        self.N=2
+        self.S=np.identity(self.N,complex)
+        self.param_dic=deepcopy(param_dic)
+        self.default_params=deepcopy(self.param_dic)
+        self.create_S=self._create_S
+        self.index_func=func
+        self.L=L
+
+    def _create_S(self):
+        n=self.index_func(**self.param_dic)
+        wl=self.param_dic['wl']
+        self.S=np.zeros((self.N,self.N),complex)
+        self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
+        self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
+        return self.S
+
+
 class GeneralWaveguide(model):
     """Model of dispersive waveguide
     """

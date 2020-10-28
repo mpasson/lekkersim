@@ -5,3 +5,4 @@ __pycache__
 *.dat
 ./*.py
 jupiter/.ipynb_checkpoints/*
+tests
