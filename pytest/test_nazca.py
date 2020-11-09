@@ -151,8 +151,8 @@ def test_params(no_pol):
     psl=np.linspace(0.0,1.0,101)
     T1=[sol.solve(wl=1.55,PS1=ps).get_T('a0','b0') for ps in psl]
     T2=[sol.solve(wl=1.55,PS1=ps,PS2=0.5).get_T('a0','b0') for ps in psl]
-    assert np.allclose(T1,np.cos(0.5*np.pi*psl)**2.0)
-    assert np.allclose(T2,np.cos((0.5*psl-0.25)*np.pi)**2.0)
+    assert np.allclose(T1,np.sin(0.5*np.pi*psl)**2.0)
+    assert np.allclose(T2,np.sin((0.5*psl-0.25)*np.pi)**2.0)
 
 
 def test_other_cells(no_pol):
@@ -206,8 +206,8 @@ def test_other_cells(no_pol):
     psl=np.linspace(0.0,1.0,101)
     T1=[sol.solve(wl=1.55,PS1=ps).get_T('a0','b0') for ps in psl]
     T2=[sol.solve(wl=1.55,PS1=ps,PS2=0.5).get_T('a0','b0') for ps in psl]
-    assert np.allclose(T1,np.cos(0.5*np.pi*psl)**2.0)
-    assert np.allclose(T2,np.cos((0.5*psl-0.25)*np.pi)**2.0)
+    assert np.allclose(T1,np.sin(0.5*np.pi*psl)**2.0)
+    assert np.allclose(T2,np.sin((0.5*psl-0.25)*np.pi)**2.0)
 
 
 def test_twopol_basic(two_pol):
@@ -291,10 +291,10 @@ def test_twopol_MZM(two_pol):
     T1_1=[sol.solve(wl=wl,PS1=0.0,PS2=0.0).get_T('a0_pol1','b0_pol1') for wl in wll]
     T1_2=[sol.solve(wl=wl,PS1=0.0,PS2=0.5).get_T('a0_pol1','b0_pol1') for wl in wll]
 
-    assert np.allclose(T0_1,np.cos((2.5/wll*20.0)*np.pi)**2.0)
-    assert np.allclose(T0_2,np.cos((2.5/wll*20.0-0.25)*np.pi)**2.0)
-    assert np.allclose(T1_1,np.cos((3.0/wll*20.0)*np.pi)**2.0)
-    assert np.allclose(T1_2,np.cos((3.0/wll*20.0-0.25)*np.pi)**2.0)
+    assert np.allclose(T0_1,np.sin((2.5/wll*20.0)*np.pi)**2.0)
+    assert np.allclose(T0_2,np.sin((2.5/wll*20.0-0.25)*np.pi)**2.0)
+    assert np.allclose(T1_1,np.sin((3.0/wll*20.0)*np.pi)**2.0)
+    assert np.allclose(T1_2,np.sin((3.0/wll*20.0-0.25)*np.pi)**2.0)
 
 
 if __name__=='__main__':

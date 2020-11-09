@@ -128,12 +128,12 @@ class model:
 
     def get_A(self,pin1,pin2):
         """Function for returning complex amplitude of the transmission between two ports
-        If the two ports are the same the returned value has the meaning of relection
+            
         Args:
-            pin1 (str): Name of input pin
-            pin2 (str): Name of output pin
+         - pin1 (str): Name of input pin
+         - pin2 (str): Name of output pin
         Returns:
-            float: Complex amplitude of the transmission between the ports            
+         - float: Complex amplitude of the transmission between the ports            
         """
         if np.shape(self.S)[0] > 1: warnings.warn('You are using get_A on a parametric solve. First value is returned, nut get_data should be used instead')
         return self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]]
@@ -141,7 +141,9 @@ class model:
 
     def expand_pol(self,pol_list=[0]):
         """This function expands the model by adding additional modes based on pol_list.
-        For each pin a number of pins equal the the length of pol_list will be created the name will be '{pinname}_pol{pol}' for pol in pol_list
+        
+        For each pin a number of pins equal the the length of pol_list will be created the name will be "{pinname}_pol{pol}" for pol in pol_list
+        
         Args:
             pol_list (list) : list of integers wiht the indexing of modes to be considered. Default is [0]
         Returns:
@@ -527,8 +529,8 @@ class GeneralBeamSplitter(model):
         #self.S[2:,:2]=np.array([[t,c],[c,-t]])
         #self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
         #self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
-        self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]])
-        self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[-c,t*np.exp(1.0j*p1)]])
+        self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[c,-t*np.exp(-1.0j*p1)]])
+        self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[c,-t*np.exp(1.0j*p1)]])
         self.create_S=self._create_S
 
     def __str__(self):
@@ -577,18 +579,18 @@ class Splitter1x2Gen(model):
 class PhaseShifter(model):
     """Model of multimode variable phase shifter
     """
-    def __init__(self,param_name='PS'):
+    def __init__(self,param_name='PS', param_default=0.0):
         """Creator
         Args:
-            param_name (str) : name of the parameter of the Phase Shifter
-            pol_list (list)  : list of int cotaining the relevant modes
+            param_name (str)       : name of the parameter of the Phase Shifter
+            param_default (float)  : default value of the Phase Shift in pi units
         """
         self.param_dic={}
         self.pin_dic={'a0':0,'b0':1}
         self.N=2
         self.pn=param_name
         self.param_dic={}
-        self.param_dic[param_name]=0.0    
+        self.param_dic[param_name]=param_default    
         self.default_params=deepcopy(self.param_dic)
         self.create_S=self._create_S
 
