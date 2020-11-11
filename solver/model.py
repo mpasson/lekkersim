@@ -53,18 +53,18 @@ class model:
         Each model is a separate class based on the main one.
 
     """
-    def __init__(self,pin_dic={},param_dic={},Smatrix=None):
+    def __init__(self, pin_dic=None, param_dic=None, Smatrix=None):
         """Creator of the class
         Args:
             pin_list (list): list of strings containing the model's pin names 
             param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
             Smatrix (ndarray) : Fixed S_matrix of the model
         """
-        self.pin_dic=pin_dic
-        self.N=len(pin_dic)
+        self.pin_dic={} if pin_dic is None else pin_dic
+        self.N=len(self.pin_dic)
         self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
-        self.param_dic=param_dic
-        self.default_params=deepcopy(param_dic)
+        self.param_dic = {} if param_dic is None else param_dic
+        self.default_params=deepcopy(self.param_dic)
         self.create_S=self._create_S
 
     def _expand_S(self):
@@ -74,6 +74,10 @@ class model:
         #self.S= diag_blocks(self.np*[S])
         return diag_blocks(self.np*[S])
 
+    def inspect(self):
+        """Function that print self. It mocks the same function of Solver
+        """
+        print(f'{self}')
 
     def _create_S(self):
         """Function for returning the scattering matrix of the model
