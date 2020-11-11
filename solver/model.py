@@ -368,9 +368,35 @@ class Waveguide(model):
         return f'Model of waveguide of lenght {self.L:.3f} and index {self.n:.3f} (id={id(self)})'  
 
 class UserWaveguide(model):
-    def __init__(self, L , func, param_dic):
-        self.pin_dic={'a0':0,'b0':1}        
-        self.N=2
+    """Template for a user defined waveguide
+    Args:
+        L (float): length of the waveguide
+        func (function): index function of the waveguide
+        param_dic (dict): dictionary of the default parameters to be used
+        pol_list (list): list of integers representing the analyzed modes
+    
+    Note for nazca:
+        This model is the one used in the building of the circit model for cell in naza. 
+        If the user wants to create a personal funciton to be used with that, the function must have at least the following arguments as a keywork arguments:
+            wl (float) : the wavelegth (in um)
+            W (float) : waveguide width (in um)
+            R (float) : waveguide bending radius (in um)
+            pol (int) : index of the mode
+
+    """
+    def __init__(self, L , func, param_dic, pol_list = None):
+        if pol_list is None:
+            self.pin_dic={'a0':0,'b0':1}        
+            self.N=2
+        else:
+            #self.pin_dic = {f'a0_pol{p}' : 2*i for i, p in enumerate(pol_list)}.update({ f'b0_pol{p}' : 2*i+1 for i, p in enumerate(pol_list)})        
+            self.pin_dic = {}
+            for i, p in enumerate(pol_list):
+                self.pin_dic[f'a0_pol{p}'] = 2*i
+                self.pin_dic[f'b0_pol{p}'] = 2*i+1
+            self.N = 2*len(pol_list)
+        
+        self.pol_list = pol_list
         self.S=np.identity(self.N,complex)
         self.param_dic=deepcopy(param_dic)
         self.default_params=deepcopy(self.param_dic)
@@ -379,11 +405,25 @@ class UserWaveguide(model):
         self.L=L
 
     def _create_S(self):
-        n=self.index_func(**self.param_dic)
+        """Created the scattering Matrix
+        """
         wl=self.param_dic['wl']
-        self.S=np.zeros((self.N,self.N),complex)
-        self.S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
-        self.S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
+        if self.pol_list is None:
+            n=self.index_func(**self.param_dic)
+            S=np.zeros((2,2),complex)
+            S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
+            S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
+            S_list=[S]
+        else:
+            S_list=[]
+            for p in self.pol_list:
+                self.param_dic.update({'pol' : p})
+                n=self.index_func(**self.param_dic)
+                S=np.zeros((2,2),complex)
+                S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
+                S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
+                S_list.append(S)
+        self.S = diag_blocks(S_list)
         return self.S
 
 
