@@ -165,9 +165,9 @@ def test_params():
         psl=np.linspace(0.0,1.0,5)
 
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps, PS1=0.0, PS2=0.0).get_T('a0','b0') for ps in psl]
-        assert np.allclose(T,np.cos(0.5*np.pi*psl)**2.0)
+        assert np.allclose(T,np.sin(0.5*np.pi*psl)**2.0)
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps, PS1=0.0, PS2=0.5).get_T('a0','b0') for ps in psl]
-        assert np.allclose(T,np.cos((0.5*psl-0.25)*np.pi)**2.0)
+        assert np.allclose(T,np.sin((0.5*psl-0.25)*np.pi)**2.0)
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps).get_T('a0','b0') for ps in psl]
-        assert np.allclose(T,np.cos((0.5*psl-0.25)*np.pi)**2.0)
+        assert np.allclose(T,np.sin((0.5*psl-0.25)*np.pi)**2.0)
 
