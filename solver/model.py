@@ -574,7 +574,7 @@ class GeneralBeamSplitter(model):
         #self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
         #self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
         self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[c,-t*np.exp(-1.0j*p1)]])
-        self.S[2:,:2]=np.array([[t*np.exp(-1.0j*p1),c],[c,-t*np.exp(1.0j*p1)]])
+        self.S[2:,:2]=np.array([[t*np.exp(1.0j*p1),c],[c,-t*np.exp(-1.0j*p1)]])
         self.create_S=self._create_S
 
     def __str__(self):
