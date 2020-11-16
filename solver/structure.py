@@ -10,6 +10,7 @@ class Structure:
     """
     def __init__(self,pin_list=[],model=None,solver=None,param_mapping={}):
         """Creator
+
         Args:
             pin_list (list) : list of str containing the names of the pins. Default is empty list
             model (Model) : model object from which the structue may be derived. Defauls is none
@@ -55,16 +56,22 @@ class Structure:
 
     @property
     def pin(self):
-        """Returns the dictionary of the pins in the form {pin_name (str) : (self, pin_name (str))}
-        Alllows the feeding of the sintax structure.pin['pin_name'] where the tuple of structure and pin is required
+        """Alllows the feeding of the sintax structure.pin['pin_name'] where the tuple of structure and pin is required
+
+        Returns:
+            dict: Dictionary of the pins, in the format {'pinname' : (self, pinname)}
         """
         dic={pin:(self,pin) for sl,pin in self.pin_list}
         return dic
 
     def update_params(self,param_dic):
         """Updated the parametes dictionary of the represented optic componet
+
         Args:
             param_dic (dictionary): dcitionary {'param_name':param_value} containing value of the parameters to be updated
+
+        Returns:
+            None
         """
         update_dic=deepcopy(param_dic)
         for newname,oldname in self.param_mapping.items():
@@ -82,6 +89,9 @@ class Structure:
 
     def createS(self):
         """Creates the scattering matrix of the components
+
+        Returns:
+            ndarray: Scattering Matrix
         """
         if self.model is not None:
             self.Smatrix=self.model.solve(**self.param_dic).create_S()
@@ -115,8 +125,12 @@ class Structure:
 
     def add_pin(self,pin):
         """Add pin to structure
+
         Args:
             pin (str) : name of the pin
+    
+        Returns:
+            None
         """
         if pin in self.pin_list:
             raise Exception('Pin already present, nothing is done')
@@ -128,8 +142,12 @@ class Structure:
 
     def sel_input(self,pin_list):
         """Divide pins to be connected providing inputs pins
+
         Args: 
             pin_list (list) : list of tuples (structure (Structure), pin_name (str)) providing input pins
+
+        Returns:
+            None
         """
         self.in_list=[]
         self.out_list=copy(self.pin_list)
@@ -139,8 +157,12 @@ class Structure:
 
     def sel_output(self,pin_list):
         """Divide pins to be connected providing output pins
+
         Args: 
             pin_list (list) : list of tuples (structure (Structure), pin_name (str)) providing output pins
+
+        Returns:
+            None
         """
         self.out_list=[]
         self.in_list=copy(self.pin_list)
@@ -153,9 +175,13 @@ class Structure:
 
     def split_in_out(self,in_pins,out_pins):
         """Created the scattering matrix object with left pins separated from right pins
+
         Args:
             in_pins (list) : list of tuples (structure (Structure), pin_name (str)) providing "left" pins
             out_pins (list) : list of tuples (structure (Structure), pin_name (str)) providing "right" pins
+
+        Returns:
+            None
         """
         #print('Splitting structure: ',self)
         N=len(in_pins)
@@ -211,10 +237,14 @@ class Structure:
 
     def add_conn(self,pin,target,target_pin):
         """Add connection between a self pin and a pin in another structure
+
         Args:
             pin (str) : name of self pin
             target (Structure) : structure to which to connect
             target_pin (str) : name of the pin in the target structure to whcih to connect
+
+        Returns:
+            None
         """
         if (self,pin) in self.conn_dict:
             raise Exception('Pin already connected')
@@ -225,8 +255,12 @@ class Structure:
 
     def remove_pin(self,pin):
         """Remove pin from structure
+
         Args:
             pin (str) : name of pin to remove
+
+        Returns:
+            None
         """
         if (self,pin) in self.conn_dict:
             self.conn_dict.pop((self,pin))
@@ -241,8 +275,12 @@ class Structure:
 
     def remove_connections(self,target):    
         """Remove all connection to target structure. Remove also from self all pins involved in the connections
+
         Args:
             target (Structure) : structore to which to remove connnetions
+
+        Returns:
+            None
         """
         if target not in self.connected_to:
             raise Exception(f'Structure {target} is not connected to {self}. Impossible to remove.')
@@ -254,8 +292,10 @@ class Structure:
 
     def get_out_to(self,st):
         """Find pins of self with are connected to a target structure
+
         Args:
             st (Structure) : target structure
+
         Returns:
             pin_list : list of tuple (structure (Structure), pin_name (str)) contaning the list of pins which connects to the target structure
         """
@@ -268,8 +308,10 @@ class Structure:
         
     def get_in_from(self,st):
         """Find pins of self with are connected from a target structure
+
         Args:
             st (Structure) : target structure
+
         Returns:
             pin_list : list of tuple (structure (Structure), pin_name (str)) contaning the list of pins which connects from the target structure
         """
@@ -282,8 +324,10 @@ class Structure:
 
     def join(self,st):
         """Join two structures to create the one cotaining the merged structure
+
         Args:
             st (Structure) : target structure to join to self
+
         Returns:
             Structure : new structure combining the two starting one
         """
@@ -378,10 +422,12 @@ class Structure:
 
     def get_model(self,pin_mapping=None):
         """Retunrn model corresponding to structure
+
         Args:
             pin_mapping (dict) : dictionary contain the information of pin mapping {pin_name (str) : (structure (Structure), pin (str))} 
+
         Returns:
-            Model : model object containing the scattering matrix od the structure
+            SolvedModel : model object containing the scattering matrix od the structure
         """
         Smod=np.zeros((self.ns,self.N,self.N),complex)
         if pin_mapping is None:

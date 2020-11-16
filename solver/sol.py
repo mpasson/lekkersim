@@ -22,6 +22,7 @@ class Solver:
     """
     def __init__(self,structures=None, connections=None, param_dic=None, default_params=None, name=None):
         """Creator
+
         Args:
             structures (list) : list of structures in the solver. Default is None (empty list)
             connections (dict) : dictionary of tuples (structure (Structure), pin (str)) containing connections {(structure1,pin1):(structure2,pin2)}. Default is None (empty dictionary)
@@ -68,8 +69,12 @@ class Solver:
 
     def add_structure(self,structure):
         """Add a structure to the solver
+
         Args:
             structure (Structure) : structure to be added
+
+        Returns:
+            None
         """
         if structure not in self.structures: 
             self.structures.append(structure)
@@ -80,8 +85,12 @@ class Solver:
         
     def remove_structure(self,structure):
         """Remove structure from solver, also removing all the connections to other structures
+
         Args:
             structure (Structure) : structure to be removed          
+
+        Returns:
+            None
         """
         if structure not in self.structures:
             raise Exception('Structure {structure} is not in solver {self}')
@@ -100,16 +109,17 @@ class Solver:
             if st is structure: self.pin_mapping.pop(pinname)
                 
         
-            
-
-
     def connect(self,structure1,pin1,structure2,pin2):
         """Connect two different structures in the solver by the specified pins
+
         Args:
             structure1 (Structure) : first structure
             pin1 (str) : pin of first structure
             structure2 (Structure) : second structure
             pin2 (str) : pin of second structure
+
+        Returns:
+            None
         """
         if (structure1,pin1) in self.connections_list:
             if  (structure1,pin1) in self.connections and self.connections[(structure1,pin1)]==(structure2,pin2) : return
@@ -170,18 +180,24 @@ class Solver:
 
     def map_pins(self,pin_mapping):
         """Add mapping of pins
+
         Args:
             pin_mapping (dict): dictionary of pin mapping in the form {pin_name (str) : (structure (Structure), pin (str) )}
+
+        Returns:
+            None
         """
         self.pin_mapping.update(pin_mapping)
 
 
     def solve(self,**kwargs):
         """Calculates the scattering matrix of the solver
+
         Args:
             kwargs (dict) : paramters in the form param_name=param_value
+
         Returs:
-            Model : model containing the scattering matrix
+            SolvedModel : model containing the scattering matrix
         """
         #print(f'Calling solve of {self}')
         #for par,value in kwargs.items():
@@ -229,21 +245,28 @@ class Solver:
 
 
     def set_param(self,name,value=None):
-        """Set a value for one parameter
+        """Set a value for one parameter. This is assued as the new default
+
         Args:
             name (str) : name of the parameter
             value (usually float) : value of the parameter
+
+        Returns:
+            None
         """
-        self.param_dic[name]=value
+        self.default_params.update({name : value})
 
     def put(self,pins=None,pint=None,param_mapping={}):
         """Function for putting a Solver in another Solver object, and eventually specify connections
+
         This function creates a Structure object for the Solver and place it in the current active Solver
         If both pins and pint are provided, the connection also is made. 
+
         Args:
             pins (str): pin of model to be connected
             pint (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to which to connect pins of model
             param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters
+
         Returns:
             Structure: the Structure instance created from the Solver
         """
@@ -259,14 +282,24 @@ class Solver:
         help.print(self)
 
     def maps_all_pins(self):
+        """Function for automatically map all pins.
+
+        It scans the unmapped pins and raise them at top level wiht the same name. If one or more pins have the same name, it fails. 
+        It ignores any pin already mapped by the user.
+        """
         for st,pin in self.free_pins:
+            if (st,pin) in self.pin_mapping.values(): continue
             if pin in self.pin_mapping: raise Exception('Pins double naming present, cannot map authomatically')
             self.pin_mapping[pin]=(st,pin)
 
     def update_params(self,update_dic):
         """Update the parameters of model, setting defaults when value is not provides
+
         Args:
             update_dic (dict) : dictionary of parameters in the from {param_name (str) : param_value (usually float)}
+
+        Returns:
+            None
         """
         self.param_dic.update(self.default_params)
         self.param_dic.update(update_dic)

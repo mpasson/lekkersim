@@ -48,6 +48,7 @@ def diag_blocks(array_list):
 
 class model:
     """Class model
+        
         It contains the model (definition of the scattering matrix) for each base photonic building block
         This is the general template for the class, no model is defined here. 
         Each model is a separate class based on the main one.
@@ -55,6 +56,7 @@ class model:
     """
     def __init__(self, pin_dic=None, param_dic=None, Smatrix=None):
         """Creator of the class
+
         Args:
             pin_list (list): list of strings containing the model's pin names 
             param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
@@ -81,6 +83,7 @@ class model:
 
     def _create_S(self):
         """Function for returning the scattering matrix of the model
+
         Returns:
             ndarray: Scattering matrix of the model
         """
@@ -109,9 +112,11 @@ class model:
     def get_T(self,pin1,pin2):
         """Function for returning the energy transmission between two ports
         If the two ports are the same the returned value has the meaning of relection
+
         Args:
             pin1 (str): Name of input pin
             pin2 (str): Name of output pin
+
         Returns:
             float: Energy transmission between the ports            
         """
@@ -121,9 +126,11 @@ class model:
     def get_PH(self,pin1,pin2):
         """Function for returning the phase of the transmission between two ports
         If the two ports are the same the returned value has the meaning of relection
+
         Args:
             pin1 (str): Name of input pin
             pin2 (str): Name of output pin
+
         Returns:
             float: Phase of the transmission between the ports            
         """
@@ -134,10 +141,11 @@ class model:
         """Function for returning complex amplitude of the transmission between two ports
             
         Args:
-         - pin1 (str): Name of input pin
-         - pin2 (str): Name of output pin
+            pin1 (str): Name of input pin
+            pin2 (str): Name of output pin
+        
         Returns:
-         - float: Complex amplitude of the transmission between the ports            
+            float: Complex amplitude of the transmission between the ports            
         """
         if np.shape(self.S)[0] > 1: warnings.warn('You are using get_A on a parametric solve. First value is returned, nut get_data should be used instead')
         return self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]]
@@ -146,10 +154,11 @@ class model:
     def expand_pol(self,pol_list=[0]):
         """This function expands the model by adding additional modes based on pol_list.
         
-        For each pin a number of pins equal the the length of pol_list will be created the name will be "{pinname}_pol{pol}" for pol in pol_list
+        For each pin a number of pins equal the the length of pol_list will be created. The pin names will be "{pinname}_pol{pol}" for pol in pol_list
         
         Args:
-            pol_list (list) : list of integers wiht the indexing of modes to be considered. Default is [0]
+            pol_list (list) : list of integers with the indexing of modes to be considered. Default is [0]
+
         Returns:
             Model : new model with expanded polarization 
         """
@@ -166,9 +175,11 @@ class model:
 
     def get_output(self,input_dic,power=True):
         """Returns the outputs from all ports of the model given the inputs amplitudes
+
         Args:
             input_dic (dict): dictionary {pin_name (str) : input_amplitude (complex)}. Dictionary containing the complex amplitudes at each input port. Missing port are assumed wiht amplitude 0.0
             power (bool): If True, returned values are power transmissions. If False, complex amplitudes are instead returned. Default is True
+
         Returns:
             dict: Dictionary containing the outputs in the form {pin_name (str) : output (float or complex)}
         """
@@ -197,14 +208,17 @@ class model:
 
     def put(self,pins=None,pint=None,param_mapping={}):
         """Function for putting a model in a Solver object, and eventually specify connections
+        
         This function creates a Structure object for the model and place it in the current active Solver
         If both pins and pint are provided, the connection also is made. 
-        Args:
-            pins (str): pin of model to be connected
+
+       Args:
+            pin (str): pin of model to be connected
             pint (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to which to connect pins of model
             param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters
+
         Returns:
-            Structure: the Structure instance created from the model
+            Str  ucture: the Structure instance created from the model
         """
         ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
@@ -215,11 +229,14 @@ class model:
 
     def solve(self,**kargs):
         """Function for returning the solved model
+
         This function is to align the behavior of the Model and Solver class.
+
         Args: 
             kwargs: dictionary of the parameters {param_name (str) : param_value (usually float)}
+
         Returns:
-            Model: solved model of self
+            model: solved model of self
         """
         self.param_dic.update(self.default_params)
         ns=1
@@ -248,6 +265,15 @@ class model:
         print('')
 
     def pin_mapping(self,pin_mapping):
+        """Function for changing the names of the pins of a model
+
+        Args:
+            pin_mapping (dict): Dictionary containing the mapping of the pin names. 
+                Format is {'oldname' : 'newname'}
+
+        Returns:
+            model: model of self with updated pin names
+        """
         for pin in copy(self.pin_dic):
             if pin in pin_mapping:
                 n=self.pin_dic.pop(pin)
@@ -269,6 +295,10 @@ class model:
                                        
                
 class SolvedModel(model):
+    """Class for storing data of a solver mode. 
+
+    Do not use this class directly. It is retuned from all solve methods. It is convinient for extracting data
+    """
     def __init__(self,pin_dic={},param_dic={},Smatrix=None):
         self.pin_dic=pin_dic
         self.N=len(pin_dic)
@@ -279,6 +309,20 @@ class SolvedModel(model):
 
 
     def get_data(self,pin1,pin2):
+        """Function for returning transmission data between two ports
+
+        Args:
+            pin1 (str): name of the input pin
+            pin2 (str): name of the output pin
+            
+        Returns:
+            pandas DataFrame: Dataframe containging the data. It contains one columns per parameter given to solve, plus the following:
+                'T'         : Transmisison in absolute units
+                'dB'        : Transmission in dB units 
+                'Phase'     : Phase of the transmision 
+                'Amplitude' : Complex amplitude of the transission
+    
+        """
         params={}
         if self.ns==1:
             params=deepcopy(self.solved_params)
@@ -299,6 +343,15 @@ class SolvedModel(model):
 
 
     def get_full_output(self, input_dic, power=True):
+        """Function for getting the output do the system given the inputs
+
+        Args:
+            input_dic (dict): Dictionary of the input amplitudes. Format is {'pinname' : amplitude (float or complex)}. Missin pins assume 0 amplitde.
+            power (bool): if True, power (in absolute units) between the ports is returned, otherwise the complex amplitude is returned. Default is True
+
+        Returns:
+            pandas DataFrame: DataFrame with the outputs. It has one column for each parameter given to solve plus one columns for each pin.
+        """    
         params={}
         if self.ns==1:
             params=deepcopy(self.solved_params)
