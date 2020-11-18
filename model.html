@@ -1,0 +1,2069 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>model</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/marco/Documents/MyPrograms/Gen_solver/solver/model.py">/home/marco/Documents/MyPrograms/Gen_solver/solver/model.py</a></font></td></tr></table>
+    <p><tt>File&nbsp;containing&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;calls&nbsp;and&nbsp;related&nbsp;methods</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="io.html">io</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="pandas.html">pandas</a><br>
+<a href="solver.html">solver</a><br>
+</td><td width="25%" valign=top><a href="warnings.html">warnings</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="model.html#model">model</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="model.html#AWGfromVPI">AWGfromVPI</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#Attenuator">Attenuator</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#BeamSplitter">BeamSplitter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#FPR_NxM">FPR_NxM</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#GeneralBeamSplitter">GeneralBeamSplitter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#GeneralWaveguide">GeneralWaveguide</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#Mirror">Mirror</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#MultiPolWave">MultiPolWave</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#PerfectMirror">PerfectMirror</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#PhaseShifter">PhaseShifter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#PolRot">PolRot</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#PushPullPhaseShifter">PushPullPhaseShifter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#Ring">Ring</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#SolvedModel">SolvedModel</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#Splitter1x2">Splitter1x2</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#Splitter1x2Gen">Splitter1x2Gen</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#TH_PhaseShifter">TH_PhaseShifter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#UserWaveguide">UserWaveguide</a>
+</font></dt><dt><font face="helvetica, arial"><a href="model.html#Waveguide">Waveguide</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AWGfromVPI">class <strong>AWGfromVPI</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;<a href="#model">model</a><br>
+It&nbsp;contains&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;(definition&nbsp;of&nbsp;the&nbsp;scattering&nbsp;matrix)&nbsp;for&nbsp;each&nbsp;base&nbsp;photonic&nbsp;building&nbsp;block<br>
+This&nbsp;is&nbsp;the&nbsp;general&nbsp;template&nbsp;for&nbsp;the&nbsp;class,&nbsp;no&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;defined&nbsp;here.&nbsp;<br>
+Each&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;a&nbsp;separate&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;main&nbsp;one.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#AWGfromVPI">AWGfromVPI</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="AWGfromVPI-__init__"><strong>__init__</strong></a>(self, filename, fsr=1.1)</dt><dd><tt>Creator&nbsp;of&nbsp;the&nbsp;class<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;pin&nbsp;names&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_dic&nbsp;(dictionary):&nbsp;dcitionary&nbsp;{'param_name':param_value}&nbsp;containing&nbsp;the&nbsp;definition&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;parameters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Smatrix&nbsp;(ndarray)&nbsp;:&nbsp;Fixed&nbsp;S_matrix&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="AWGfromVPI-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="AWGfromVPI-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="AWGfromVPI-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Attenuator">class <strong>Attenuator</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;attenuator<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#Attenuator">Attenuator</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Attenuator-__init__"><strong>__init__</strong></a>(self, loss=0.0)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;loss:&nbsp;value&nbsp;of&nbsp;the&nbsp;loss&nbsp;(in&nbsp;dB)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="Attenuator-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="Attenuator-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Attenuator-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Attenuator-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="Attenuator-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BeamSplitter">class <strong>BeamSplitter</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;50/50&nbsp;beam&nbsp;splitter<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#BeamSplitter">BeamSplitter</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="BeamSplitter-__init__"><strong>__init__</strong></a>(self, phase=0.5)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phase&nbsp;(float)&nbsp;:&nbsp;phase&nbsp;shift&nbsp;of&nbsp;the&nbsp;coupled&nbsp;ray&nbsp;(in&nbsp;unit&nbsp;of&nbsp;py)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="BeamSplitter-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="BeamSplitter-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="BeamSplitter-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FPR_NxM">class <strong>FPR_NxM</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;Free&nbsp;Propagation&nbsp;Region.&nbsp;TODO:&nbsp;check&nbsp;this&nbsp;<a href="#model">model</a>&nbsp;makes&nbsp;sense<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#FPR_NxM">FPR_NxM</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="FPR_NxM-__init__"><strong>__init__</strong></a>(self, N, M, phi=0.1)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;N&nbsp;(int)&nbsp;:&nbsp;number&nbsp;of&nbsp;input&nbsp;ports<br>
+&nbsp;&nbsp;&nbsp;&nbsp;M&nbsp;(int)&nbsp;:&nbsp;number&nbsp;of&nbsp;output&nbsp;ports<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phi&nbsp;(float)&nbsp;:&nbsp;phase&nbsp;difference&nbsp;between&nbsp;adjacent&nbsp;ports</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="FPR_NxM-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="FPR_NxM-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="FPR_NxM-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="GeneralBeamSplitter">class <strong>GeneralBeamSplitter</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;variable&nbsp;ration&nbsp;beam&nbsp;splitter<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#GeneralBeamSplitter">GeneralBeamSplitter</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="GeneralBeamSplitter-__init__"><strong>__init__</strong></a>(self, ratio=0.5, t=None, phase=0.5)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ratio&nbsp;(float)&nbsp;:&nbsp;splitting&nbsp;ratio&nbsp;of&nbsp;beam-splitter&nbsp;(ratio&nbsp;of&nbsp;the&nbsp;coupled&nbsp;power)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phase&nbsp;(float)&nbsp;:&nbsp;phase&nbsp;shift&nbsp;of&nbsp;the&nbsp;coupled&nbsp;ray&nbsp;(in&nbsp;unit&nbsp;of&nbsp;py)</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="GeneralBeamSplitter-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="GeneralBeamSplitter-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="GeneralWaveguide">class <strong>GeneralWaveguide</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;dispersive&nbsp;waveguide<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#GeneralWaveguide">GeneralWaveguide</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="GeneralWaveguide-__init__"><strong>__init__</strong></a>(self, L, Neff, R=None, w=None, wl=None, pol=None)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;(float)&nbsp;:&nbsp;length&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Neff&nbsp;(function):&nbsp;function&nbsp;returning&nbsp;the&nbsp;effecive&nbsp;index&nbsp;of&nbsp;the&nbsp;wavegude.&nbsp;It&nbsp;must&nbsp;be&nbsp;function&nbsp;of&nbsp;wl,R,w,&nbsp;and&nbsp;pol<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wl&nbsp;(float)&nbsp;:&nbsp;default&nbsp;wavelength&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;w&nbsp;&nbsp;(float)&nbsp;:&nbsp;default&nbsp;width&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;(float)&nbsp;:&nbsp;default&nbsp;bending&nbsp;radius&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol&nbsp;(int)&nbsp;&nbsp;:&nbsp;default&nbsp;mode&nbsp;of&nbsp;the&nbsp;waveguide</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="GeneralWaveguide-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="GeneralWaveguide-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="GeneralWaveguide-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Mirror">class <strong>Mirror</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;partilly&nbsp;reflected&nbsp;<a href="#Mirror">Mirror</a><br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#Mirror">Mirror</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Mirror-__init__"><strong>__init__</strong></a>(self, ref=0.5, phase=0.0)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ref&nbsp;(float)&nbsp;:&nbsp;ratio&nbsp;of&nbsp;reflected&nbsp;power<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phase&nbsp;(float):&nbsp;phase&nbsp;shift&nbsp;of&nbsp;the&nbsp;reflected&nbsp;ray&nbsp;(in&nbsp;pi&nbsp;units)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="Mirror-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="Mirror-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="Mirror-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Mirror-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Mirror-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Mirror-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="Mirror-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="Mirror-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="Mirror-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Mirror-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Mirror-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="Mirror-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MultiPolWave">class <strong>MultiPolWave</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;multimode&nbsp;dispersive&nbsp;waveguide<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#MultiPolWave">MultiPolWave</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="MultiPolWave-__init__"><strong>__init__</strong></a>(self, L, Neff, pol_list=[0], R=None, w=None, wl=None)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;(float)&nbsp;:&nbsp;length&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Neff&nbsp;(function)&nbsp;:&nbsp;function&nbsp;returning&nbsp;the&nbsp;effecive&nbsp;index&nbsp;of&nbsp;the&nbsp;wavegude.&nbsp;It&nbsp;must&nbsp;be&nbsp;function&nbsp;of&nbsp;wl,R,w,&nbsp;and&nbsp;pol<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;&nbsp;:&nbsp;list&nbsp;of&nbsp;int&nbsp;cotaining&nbsp;the&nbsp;relevant&nbsp;modes&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wl&nbsp;(float)&nbsp;:&nbsp;default&nbsp;wavelength&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;w&nbsp;&nbsp;(float)&nbsp;:&nbsp;default&nbsp;width&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;(float)&nbsp;:&nbsp;default&nbsp;bending&nbsp;radius&nbsp;of&nbsp;the&nbsp;waveguide</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="MultiPolWave-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="MultiPolWave-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="MultiPolWave-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PerfectMirror">class <strong>PerfectMirror</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;perfect&nbsp;mirror&nbsp;(only&nbsp;one&nbsp;port),&nbsp;100%&nbsp;reflection<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#PerfectMirror">PerfectMirror</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PerfectMirror-__init__"><strong>__init__</strong></a>(self, phase=0.0)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phase&nbsp;(float):&nbsp;phase&nbsp;of&nbsp;the&nbsp;reflected&nbsp;ray&nbsp;(in&nbsp;pi&nbsp;unit)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="PerfectMirror-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="PerfectMirror-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="PerfectMirror-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PhaseShifter">class <strong>PhaseShifter</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;multimode&nbsp;variable&nbsp;phase&nbsp;shifter<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#PhaseShifter">PhaseShifter</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PhaseShifter-__init__"><strong>__init__</strong></a>(self, param_name='PS')</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_name&nbsp;(str)&nbsp;:&nbsp;name&nbsp;of&nbsp;the&nbsp;parameter&nbsp;of&nbsp;the&nbsp;Phase&nbsp;Shifter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;&nbsp;:&nbsp;list&nbsp;of&nbsp;int&nbsp;cotaining&nbsp;the&nbsp;relevant&nbsp;modes</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="PhaseShifter-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="PhaseShifter-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="PhaseShifter-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PolRot">class <strong>PolRot</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;a&nbsp;2&nbsp;modes&nbsp;polarization&nbsp;rotator<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#PolRot">PolRot</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PolRot-__init__"><strong>__init__</strong></a>(self, angle=None, angle_name='angle')</dt><dd><tt>Creator:<br>
+If&nbsp;angle&nbsp;is&nbsp;provided&nbsp;the&nbsp;rotation&nbsp;is&nbsp;fixed&nbsp;to&nbsp;that&nbsp;value.&nbsp;If&nbsp;not,&nbsp;the&nbsp;rotation&nbsp;is&nbsp;assumed&nbsp;variable&nbsp;and&nbsp;the&nbsp;angle&nbsp;will&nbsp;be&nbsp;fetched&nbsp;form&nbsp;the&nbsp;parameter&nbsp;dictionary.<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;angle&nbsp;(float)&nbsp;:&nbsp;fixed&nbsp;value&nbsp;of&nbsp;the&nbsp;rotation&nbsp;angle&nbsp;(in&nbsp;pi&nbsp;units).&nbsp;Default&nbsp;is&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;angle_name&nbsp;(str)&nbsp;:&nbsp;name&nbsp;of&nbsp;the&nbsp;angle&nbsp;parameter</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="PolRot-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="PolRot-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="PolRot-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PolRot-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PolRot-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PolRot-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="PolRot-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="PolRot-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="PolRot-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PolRot-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PolRot-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="PolRot-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PushPullPhaseShifter">class <strong>PushPullPhaseShifter</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;multimode&nbsp;variable&nbsp;phase&nbsp;shifter<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#PushPullPhaseShifter">PushPullPhaseShifter</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PushPullPhaseShifter-__init__"><strong>__init__</strong></a>(self, param_name='PS')</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_name&nbsp;(str)&nbsp;:&nbsp;name&nbsp;of&nbsp;the&nbsp;parameter&nbsp;of&nbsp;the&nbsp;Phase&nbsp;Shifter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;&nbsp;:&nbsp;list&nbsp;of&nbsp;int&nbsp;cotaining&nbsp;the&nbsp;relevant&nbsp;modes</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="PushPullPhaseShifter-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="PushPullPhaseShifter-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Ring">class <strong>Ring</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;ring&nbsp;resonator&nbsp;filter<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#Ring">Ring</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Ring-__init__"><strong>__init__</strong></a>(self, R, n, alpha, t)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;(float)&nbsp;:&nbsp;radius&nbsp;of&nbsp;the&nbsp;ring<br>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;(float)&nbsp;:&nbsp;effective&nbsp;index&nbsp;of&nbsp;the&nbsp;waveguide&nbsp;in&nbsp;the&nbsp;ring<br>
+&nbsp;&nbsp;&nbsp;&nbsp;alpha&nbsp;(float)&nbsp;:&nbsp;one&nbsp;trip&nbsp;loss&nbsp;coefficient&nbsp;(remaingin&nbsp;complex&nbsp;amplitude)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t&nbsp;(float)&nbsp;:&nbsp;transission&nbsp;of&nbsp;the&nbsp;beam&nbsp;splitter&nbsp;(complex&nbsp;amplitude)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="Ring-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="Ring-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="Ring-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Ring-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Ring-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Ring-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="Ring-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="Ring-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="Ring-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Ring-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Ring-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="Ring-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SolvedModel">class <strong>SolvedModel</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;<a href="#model">model</a><br>
+It&nbsp;contains&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;(definition&nbsp;of&nbsp;the&nbsp;scattering&nbsp;matrix)&nbsp;for&nbsp;each&nbsp;base&nbsp;photonic&nbsp;building&nbsp;block<br>
+This&nbsp;is&nbsp;the&nbsp;general&nbsp;template&nbsp;for&nbsp;the&nbsp;class,&nbsp;no&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;defined&nbsp;here.&nbsp;<br>
+Each&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;a&nbsp;separate&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;main&nbsp;one.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#SolvedModel">SolvedModel</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SolvedModel-__init__"><strong>__init__</strong></a>(self, pin_dic={}, param_dic={}, Smatrix=None)</dt><dd><tt>Creator&nbsp;of&nbsp;the&nbsp;class<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;pin&nbsp;names&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_dic&nbsp;(dictionary):&nbsp;dcitionary&nbsp;{'param_name':param_value}&nbsp;containing&nbsp;the&nbsp;definition&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;parameters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Smatrix&nbsp;(ndarray)&nbsp;:&nbsp;Fixed&nbsp;S_matrix&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-get_data"><strong>get_data</strong></a>(self, pin1, pin2)</dt></dl>
+
+<dl><dt><a name="SolvedModel-get_full_output"><strong>get_full_output</strong></a>(self, input_dic, power=True)</dt></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="SolvedModel-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="SolvedModel-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="SolvedModel-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Splitter1x2">class <strong>Splitter1x2</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;1x2&nbsp;Splitter<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#Splitter1x2">Splitter1x2</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Splitter1x2-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Creator</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="Splitter1x2-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="Splitter1x2-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Splitter1x2Gen">class <strong>Splitter1x2Gen</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;1x2&nbsp;Splitter&nbsp;with&nbsp;possible&nbsp;reflection&nbsp;between&nbsp;the&nbsp;2&nbsp;port&nbsp;side.&nbsp;TODO:&nbsp;verify&nbsp;this&nbsp;<a href="#model">model</a>&nbsp;makes&nbsp;sense<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#Splitter1x2Gen">Splitter1x2Gen</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Splitter1x2Gen-__init__"><strong>__init__</strong></a>(self, cross=0.0, phase=0.0)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cross&nbsp;(float)&nbsp;:&nbsp;ratio&nbsp;of&nbsp;reflection&nbsp;(power&nbsp;ratio)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;phase&nbsp;(float)&nbsp;:&nbsp;phase&nbsp;shift&nbsp;of&nbsp;the&nbsp;reflected&nbsp;ray&nbsp;(in&nbsp;unit&nbsp;of&nbsp;py)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="Splitter1x2Gen-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="Splitter1x2Gen-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="Splitter1x2Gen-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TH_PhaseShifter">class <strong>TH_PhaseShifter</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;thermal&nbsp;phase&nbsp;shifter&nbsp;(dispersive&nbsp;waveguide&nbsp;+&nbsp;phase&nbsp;shifter)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#TH_PhaseShifter">TH_PhaseShifter</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="TH_PhaseShifter-__init__"><strong>__init__</strong></a>(self, L, Neff, R=None, w=None, wl=None, pol=None, param_name='PS')</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;(float)&nbsp;:&nbsp;length&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Neff&nbsp;(function):&nbsp;function&nbsp;returning&nbsp;the&nbsp;effecive&nbsp;index&nbsp;of&nbsp;the&nbsp;wavegude.&nbsp;It&nbsp;must&nbsp;be&nbsp;function&nbsp;of&nbsp;wl,R,w,&nbsp;and&nbsp;pol<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wl&nbsp;(float)&nbsp;:&nbsp;default&nbsp;wavelength&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;w&nbsp;&nbsp;(float)&nbsp;:&nbsp;default&nbsp;width&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;(float)&nbsp;:&nbsp;default&nbsp;bending&nbsp;radius&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol&nbsp;(int)&nbsp;&nbsp;:&nbsp;default&nbsp;mode&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_name&nbsp;(str)&nbsp;:&nbsp;name&nbsp;of&nbsp;the&nbsp;parameter&nbsp;of&nbsp;the&nbsp;Phase&nbsp;Shifter</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="TH_PhaseShifter-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="TH_PhaseShifter-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="TH_PhaseShifter-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="UserWaveguide">class <strong>UserWaveguide</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;<a href="#model">model</a><br>
+It&nbsp;contains&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;(definition&nbsp;of&nbsp;the&nbsp;scattering&nbsp;matrix)&nbsp;for&nbsp;each&nbsp;base&nbsp;photonic&nbsp;building&nbsp;block<br>
+This&nbsp;is&nbsp;the&nbsp;general&nbsp;template&nbsp;for&nbsp;the&nbsp;class,&nbsp;no&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;defined&nbsp;here.&nbsp;<br>
+Each&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;a&nbsp;separate&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;main&nbsp;one.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#UserWaveguide">UserWaveguide</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="UserWaveguide-__init__"><strong>__init__</strong></a>(self, L, func, param_dic)</dt><dd><tt>Creator&nbsp;of&nbsp;the&nbsp;class<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;pin&nbsp;names&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_dic&nbsp;(dictionary):&nbsp;dcitionary&nbsp;{'param_name':param_value}&nbsp;containing&nbsp;the&nbsp;definition&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;parameters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Smatrix&nbsp;(ndarray)&nbsp;:&nbsp;Fixed&nbsp;S_matrix&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="UserWaveguide-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="UserWaveguide-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="UserWaveguide-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Waveguide">class <strong>Waveguide</strong></a>(<a href="model.html#model">model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Model&nbsp;of&nbsp;a&nbsp;simple&nbsp;waveguide<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="model.html#Waveguide">Waveguide</a></dd>
+<dd><a href="model.html#model">model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Waveguide-__init__"><strong>__init__</strong></a>(self, L, n=1.0, wl=1.0)</dt><dd><tt>Creator<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;(float)&nbsp;:&nbsp;length&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;(float&nbsp;or&nbsp;complex):&nbsp;effective&nbsp;index&nbsp;of&nbsp;the&nbsp;waveguide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wl&nbsp;(float)&nbsp;:&nbsp;default&nbsp;wavelength&nbsp;of&nbsp;the&nbsp;waveguide</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><a name="Waveguide-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="Waveguide-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Waveguide-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="Waveguide-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="Waveguide-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="model.html#model">model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="model">class <strong>model</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;<a href="#model">model</a><br>
+It&nbsp;contains&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;(definition&nbsp;of&nbsp;the&nbsp;scattering&nbsp;matrix)&nbsp;for&nbsp;each&nbsp;base&nbsp;photonic&nbsp;building&nbsp;block<br>
+This&nbsp;is&nbsp;the&nbsp;general&nbsp;template&nbsp;for&nbsp;the&nbsp;class,&nbsp;no&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;defined&nbsp;here.&nbsp;<br>
+Each&nbsp;<a href="#model">model</a>&nbsp;is&nbsp;a&nbsp;separate&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;main&nbsp;one.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="model-__init__"><strong>__init__</strong></a>(self, pin_dic={}, param_dic={}, Smatrix=None)</dt><dd><tt>Creator&nbsp;of&nbsp;the&nbsp;class<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;pin&nbsp;names&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_dic&nbsp;(dictionary):&nbsp;dcitionary&nbsp;{'param_name':param_value}&nbsp;containing&nbsp;the&nbsp;definition&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>'s&nbsp;parameters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Smatrix&nbsp;(ndarray)&nbsp;:&nbsp;Fixed&nbsp;S_matrix&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="model-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Formatter&nbsp;function&nbsp;for&nbsp;printing</tt></dd></dl>
+
+<dl><dt><a name="model-expand_pol"><strong>expand_pol</strong></a>(self, pol_list=[0])</dt><dd><tt>This&nbsp;function&nbsp;expands&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;by&nbsp;adding&nbsp;additional&nbsp;modes&nbsp;based&nbsp;on&nbsp;pol_list.<br>
+For&nbsp;each&nbsp;pin&nbsp;a&nbsp;number&nbsp;of&nbsp;pins&nbsp;equal&nbsp;the&nbsp;the&nbsp;length&nbsp;of&nbsp;pol_list&nbsp;will&nbsp;be&nbsp;created&nbsp;the&nbsp;name&nbsp;will&nbsp;be&nbsp;'{pinname}_pol{pol}'&nbsp;for&nbsp;pol&nbsp;in&nbsp;pol_list<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pol_list&nbsp;(list)&nbsp;:&nbsp;list&nbsp;of&nbsp;integers&nbsp;wiht&nbsp;the&nbsp;indexing&nbsp;of&nbsp;modes&nbsp;to&nbsp;be&nbsp;considered.&nbsp;Default&nbsp;is&nbsp;[0]<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;:&nbsp;new&nbsp;<a href="#model">model</a>&nbsp;with&nbsp;expanded&nbsp;polarization</tt></dd></dl>
+
+<dl><dt><a name="model-get_A"><strong>get_A</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Complex&nbsp;amplitude&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="model-get_PH"><strong>get_PH</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Phase&nbsp;of&nbsp;the&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="model-get_T"><strong>get_T</strong></a>(self, pin1, pin2)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;energy&nbsp;transmission&nbsp;between&nbsp;two&nbsp;ports<br>
+If&nbsp;the&nbsp;two&nbsp;ports&nbsp;are&nbsp;the&nbsp;same&nbsp;the&nbsp;returned&nbsp;value&nbsp;has&nbsp;the&nbsp;meaning&nbsp;of&nbsp;relection<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin1&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;input&nbsp;pin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pin2&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;output&nbsp;pin<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;Energy&nbsp;transmission&nbsp;between&nbsp;the&nbsp;ports</tt></dd></dl>
+
+<dl><dt><a name="model-get_output"><strong>get_output</strong></a>(self, input_dic, power=True)</dt><dd><tt>Returns&nbsp;the&nbsp;outputs&nbsp;from&nbsp;all&nbsp;ports&nbsp;of&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;given&nbsp;the&nbsp;inputs&nbsp;amplitudes<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_dic&nbsp;(dict):&nbsp;dictionary&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;input_amplitude&nbsp;(complex)}.&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;complex&nbsp;amplitudes&nbsp;at&nbsp;each&nbsp;input&nbsp;port.&nbsp;Missing&nbsp;port&nbsp;are&nbsp;assumed&nbsp;wiht&nbsp;amplitude&nbsp;0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;power&nbsp;(bool):&nbsp;If&nbsp;True,&nbsp;returned&nbsp;values&nbsp;are&nbsp;power&nbsp;transmissions.&nbsp;If&nbsp;False,&nbsp;complex&nbsp;amplitudes&nbsp;are&nbsp;instead&nbsp;returned.&nbsp;Default&nbsp;is&nbsp;True<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;Dictionary&nbsp;containing&nbsp;the&nbsp;outputs&nbsp;in&nbsp;the&nbsp;form&nbsp;{pin_name&nbsp;(str)&nbsp;:&nbsp;output&nbsp;(float&nbsp;or&nbsp;complex)}</tt></dd></dl>
+
+<dl><dt><a name="model-pin_mapping"><strong>pin_mapping</strong></a>(self, pin_mapping)</dt></dl>
+
+<dl><dt><a name="model-print_S"><strong>print_S</strong></a>(self, func=None)</dt><dd><tt>Function&nbsp;for&nbsp;nice&nbsp;printing&nbsp;of&nbsp;scattering&nbsp;matrix&nbsp;in&nbsp;agreement&nbsp;with&nbsp;pins</tt></dd></dl>
+
+<dl><dt><a name="model-put"><strong>put</strong></a>(self, pins=None, pint=None, param_mapping={})</dt><dd><tt>Function&nbsp;for&nbsp;putting&nbsp;a&nbsp;<a href="#model">model</a>&nbsp;in&nbsp;a&nbsp;Solver&nbsp;<a href="builtins.html#object">object</a>,&nbsp;and&nbsp;eventually&nbsp;specify&nbsp;connections<br>
+This&nbsp;function&nbsp;creates&nbsp;a&nbsp;Structure&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;<a href="#model">model</a>&nbsp;and&nbsp;place&nbsp;it&nbsp;in&nbsp;the&nbsp;current&nbsp;active&nbsp;Solver<br>
+If&nbsp;both&nbsp;pins&nbsp;and&nbsp;pint&nbsp;are&nbsp;provided,&nbsp;the&nbsp;connection&nbsp;also&nbsp;is&nbsp;made.&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pins&nbsp;(str):&nbsp;pin&nbsp;of&nbsp;<a href="#model">model</a>&nbsp;to&nbsp;be&nbsp;connected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pint&nbsp;(tuple):&nbsp;tuple&nbsp;(structure&nbsp;(Structure)&nbsp;,&nbsp;pin&nbsp;(str))&nbsp;existing&nbsp;structure&nbsp;and&nbsp;pin&nbsp;to&nbsp;which&nbsp;to&nbsp;connect&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;param_mapping&nbsp;(dict):&nbsp;dictionary&nbsp;of&nbsp;{oldname&nbsp;(str)&nbsp;:&nbsp;newname&nbsp;(str)}&nbsp;containning&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;parameters<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Structure:&nbsp;the&nbsp;Structure&nbsp;instance&nbsp;created&nbsp;from&nbsp;the&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="model-show_free_pins"><strong>show_free_pins</strong></a>(self)</dt><dd><tt>Funciton&nbsp;for&nbsp;printing&nbsp;pins&nbsp;of&nbsp;<a href="#model">model</a></tt></dd></dl>
+
+<dl><dt><a name="model-solve"><strong>solve</strong></a>(self, **kargs)</dt><dd><tt>Function&nbsp;for&nbsp;returning&nbsp;the&nbsp;solved&nbsp;<a href="#model">model</a><br>
+This&nbsp;function&nbsp;is&nbsp;to&nbsp;align&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;Model&nbsp;and&nbsp;Solver&nbsp;class.<br>
+Args:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kwargs:&nbsp;dictionary&nbsp;of&nbsp;the&nbsp;parameters&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model:&nbsp;solved&nbsp;<a href="#model">model</a>&nbsp;of&nbsp;self</tt></dd></dl>
+
+<dl><dt><a name="model-update_params"><strong>update_params</strong></a>(self, update_dic)</dt><dd><tt>Update&nbsp;the&nbsp;parameters&nbsp;of&nbsp;<a href="#model">model</a>,&nbsp;setting&nbsp;defaults&nbsp;when&nbsp;value&nbsp;is&nbsp;not&nbsp;provides<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;update_dic&nbsp;(dict)&nbsp;:&nbsp;dictionary&nbsp;of&nbsp;parameters&nbsp;in&nbsp;the&nbsp;from&nbsp;{param_name&nbsp;(str)&nbsp;:&nbsp;param_value&nbsp;(usually&nbsp;float)}</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-diag_blocks"><strong>diag_blocks</strong></a>(array_list)</dt><dd><tt>Function&nbsp;building&nbsp;a&nbsp;block&nbsp;diagonal&nbsp;array&nbsp;for&nbsp;list&nbsp;of&nbsp;array<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;array_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;ndarrays.&nbsp;Each&nbsp;array&nbsp;is&nbsp;a&nbsp;2D&nbsp;square&nbsp;array.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ndarray:&nbsp;2D&nbsp;array&nbsp;with&nbsp;the&nbsp;arrays&nbsp;in&nbsp;array_list&nbsp;as&nbsp;blocks&nbsp;in&nbsp;the&nbsp;diagonal</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>sol_list</strong> = [&lt;solver.sol.Solver object&gt;]</td></tr></table>
+</body></html>

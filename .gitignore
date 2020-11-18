@@ -6,5 +6,5 @@ __pycache__
 ./*.py
 jupyter/.ipynb_checkpoints
 *.log
-*.html
+jupyter/*.html
 tests
