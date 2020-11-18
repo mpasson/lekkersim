@@ -9,3 +9,4 @@ jupyter/.ipynb_checkpoints
 jupyter/*.html
 tests
 .gitlab-ci.yml.back
+docs/
