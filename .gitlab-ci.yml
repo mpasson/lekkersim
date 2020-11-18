@@ -5,7 +5,7 @@ pages:
   script:
   - mkdir public
   - pip install sphinx
-  - pip install sphinx-rtd-scheme
+  - pip install sphinx-trd-theme
   - sphinx-build -b html Docs public/
   artifacts:
     paths:
