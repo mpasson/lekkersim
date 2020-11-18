@@ -19,15 +19,17 @@ from solver import sol_list
 class Solver:
     """Class Solver
     This class defines the simulations. It contains all the structures of the optical componets, and has the methods for running the simulation and accessing the results.
+
+    Args:
+        structures (list) : list of structures in the solver. Default is None (empty list)
+        connections (dict) : dictionary of tuples (structure (Structure), pin (str)) containing connections {(structure1,pin1):(structure2,pin2)}. Default is None (empty dictionary)
+        param_dic (dict) :  dictionary of parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary)
+        default_params (dict) : dictionary of default parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary)
     """
+    space = ''
+
     def __init__(self,structures=None, connections=None, param_dic=None, default_params=None, name=None):
         """Creator
-
-        Args:
-            structures (list) : list of structures in the solver. Default is None (empty list)
-            connections (dict) : dictionary of tuples (structure (Structure), pin (str)) containing connections {(structure1,pin1):(structure2,pin2)}. Default is None (empty dictionary)
-            param_dic (dict) :  dictionary of parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary)
-            default_params (dict) : dictionary of default parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary)
         """
         self.structures=structures if structures is not None else []
         self.connections=connections if connections is not None else {}
@@ -276,10 +278,22 @@ class Solver:
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
         return ST
 
+
     def inspect(self):
-        """Print the full hierarchy of the solver. Just a wrapper for help.print()
+        """Print the full hierarchy of the solver
         """
-        help.print(self)
+        print(f'{self.space}{self}')
+        for s in self.structures:
+            if s.solver is not None:
+                self.__class__.space=self.__class__.space+'  '
+                s.solver.inspect()
+                self.__class__.space=self.__class__.space[:-2]    
+            elif s.model is not None:
+                print(f'{self.space}  {s.model}')
+            else:
+                print(f'{self.space}  {s}')
+
+
 
     def maps_all_pins(self):
         """Function for automatically map all pins.

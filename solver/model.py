@@ -52,15 +52,16 @@ class model:
         It contains the model (definition of the scattering matrix) for each base photonic building block
         This is the general template for the class, no model is defined here. 
         Each model is a separate class based on the main one.
-
-    """
-    def __init__(self, pin_dic=None, param_dic=None, Smatrix=None):
-        """Creator of the class
+        The only use case for using this class dicrectrly is to call it without arguments to create an empy model that will be eliminated if prune is called
 
         Args:
             pin_list (list): list of strings containing the model's pin names 
             param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
             Smatrix (ndarray) : Fixed S_matrix of the model
+
+    """
+    def __init__(self, pin_dic=None, param_dic=None, Smatrix=None):
+        """Creator of the class
         """
         self.pin_dic={} if pin_dic is None else pin_dic
         self.N=len(self.pin_dic)
@@ -388,13 +389,14 @@ class SolvedModel(model):
  
 class Waveguide(model):
     """Model of a simple waveguide
-    """
-    def __init__(self,L,n=1.0,wl=1.0):
-        """Creator
+
         Args:
             L (float) : length of the waveguide
             n (float or complex): effective index of the waveguide
             wl (float) : default wavelength of the waveguide
+    """
+    def __init__(self,L,n=1.0,wl=1.0):
+        """Creator
         """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
@@ -426,6 +428,7 @@ class Waveguide(model):
 
 class UserWaveguide(model):
     """Template for a user defined waveguide
+
     Args:
         L (float): length of the waveguide
         func (function): index function of the waveguide
@@ -435,10 +438,10 @@ class UserWaveguide(model):
     Note for nazca:
         This model is the one used in the building of the circit model for cell in naza. 
         If the user wants to create a personal funciton to be used with that, the function must have at least the following arguments as a keywork arguments:
-            wl (float) : the wavelegth (in um)
-            W (float) : waveguide width (in um)
-            R (float) : waveguide bending radius (in um)
-            pol (int) : index of the mode
+            - wl (float) : the wavelegth (in um)
+            - W (float) : waveguide width (in um)
+            - R (float) : waveguide bending radius (in um)
+            - pol (int) : index of the mode
 
     """
     def __init__(self, L , func, param_dic, pol_list = None):
@@ -486,9 +489,7 @@ class UserWaveguide(model):
 
 class GeneralWaveguide(model):
     """Model of dispersive waveguide
-    """
-    def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None):
-        """Creator
+
         Args:
             L (float) : length of the waveguide
             Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
@@ -496,6 +497,10 @@ class GeneralWaveguide(model):
             w  (float) : default width of the waveguide
             R  (float) : default bending radius of the waveguide
             pol (int)  : default mode of the waveguide
+
+    """
+    def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None):
+        """Creator
         """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
@@ -531,9 +536,7 @@ class GeneralWaveguide(model):
 
 class MultiPolWave(model):
     """Model of multimode dispersive waveguide
-    """
-    def __init__(self,L,Neff,pol_list=[0],R=None,w=None, wl=None):
-        """Creator
+
         Args:
             L (float) : length of the waveguide
             Neff (function) : function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
@@ -541,6 +544,9 @@ class MultiPolWave(model):
             wl (float) : default wavelength of the waveguide
             w  (float) : default width of the waveguide
             R  (float) : default bending radius of the waveguide
+    """
+    def __init__(self,L,Neff,pol_list=[0],R=None,w=None, wl=None):
+        """Creator
         """
         self.pin_dic={}
         self.pol_list=pol_list
@@ -581,11 +587,12 @@ class MultiPolWave(model):
 
 class BeamSplitter(model):
     """Model of 50/50 beam splitter
+
+        Args:
+            phase (float) : phase shift of the coupled ray (in unit of pi)
     """
     def __init__(self,phase=0.5):
         """Creator
-        Args:
-            phase (float) : phase shift of the coupled ray (in unit of py)
         """
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
@@ -605,12 +612,13 @@ class BeamSplitter(model):
 
 class GeneralBeamSplitter(model):
     """Model of variable ration beam splitter
+
+        Args:
+            ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
+            phase (float) : phase shift of the coupled ray (in unit of pi)
     """
     def __init__(self,ratio=0.5,t=None,phase=0.5):
         """Creator
-        Args:
-            ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
-            phase (float) : phase shift of the coupled ray (in unit of py)
         """
         self.pin_dic={'a0':0,'a1':1,'b0':2,'b1':3}        
         self.N=4
@@ -655,12 +663,13 @@ class Splitter1x2(model):
 
 class Splitter1x2Gen(model):
     """Model of 1x2 Splitter with possible reflection between the 2 port side. TODO: verify this model makes sense
+
+        Args:
+            cross (float) : ratio of reflection (power ratio)
+            phase (float) : phase shift of the reflected ray (in unit of pi)
     """
     def __init__(self,cross=0.0,phase=0.0):
         """Creator
-        Args:
-            cross (float) : ratio of reflection (power ratio)
-            phase (float) : phase shift of the reflected ray (in unit of py)
         """
         self.pin_dic={'a0':0,'b0':1,'b1':2}        
         self.N=3
@@ -675,12 +684,13 @@ class Splitter1x2Gen(model):
 
 class PhaseShifter(model):
     """Model of multimode variable phase shifter
-    """
-    def __init__(self,param_name='PS', param_default=0.0):
-        """Creator
+
         Args:
             param_name (str)       : name of the parameter of the Phase Shifter
             param_default (float)  : default value of the Phase Shift in pi units
+    """
+    def __init__(self,param_name='PS', param_default=0.0):
+        """Creator
         """
         self.param_dic={}
         self.pin_dic={'a0':0,'b0':1}
@@ -705,12 +715,13 @@ class PhaseShifter(model):
 
 class PushPullPhaseShifter(model):
     """Model of multimode variable phase shifter
-    """
-    def __init__(self,param_name='PS'):
-        """Creator
+
         Args:
             param_name (str) : name of the parameter of the Phase Shifter
             pol_list (list)  : list of int cotaining the relevant modes
+    """
+    def __init__(self,param_name='PS'):
+        """Creator
         """
         self.param_dic={}
         self.pin_dic={'a0':0,'b0':1,'a1':2,'b1': 3}
@@ -743,13 +754,15 @@ class PushPullPhaseShifter(model):
 
 class PolRot(model):
     """Model of a 2 modes polarization rotator
-    """
-    def __init__(self,angle=None,angle_name='angle'):
-        """Creator:
+
         If angle is provided the rotation is fixed to that value. If not, the rotation is assumed variable and the angle will be fetched form the parameter dictionary.
+
         Args:
             angle (float) : fixed value of the rotation angle (in pi units). Default is None
             angle_name (str) : name of the angle parameter
+    """
+    def __init__(self,angle=None,angle_name='angle'):
+        """Creator:
         """
         self.pin_dic={'a0_pol0':0, 'a0_pol1':1, 'b0_pol0':2, 'b0_pol1':3}        
         self.N=4
@@ -787,11 +800,12 @@ class PolRot(model):
 
 class Attenuator(model):
     """Model of attenuator
+
+        Args:
+            loss: value of the loss (in dB)
     """
     def __init__(self,loss=0.0):
         """Creator
-        Args:
-            loss: value of the loss (in dB)
         """
         self.param_dic={}
         self.pin_dic={'a0':0,'b0':1}        
@@ -806,12 +820,13 @@ class Attenuator(model):
 
 class Mirror(model):
     """Model of partilly reflected Mirror
-    """
-    def __init__(self,ref=0.5,phase=0.0):
-        """Creator
+
         Args:
             ref (float) : ratio of reflected power
             phase (float): phase shift of the reflected ray (in pi units)
+    """
+    def __init__(self,ref=0.5,phase=0.0):
+        """Creator
         """
         self.pin_dic={'a0':0,'b0':1}        
         self.param_dic={}
@@ -829,11 +844,11 @@ class Mirror(model):
 
 class PerfectMirror(model):
     """Model of perfect mirror (only one port), 100% reflection
+    Args:
+        phase (float): phase of the reflected ray (in pi unit)
     """
     def __init__(self,phase=0.0):
         """Creator
-        Args:
-            phase (float): phase of the reflected ray (in pi unit)
         """
         self.pin_dic={'a0':0}      
         self.param_dic={}  
@@ -847,13 +862,14 @@ class PerfectMirror(model):
 
 class FPR_NxM(model):   
     """Model of Free Propagation Region. TODO: check this model makes sense
+
+    Args:
+        N (int) : number of input ports
+        M (int) : number of output ports
+        phi (float) : phase difference between adjacent ports
     """
     def __init__(self,N,M,phi=0.1):
         """Creator
-        Args:
-            N (int) : number of input ports
-            M (int) : number of output ports
-            phi (float) : phase difference between adjacent ports
         """
         self.param_dic={}  
         self.default_params=deepcopy(self.param_dic)
@@ -870,14 +886,15 @@ class FPR_NxM(model):
 
 class Ring(model):
     """Model of ring resonator filter
+
+    Args:
+        R (float) : radius of the ring
+        n (float) : effective index of the waveguide in the ring
+        alpha (float) : one trip loss coefficient (remaingin complex amplitude)
+        t (float) : transission of the beam splitter (complex amplitude)
     """
     def __init__(self,R,n,alpha,t):
         """Creator
-        Args:
-            R (float) : radius of the ring
-            n (float) : effective index of the waveguide in the ring
-            alpha (float) : one trip loss coefficient (remaingin complex amplitude)
-            t (float) : transission of the beam splitter (complex amplitude)
         """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2
@@ -911,17 +928,18 @@ class Ring(model):
 
 class TH_PhaseShifter(model):
     """Model of thermal phase shifter (dispersive waveguide + phase shifter)
+
+    Args:
+        L (float) : length of the waveguide
+        Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+        wl (float) : default wavelength of the waveguide
+        w  (float) : default width of the waveguide
+        R  (float) : default bending radius of the waveguide
+        pol (int)  : default mode of the waveguide
+        param_name (str) : name of the parameter of the Phase Shifter
     """
     def __init__(self,L,Neff,R=None,w=None, wl=None, pol=None, param_name='PS'):
         """Creator
-        Args:
-            L (float) : length of the waveguide
-            Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
-            wl (float) : default wavelength of the waveguide
-            w  (float) : default width of the waveguide
-            R  (float) : default bending radius of the waveguide
-            pol (int)  : default mode of the waveguide
-            param_name (str) : name of the parameter of the Phase Shifter
         """
         self.pin_dic={'a0':0,'b0':1}        
         self.N=2

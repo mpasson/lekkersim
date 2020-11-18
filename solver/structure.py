@@ -7,15 +7,15 @@ import solver.model as mod
 
 class Structure:
     """Class defining a single element of the photonic circuit
+
+    Args:
+        pin_list (list) : list of str containing the names of the pins. Default is empty list
+        model (Model) : model object from which the structue may be derived. Defauls is none
+        solver (Solver) : solver object from which the structue may be derived. Defauls is none
+        param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters. Default is empty dict
     """
     def __init__(self,pin_list=[],model=None,solver=None,param_mapping={}):
         """Creator
-
-        Args:
-            pin_list (list) : list of str containing the names of the pins. Default is empty list
-            model (Model) : model object from which the structue may be derived. Defauls is none
-            solver (Solver) : solver object from which the structue may be derived. Defauls is none
-            param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters. Default is empty dict
         """
         self.pin_list=[]
         self.pin_dic={}
