@@ -51,7 +51,14 @@ class Solver:
         self.name=name
 
     def __enter__(self):
-        """__enter__ function for the with statement. Add the newly created solver to sol_list.
+        """Make the newly created Solver the active solver
+            
+        Usage:
+            >>> with Solver() as MySol:
+            >>>    stuff
+ 
+            
+        Until the with statement is closed, every change (for example, from put methods) will be applied to MySol
         """
         sol_list.append(self)
         return self
@@ -343,22 +350,31 @@ class Solver:
 class Pin():
     """Helper class for more user friendly pin mapping (same as Nazca sintax
     """
-    def __init__(self,name):
-        """Creator
+    def __init__(self,name, pin = None):
+        """
+
         Args:
             name (str) : name of the pin
+            pin (tuple) : tuple of (structure (Structure), pin (str)) containing the data to the pin to be mapped
         """
         self.name=name
+        self.pin = None
 
-    def put(self,tup):
+    def put(self, pin = None):
         """Maps the pins in the tuple to self.name
+
         Args:
-            tup (tuple) : tuple of (structure (Structure), pin (str)) containing the data to the pin to be mapped
+            pin (tuple) : tuple of (structure (Structure), pin (str)) containing the data to the pin to be mapped
         """
-        sol_list[-1].map_pins({self.name:tup})
+        if pin is not None:
+            self.pin = pin
+
+        if self.pin is not None:
+            sol_list[-1].map_pins({self.name:pin})
 
 def putpin(name,tup):
     """Maps a pin of the current active solver
+
     Args:
         name (str) : name of the new pin
         tup (tuple) : tuple of (structure (Structure), pin (str)) containing the data to the pin to be mapped
@@ -367,6 +383,7 @@ def putpin(name,tup):
 
 def connect(tup1,tup2):
     """Connect two structures in the active Solver
+
     Args:
         tup1 (tuple) : tuple of (structure (Structure), pin (str)) containing the data of the first pin
         tup1 (tuple) : tuple of (structure (Structure), pin (str)) containing the data of the second pin
@@ -375,6 +392,7 @@ def connect(tup1,tup2):
 
 def set_default_params(dic):
     """Set default parameters for the solver
+
     Args:
         dic (dict): dictionary of the default parameters {param_name (str) : default_value (usually float)}
     """
@@ -382,6 +400,7 @@ def set_default_params(dic):
 
 def raise_pins():
     """Raise all pins in the solver. It reuiqres unique pin naming, otherwaise an error is raised 
+
     Args:
         dic (dict): dictionary of the default parameters {param_name (str) : default_value (usually float)}
     """
@@ -389,6 +408,10 @@ def raise_pins():
 
 def solve(**kwargs):
     """Solve active solver and returns the model
+
+    Args:
+        **kwargs : parameters for the simulation
+
     Returns:
         Model: Model of the active solver. 
     """
