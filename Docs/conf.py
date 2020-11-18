@@ -17,7 +17,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'Test_Documentation'
+project = 'GenSol Documentation'
 copyright = '2020, Marco Passoni'
 author = 'Marco Passoni'
 
@@ -31,6 +31,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     "sphinx_rtd_theme",
+    "nbsphinx",
 ]
 
 autoclass_content = 'both'

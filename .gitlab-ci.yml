@@ -6,6 +6,7 @@ pages:
   - mkdir public
   - pip install sphinx
   - pip install sphinx-rtd-theme
+  - pip install nbsphinx
   - sphinx-build -b html Docs public/
   artifacts:
     paths:
