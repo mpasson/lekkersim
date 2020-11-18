@@ -1,8 +1,12 @@
+image: python:3.6-alpine
+
 pages:
   stage: deploy
   script:
   - mkdir public
-  - cp -r Docs/_build/* public
+  - pip install sphinx
+  - pip install sphinx-rtd-scheme
+  - sphinx-build -b html Docs public/
   artifacts:
     paths:
     - public

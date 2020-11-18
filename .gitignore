@@ -8,3 +8,4 @@ jupyter/.ipynb_checkpoints
 *.log
 jupyter/*.html
 tests
+.gitlab-ci.yml.back
