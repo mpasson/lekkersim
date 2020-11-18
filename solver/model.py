@@ -289,6 +289,14 @@ class model:
         self.param_dic.update(self.default_params)
         self.param_dic.update(update_dic)
 
+    def prune(self):
+        """Check if the model is empty
+
+        Returns:
+            bool: True if the model is empty, False otherwise
+        """
+        return self.pin_dic == {}
+
     def __str__(self):
         """Formatter function for printing
         """

@@ -317,6 +317,26 @@ class Solver:
         """
         self.param_dic.update(self.default_params)
         self.param_dic.update(update_dic)
+
+    def prune(self):
+        """Remove dead branch in the solver hierarchy (the ones ending with an empy solver)
+
+        Returns:
+            bool: True if Solver is empty
+        """
+        #print(f'Entered in {solver}')
+        not_empty=[]
+        copy_list=copy(self.structures)
+        for st in copy_list:
+            if st.model is not None:
+                not_empty.append(st)
+                continue
+            if st.solver is not None:
+                if st.solver.prune():
+                    self.remove_structure(st)
+                else:
+                    not_empty.append(st)
+        return len(not_empty)==0
         
 
 
@@ -374,59 +394,6 @@ def solve(**kwargs):
     """
     return sol_list[-1].solve(**kwargs)     
 
-
-class helper():
-    """Helper class for some operation on solvers
-    """
-    def __init__(self):
-        """Creator
-        """
-        self.space=''
-
-    def print(self,solver):
-        """Print the full hierarchy of the solver
-        Args:
-            solver (Solver) : solver to be printed
-        """
-        print(f'{self.space}{solver}')
-        for s in solver.structures:
-            if s.solver is not None:
-                self.space=self.space+'  '
-                self.print(s.solver)
-                self.space=self.space[:-2]    
-            elif s.model is not None:
-                print(f'{self.space}  {s.model}')
-            else:
-                print(f'{self.space}  {s}')
-
-    def prune(self,solver):
-        """Remove dead branch in the solver hierarchy (the ones ending with an empy solver)
-        Args:
-            solver (Solver) : solver to be pruned
-        Returns:
-            bool: True if Solver is empty
-        """
-        #print(f'Entered in {solver}')
-        if not isinstance(solver,Solver):
-            return False
-        not_empty=[]
-        copy_list=copy(solver.structures)
-        for st in copy_list:
-            if st.model is not None:
-                not_empty.append(st)
-                continue
-            if st.solver is not None:
-                if self.prune(st.solver):
-                    solver.remove_structure(st)
-                else:
-                    not_empty.append(st)
-        return len(not_empty)==0
-
-"""Renaming some of the inner function to make them available at top level
-"""
-help=helper()
-solver_print=help.print
-prune=help.prune
 
  
 
