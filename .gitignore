@@ -4,7 +4,7 @@ __pycache__
 *.gnu
 *.dat
 ./*.py
-jupyter/.ipynb_checkpoints
+Docs/jupyter/.ipynb_checkpoints/
 *.log
 jupyter/*.html
 tests
