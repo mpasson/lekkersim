@@ -12,7 +12,7 @@ For now nothing special. Just make sure the folder solver is in PYTHONPATH. The 
 
 ## Documentation 
 
-The full documentation of the software is available [Here](https://marco_passoni.gitlab.io/gensol/GenSol/solver.html#solver-class)
+The full documentation of the software is available [Here](https://marco_passoni.gitlab.io/gensol/index.html)
 
 
 ## Jupyter Examples
