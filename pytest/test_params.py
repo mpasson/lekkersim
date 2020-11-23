@@ -173,6 +173,44 @@ def test_params():
         assert np.allclose(T,np.sin((0.5*psl-0.25)*np.pi)**2.0)
 
 
+def test_renaming():
+    with sv.Solver() as S:
+        ps = sv.PhaseShifter().put()
+        S.add_param('PS', lambda PW: 0.1*PW, {'PW': 0.0})
+        sv.raise_pins()
+    data=S.solve(wl=1.55, PW = np.linspace(0.0,10.0,11)).get_data('a0','b0')
+    assert S.default_params == {'wl' : None, 'PW' : 0.0}
+    assert np.allclose(data['Phase'].to_numpy(), np.linspace(0.0, np.pi, 11))  
+
+def test_renaming_hierarchical():
+    with sv.Solver() as TH_PS:
+        ps = sv.PhaseShifter().put()
+        TH_PS.add_param('PS', lambda PW: 0.1*PW, {'PW': 0.0})
+        sv.raise_pins()
+
+    with sv.Solver() as MZM:
+        BM = sv.GeneralBeamSplitter()
+        bm1 = BM.put()
+        ps1 = TH_PS.put('a0', bm1.pin['b0'], param_mapping = {'PW' : 'PW1'})
+        ps2 = TH_PS.put('a0', bm1.pin['b1'], param_mapping = {'PW' : 'PW2'})
+        bm2 = BM.put('a0', ps1.pin['b0'])
+        sv.connect(ps2.pin['b0'], bm2.pin['a1'])
+        sv.raise_pins()
+
+    data=MZM.solve(wl=1.55, PW1 = np.linspace(0.0,10.0,11)).get_data('a0','b0') 
+    assert MZM.default_params == {'wl' : None, 'PW1' : 0.0, 'PW2' : 0.0}
+    assert np.allclose(data['T'].to_numpy(), np.sin(0.5*np.linspace(0.0,1.0,11)*np.pi)**2.0)
+
+def test_renaming_introspection():
+    with sv.Solver() as S:
+        ps = sv.PhaseShifter().put()
+        sv.add_param('PS', lambda PW=0.0: 0.1*PW)
+        sv.raise_pins()
+    data=S.solve(wl=1.55, PW = np.linspace(0.0,10.0,11)).get_data('a0','b0')
+    assert S.default_params == {'wl' : None, 'PW' : 0.0}
+    assert np.allclose(data['Phase'].to_numpy(), np.linspace(0.0, np.pi, 11))  
+
 
 if __name__=='__main__':
-    test_complex()
+    test_renaming()
+    test_renaming2()

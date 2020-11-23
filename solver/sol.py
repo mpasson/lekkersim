@@ -23,12 +23,15 @@ class Solver:
     Args:
         structures (list) : list of structures in the solver. Default is None (empty list)
         connections (dict) : dictionary of tuples (structure (Structure), pin (str)) containing connections {(structure1,pin1):(structure2,pin2)}. Default is None (empty dictionary)
-        param_dic (dict) :  dictionary of parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary)
-        default_params (dict) : dictionary of default parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary)
+        param_dic (dict) :  dictionary of parameters {param_name (str) : param_value (usually float)}. Default is None (empty dictionary). The provided values are assume as the default parameters
+        param_mapping (dict): dict for re-definition of the parameters. Useful to include some kind of physic level knowledge in the model. The dictionary is build as:
+            >>> {'old_name' : (func, {'new_name' : new_default_vaule})}.
+            where func is a function whose parameter are provided by the second dictionary. When simulating, the values of the parameters in the 'new_name' dictionary are passed to func and the retunrded values assigned to 'old_name'.
+
     """
     space = ''
 
-    def __init__(self,structures=None, connections=None, param_dic=None, name=None):
+    def __init__(self,structures=None, connections=None, param_dic=None, name=None, param_mapping = None):
         """Creator
         """
         self.structures=structures if structures is not None else []
@@ -38,6 +41,7 @@ class Solver:
         self.pin_mapping={}
         self.default_params = {'wl' : None}
         self.default_params.update(self.param_dic)
+        self.param_mapping = {} if param_mapping is None else param_mapping
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
@@ -229,8 +233,9 @@ class Solver:
         #print(f'Calling solve of {self}')
         #for par,value in kwargs.items():
         #    kwargs[par]=np.reshape(value,-1)
-        self.param_dic.update(self.default_params)
-        self.param_dic.update(kwargs)
+        #self.param_dic.update(self.default_params)
+        #self.param_dic.update()
+        self.update_params(kwargs)
         for par,value in self.param_dic.items():
             self.param_dic[par]=np.reshape(value,-1)
         for st in self.structures:
@@ -349,7 +354,7 @@ class Solver:
             self.pin_mapping[pin]=(st,pin)
 
     def update_params(self,update_dic):
-        """Update the parameters of model, setting defaults when value is not provides
+        """Update the parameters of solver, setting defaults when value is not provides. It takes care of any parameter added with add_param.
 
         Args:
             update_dic (dict) : dictionary of parameters in the from {param_name (str) : param_value (usually float)}
@@ -357,8 +362,40 @@ class Solver:
         Returns:
             None
         """
+        #self.param_dic.update(self.default_params)
+        #self.param_dic.update(update_dic)
+        start_dic = {}
+        for name, (func, args) in self.param_mapping.items():
+            new_args = {key : value for key,value in args.items()}
+            for key, value in new_args.items():
+                if key in update_dic:
+                    new_args[key] = update_dic[key]
+                new_value = func(**new_args)
+            start_dic.update({name: new_value})
         self.param_dic.update(self.default_params)
         self.param_dic.update(update_dic)
+        self.param_dic.update(start_dic)
+            
+
+    def add_param(self, old_name, func, default = None):
+        """Define a paramter of the solver in term of new paramter(s)
+
+        Args:
+            old_name (str) : name of the old parameter to set
+            func (function): function linking old parameter to new parameter(s)
+            default (dic)  : default value(s) of the new parameter(s).
+                Can be None. In this case, introspection is used to try fo find the new parameter(s) and default from func. An error is raised if not possible.
+        """
+        if default is None:
+            var_names = func.__code__.co_varnames
+            var_def = func.__defaults__
+            if len(var_names) != len(var_def): raise ValueError('Not all default provided')
+            default = {key: value for key, value in zip(var_names, var_def)} 
+        up = {old_name : (func, default)}
+        self.param_mapping.update(up)
+        self.default_params.pop(old_name)
+        self.default_params.update(default)
+
 
     def prune(self):
         """Remove dead branch in the solver hierarchy (the ones ending with an empy solver)
@@ -424,6 +461,17 @@ def connect(tup1,tup2):
         tup1 (tuple) : tuple of (structure (Structure), pin (str)) containing the data of the second pin
     """
     sol_list[-1].connect(tup1[0],tup1[1],tup2[0],tup2[1])
+
+def add_param(old_name, func, default = None):
+    """Define a paramter of the active solver in term of new paramter(s)
+
+    Args:
+        old_name (str) : name of the old parameter to set
+        func (function): function linking old parameter to new parameter(s)
+        default (dic)  : default value(s) of the new parameter(s).
+            Can be None. In this case, introspection is used to try fo find the new parameter(s) and default from func. An error is raised if not possible.
+    """
+    sol_list[-1].add_param(old_name, func, default = default)
 
 def set_default_params(dic):
     """Set default parameters for the solver
