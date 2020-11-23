@@ -28,7 +28,7 @@ class Solver:
     """
     space = ''
 
-    def __init__(self,structures=None, connections=None, param_dic=None, default_params=None, name=None):
+    def __init__(self,structures=None, connections=None, param_dic=None, name=None):
         """Creator
         """
         self.structures=structures if structures is not None else []
@@ -36,7 +36,8 @@ class Solver:
         self.connections_list=[]
         self.param_dic=param_dic if param_dic is not None else {}
         self.pin_mapping={}
-        self.default_params=default_params if default_params is not None else {}
+        self.default_params = {'wl' : None}
+        self.default_params.update(self.param_dic)
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
@@ -91,6 +92,23 @@ class Solver:
                 self.free_pins.append(pin)
         else:
             raise ValueError('Structure already present')
+
+        inv_mapping = {old_name : new_name for new_name, old_name in structure.param_mapping.items()}
+        default_dic={}
+        if structure.model is not None:
+            default_params = structure.model.default_params 
+        elif structure.solver is not None:
+            default_params = structure.solver.default_params  
+        else:
+            default_params = {}
+
+        for key, value in default_params.items():
+            if key in ['R','w','pol']: continue
+            if key in inv_mapping:
+                default_dic[inv_mapping[key]] = value
+            else:
+                default_dic[key] = value
+        self.default_params.update(default_dic)
         
     def remove_structure(self,structure):
         """Remove structure from solver, also removing all the connections to other structures
@@ -283,6 +301,16 @@ class Solver:
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
+
+#        default_dic={}
+#        for key, value in self.default_params.items():
+#            if key in ['R','w','wl']: continue
+#            if key in param_mapping:
+#                default_dic[param_mapping[key]] = value
+#            else:
+#                default_dic[key] = value
+#        sol_list[-1].default_params.update(default_dic)
+
         return ST
 
 
@@ -299,6 +327,13 @@ class Solver:
                 print(f'{self.space}  {s.model}')
             else:
                 print(f'{self.space}  {s}')
+
+    def show_default_params(self):
+        """Print the names of all the top-level parameters and corresponding default value
+        """
+        print(f'Default params of {self}:')
+        for name, par in self.default_params.items():
+            print(f'  {name:10}: {par}')
 
 
 
@@ -393,10 +428,24 @@ def connect(tup1,tup2):
 def set_default_params(dic):
     """Set default parameters for the solver
 
+   The provided dict will oervwrite the default parameters. All pre-existing parameters will be deleted
+
     Args:
         dic (dict): dictionary of the default parameters {param_name (str) : default_value (usually float)}
     """
     sol_list[-1].default_params=dic
+
+def update_default_params(dic):
+    """Update default parameters for the solver
+
+    The provided dict will upadte the default parametes. Not included pre-existing parmeters will be kept.
+
+    Args:
+        dic (dict): dictionary of the default parameters {param_name (str) : default_value (usually float)}
+    """
+    sol_list[-1].default_params.update(dic)
+
+
 
 def raise_pins():
     """Raise all pins in the solver. It reuiqres unique pin naming, otherwaise an error is raised 

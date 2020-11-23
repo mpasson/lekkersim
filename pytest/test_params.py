@@ -134,7 +134,8 @@ def test_complex():
                 
     ActivePhaseShifter.solve(wl=1.55)
     TwinPhaseShifter.solve(wl=1.55)
-    assert True
+    assert ActivePhaseShifter.default_params == {'PS': 0.0, 'wl': None}
+    assert TwinPhaseShifter.default_params == {'TOP': 0.0, 'BOTTOM': 0.0, 'wl': None}
 
 
 def test_params():
@@ -171,3 +172,7 @@ def test_params():
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps).get_T('a0','b0') for ps in psl]
         assert np.allclose(T,np.sin((0.5*psl-0.25)*np.pi)**2.0)
 
+
+
+if __name__=='__main__':
+    test_complex()

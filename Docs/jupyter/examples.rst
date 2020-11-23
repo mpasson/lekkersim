@@ -2,7 +2,7 @@ Examples
 ==========
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    
    GenSol_intro.ipynb
    Nazca Integration.ipynb

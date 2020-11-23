@@ -14,7 +14,7 @@ class Structure:
         solver (Solver) : solver object from which the structue may be derived. Defauls is none
         param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters. Default is empty dict
     """
-    def __init__(self,pin_list=[],model=None,solver=None,param_mapping={}):
+    def __init__(self,pin_list=[],model=None,solver=None,param_mapping=None):
         """Creator
         """
         self.pin_list=[]
@@ -41,6 +41,7 @@ class Structure:
                 self.pin_list.append((self,pin))
         self.solver=solver
         self.param_mapping={}
+        param_mapping = {} if param_mapping is None else param_mapping
         for oldname,newname in param_mapping.items():
             self.param_mapping[newname]=oldname
 
