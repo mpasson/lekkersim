@@ -1,12 +1,191 @@
-API Documentation
-==============================================
-.. toctree::
-    GenSol/model
-    GenSol/solver
-    GenSol/structure
+.. currentmodule:: solver
 
-.. automodule:: solver
-    :members:
-    :show-inheritance:
+*************
+API Reference
+*************
 
+Direct methods
+===============
+
+.. autosummary::
+    :toctree: generated/
+
+    add_param
+    connect
+    diag_blocks
+    putpin
+    raise_pins
+    set_default_params
+    solve
+    update_default_params
+
+Model
+=============
+
+Base Models
+---------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   Model
+   SolvedModel
+
+Methods
+---------------------
+
+.. autosummary::
+    :toctree: generated/
+
+    Model.expand_pol
+    Model.get_A
+    Model.get_PH
+    Model.get_T
+    Model.get_output
+    Model.inspect
+    Model.pin_mapping
+    Model.print_S
+    Model.prune
+    Model.put
+    Model.show_free_pins
+    Model.solve
+    Model.update_params
+
+
+
+
+Functional Models
+---------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   Waveguide
+   UserWaveguide
+   GeneralWaveguide
+   BeamSplitter
+   GeneralBeamSplitter
+   Splitter1x2
+   Splitter1x2Gen
+   PhaseShifter
+   PushPullPhaseShifter
+   PolRot
+   Attenuator
+   Mirror
+   PerfectMirror
+   FPR_NxM
+   TH_PhaseShifter
+
+Solver
+=============
+
+.. autosummary::
+   :toctree: generated/
+
+    Solver
+
+Methods
+---------------------
+
+
+
+.. autosummary::
+   :toctree: generated/
+
+   Solver.__enter__
+   Solver.add_param
+   Solver.add_structure
+   Solver.connect
+   Solver.inspect
+   Solver.map_pins
+   Solver.maps_all_pins
+   Solver.prune
+   Solver.put
+   Solver.remove_structure
+   Solver.set_param
+   Solver.show_connections
+   Solver.show_default_params
+   Solver.show_free_pins
+   Solver.show_pin_mapping
+   Solver.show_structures
+   Solver.solve
+   Solver.update_params
+
+    
+
+
+
+Structure
+=============
+
+.. autosummary::
+   :toctree: generated/
+
+   Structure
+
+Methods
+---------------------
+
+
+.. autosummary::
+    :toctree: generated/
+
+
+    Structure.add_conn
+    Structure.add_pin
+    Structure.createS
+    Structure.get_S_back
+    Structure.get_in_from
+    Structure.get_model
+    Structure.get_out_to
+    Structure.join
+    Structure.pin
+    Structure.print_conn
+    Structure.print_pindic
+    Structure.print_pins
+    Structure.remove_connections
+    Structure.remove_pin
+    Structure.reset
+    Structure.sel_input
+    Structure.sel_output
+    Structure.split_in_out
+    Structure.update_params
+
+S_matrix
+=============
+
+.. autosummary::
+   :toctree: generated/
+
+   S_matrix
+
+Methods
+---------------------
+
+
+.. autosummary::
+    :toctree: generated/
+
+    S_matrix.S_print
+    S_matrix.add
+    S_matrix.det
+    S_matrix.matrix
+
+
+Pin
+=============
+
+.. autosummary::
+   :toctree: generated/
+
+   Pin
+
+Methods
+---------------------
+
+
+.. autosummary::
+    :toctree: generated/
+
+    Pin.put
 

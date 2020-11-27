@@ -46,8 +46,8 @@ def diag_blocks(array_list):
     return M
 
 
-class model:
-    """Class model
+class Model:
+    """Class Model
         
         It contains the model (definition of the scattering matrix) for each base photonic building block
         This is the general template for the class, no model is defined here. 
@@ -112,6 +112,7 @@ class model:
 
     def get_T(self,pin1,pin2):
         """Function for returning the energy transmission between two ports
+
         If the two ports are the same the returned value has the meaning of relection
 
         Args:
@@ -126,6 +127,7 @@ class model:
 
     def get_PH(self,pin1,pin2):
         """Function for returning the phase of the transmission between two ports
+
         If the two ports are the same the returned value has the meaning of relection
 
         Args:
@@ -283,6 +285,7 @@ class model:
 
     def update_params(self,update_dic):
         """Update the parameters of model, setting defaults when value is not provides
+
         Args:
             update_dic (dict) : dictionary of parameters in the from {param_name (str) : param_value (usually float)}
         """
@@ -303,7 +306,7 @@ class model:
         return f'Model object (id={id(self)}) with pins: {list(self.pin_dic)}'
                                        
                
-class SolvedModel(model):
+class SolvedModel(Model):
     """Class for storing data of a solver mode. 
 
     Do not use this class directly. It is retuned from all solve methods. It is convinient for extracting data
@@ -395,7 +398,7 @@ class SolvedModel(model):
 
 
  
-class Waveguide(model):
+class Waveguide(Model):
     """Model of a simple waveguide
 
         Args:
@@ -434,7 +437,7 @@ class Waveguide(model):
         """
         return f'Model of waveguide of lenght {self.L:.3f} and index {self.n:.3f} (id={id(self)})'  
 
-class UserWaveguide(model):
+class UserWaveguide(Model):
     """Template for a user defined waveguide
 
     Args:
@@ -495,7 +498,7 @@ class UserWaveguide(model):
         return self.S
 
 
-class GeneralWaveguide(model):
+class GeneralWaveguide(Model):
     """Model of dispersive waveguide
 
         Args:
@@ -542,7 +545,7 @@ class GeneralWaveguide(model):
         """
         return f'Model of waveguide of lenght {self.L:.3} (id={id(self)})'        
 
-class MultiPolWave(model):
+class MultiPolWave(Model):
     """Model of multimode dispersive waveguide
 
         Args:
@@ -593,7 +596,7 @@ class MultiPolWave(model):
     
 
 
-class BeamSplitter(model):
+class BeamSplitter(Model):
     """Model of 50/50 beam splitter
 
         Args:
@@ -618,7 +621,7 @@ class BeamSplitter(model):
 
 
 
-class GeneralBeamSplitter(model):
+class GeneralBeamSplitter(Model):
     """Model of variable ration beam splitter
 
         Args:
@@ -652,7 +655,7 @@ class GeneralBeamSplitter(model):
         return f'Model of beam-splitter with ratio {self.ratio:.3} (id={id(self)})'
 
     
-class Splitter1x2(model):
+class Splitter1x2(Model):
     """Model of 1x2 Splitter
     """
     def __init__(self):
@@ -669,7 +672,7 @@ class Splitter1x2(model):
     def __str__(self):
         return f'Model of 1x2 splitter (id={id(self)})'      
 
-class Splitter1x2Gen(model):
+class Splitter1x2Gen(Model):
     """Model of 1x2 Splitter with possible reflection between the 2 port side. TODO: verify this model makes sense
 
         Args:
@@ -690,7 +693,7 @@ class Splitter1x2Gen(model):
         self.create_S=self._create_S
 
 
-class PhaseShifter(model):
+class PhaseShifter(Model):
     """Model of multimode variable phase shifter
 
         Args:
@@ -721,7 +724,7 @@ class PhaseShifter(model):
         self.S=S
         return self.S
 
-class PushPullPhaseShifter(model):
+class PushPullPhaseShifter(Model):
     """Model of multimode variable phase shifter
 
         Args:
@@ -760,7 +763,7 @@ class PushPullPhaseShifter(model):
         """
         return f'Model of variable Push-Pull phase shifter (id={id(self)})'  
 
-class PolRot(model):
+class PolRot(Model):
     """Model of a 2 modes polarization rotator
 
         If angle is provided the rotation is fixed to that value. If not, the rotation is assumed variable and the angle will be fetched form the parameter dictionary.
@@ -806,7 +809,7 @@ class PolRot(model):
             S[2:,:2]=np.array([[c,-s],[s,c]])
             return S
 
-class Attenuator(model):
+class Attenuator(Model):
     """Model of attenuator
 
         Args:
@@ -826,7 +829,7 @@ class Attenuator(model):
         self.create_S=self._create_S
 
 
-class Mirror(model):
+class Mirror(Model):
     """Model of partilly reflected Mirror
 
         Args:
@@ -850,8 +853,9 @@ class Mirror(model):
 
 
 
-class PerfectMirror(model):
+class PerfectMirror(Model):
     """Model of perfect mirror (only one port), 100% reflection
+
     Args:
         phase (float): phase of the reflected ray (in pi unit)
     """
@@ -868,7 +872,7 @@ class PerfectMirror(model):
         self.create_S=self._create_S
 
 
-class FPR_NxM(model):   
+class FPR_NxM(Model):   
     """Model of Free Propagation Region. TODO: check this model makes sense
 
     Args:
@@ -892,7 +896,7 @@ class FPR_NxM(model):
         self.create_S=self._create_S
   
 
-class Ring(model):
+class Ring(Model):
     """Model of ring resonator filter
 
     Args:
@@ -934,7 +938,7 @@ class Ring(model):
         self.S[1,0]=b
         return self.S
 
-class TH_PhaseShifter(model):
+class TH_PhaseShifter(Model):
     """Model of thermal phase shifter (dispersive waveguide + phase shifter)
 
     Args:
@@ -977,7 +981,7 @@ class TH_PhaseShifter(model):
         return self.S
 
 
-class AWGfromVPI(model):
+class AWGfromVPI(Model):
     def __init__(self,filename,fsr=1.1):
         with open(filename) as f:
             data=f.read()

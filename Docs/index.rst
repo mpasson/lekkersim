@@ -12,6 +12,7 @@ GenSol's documentation
    :numbered:
 
    intro
+   api_summary
    jupyter/examples
    reference-manual
 

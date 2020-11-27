@@ -16,6 +16,7 @@ class S_matrix:
     """
     def __init__(self,N,M,ns=None):
         """Creator
+
         Args:
             N (int) : number of "left" ports
             M (int) : number of "right" ports
@@ -46,8 +47,10 @@ class S_matrix:
     #NEW RECURSION VERSION
     def add(self,s):
         """Recursion algorith for joining two matrices
+
         Args:
             s (S_matrix) : target S_matrix to join to self
+
         Returns:
             S_matrix : joined scattering matrix
         """
@@ -68,6 +71,7 @@ class S_matrix:
 
     def S_print(self,i=None,j=None):
         """Print scattering matrix as numpy array
+
         Args:
             i,j (int) : number of ports to print. Default is None (all matrix is printed)
         """
@@ -108,6 +112,7 @@ class S_matrix:
 
     def matrix(self):
         """Return scattering matrix as ndarray
+
         Returns:
             ndarray : scattering matrix
         """

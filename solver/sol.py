@@ -494,12 +494,11 @@ def update_default_params(dic):
     sol_list[-1].default_params.update(dic)
 
 
-
 def raise_pins():
     """Raise all pins in the solver. It reuiqres unique pin naming, otherwaise an error is raised 
 
-    Args:
-        dic (dict): dictionary of the default parameters {param_name (str) : default_value (usually float)}
+    It scans the unmapped pins and raise them at top level wiht the same name. If one or more pins have the same name, it fails. 
+    It ignores any pin already mapped by the user.
     """
     sol_list[-1].maps_all_pins()
 
