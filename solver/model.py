@@ -643,10 +643,8 @@ class GeneralBeamSplitter(Model):
         self.default_params=deepcopy(self.param_dic)
         #self.S[:2,2:]=np.array([[t,c],[c,-t]])
         #self.S[2:,:2]=np.array([[t,c],[c,-t]])
-        #self.S[:2,2:]=np.array([[t,c*np.exp(1.0j*p1)],[-c*np.exp(-1.0j*p1),t]])
-        #self.S[2:,:2]=np.array([[t,-c*np.exp(1.0j*p1)],[c*np.exp(-1.0j*p1),t]])
-        self.S[:2,2:]=np.array([[t*np.exp(1.0j*p1),c],[c,-t*np.exp(-1.0j*p1)]])
-        self.S[2:,:2]=np.array([[t*np.exp(1.0j*p1),c],[c,-t*np.exp(-1.0j*p1)]])
+        self.S[:2,2:]=np.array([[t,c*np.exp(-1.0j*p1)],[c*np.exp(1.0j*p1),-t]])
+        self.S[2:,:2]=np.array([[t,c*np.exp(-1.0j*p1)],[c*np.exp(1.0j*p1),-t]])
         self.create_S=self._create_S
 
     def __str__(self):

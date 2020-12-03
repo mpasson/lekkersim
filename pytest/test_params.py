@@ -166,11 +166,11 @@ def test_params():
         psl=np.linspace(0.0,1.0,5)
 
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps, PS1=0.0, PS2=0.0).get_T('a0','b0') for ps in psl]
-        assert np.allclose(T,np.sin(0.5*np.pi*psl)**2.0)
+        assert np.allclose(T,np.cos(0.5*np.pi*psl)**2.0)
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps, PS1=0.0, PS2=0.5).get_T('a0','b0') for ps in psl]
-        assert np.allclose(T,np.sin((0.5*psl-0.25)*np.pi)**2.0)
+        assert np.allclose(T,np.cos((0.5*psl-0.25)*np.pi)**2.0)
         T=[MZM_BB_sol.solve(wl=1.55, DP=ps).get_T('a0','b0') for ps in psl]
-        assert np.allclose(T,np.sin((0.5*psl-0.25)*np.pi)**2.0)
+        assert np.allclose(T,np.cos((0.5*psl-0.25)*np.pi)**2.0)
 
 
 def test_renaming():
@@ -199,7 +199,7 @@ def test_renaming_hierarchical():
 
     data=MZM.solve(wl=1.55, PW1 = np.linspace(0.0,10.0,11)).get_data('a0','b0') 
     assert MZM.default_params == {'wl' : None, 'PW1' : 0.0, 'PW2' : 0.0}
-    assert np.allclose(data['T'].to_numpy(), np.sin(0.5*np.linspace(0.0,1.0,11)*np.pi)**2.0)
+    assert np.allclose(data['T'].to_numpy(), np.cos(0.5*np.linspace(0.0,1.0,11)*np.pi)**2.0)
 
 def test_renaming_introspection():
     with sv.Solver() as S:
