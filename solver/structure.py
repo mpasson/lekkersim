@@ -174,7 +174,7 @@ class Structure:
 
 
 
-    def split_in_out(self,in_pins,out_pins):
+    def split_in_out(self,in_pins = None,out_pins = None):
         """Created the scattering matrix object with left pins separated from right pins
 
         Args:
@@ -185,6 +185,9 @@ class Structure:
             None
         """
         #print('Splitting structure: ',self)
+        in_pins = self.in_list if in_pins is None else in_pins
+        out_pins = self.out_lists if out_pins is None else out_pins
+
         N=len(in_pins)
         M=len(out_pins)
         self.Sproc=S_matrix(N,M,ns=self.ns)
@@ -419,6 +422,61 @@ class Structure:
         if self.ns==st.ns : new_st.ns=self.ns
 
         return new_st
+
+
+    def intermediate(self,st, pin_mapping):
+        """Used to generate the function for monitoring the modes between two structures
+
+        This function is use to generate tge function to coumpe the modes amplitude at selected internal ports between 2 structures. 
+
+        Args:
+            st (Structure) : structure towards which to monitor the ports. Connectivity between the structures has to be already specified.
+            pin_mapping (dict): dictionary of pin mapping in the form {pin_name (str) : (structure (Structure), pin (str) )}. 
+                used when building the function to keep track of the correct pin naming
+
+        Returns:
+            Function: function for returnin modal coefficient given a dictionary with the inputs
+            dict: dictionary containing the mapping between ports of st and scattering matrix entry
+        """
+        
+        loc_out=self.get_out_to(st)
+        tar_in =st.get_in_from(self)
+        if len(loc_out)!=len(tar_in):
+            raise Exception('Connectivity problem: Different number of pins')             
+        for pin1 in loc_out:
+            if pin1!=st.conn_dict[self.conn_dict[pin1]]:
+                raise Exception('Connectivity problem: Not Symmetric') 
+        #Correct ordering of connection pins
+        tar_in=[]
+        for pin in loc_out:
+            tar_in.append(self.conn_dict[pin])
+
+        self.sel_output(loc_out)
+        st.sel_input(tar_in)
+
+        #Splittig scattering matrces of local and target
+        self.split_in_out(self.in_list,self.out_list)
+        st.split_in_out(st.in_list,st.out_list)
+
+        def solve_inter(dic):
+            """This function calculates the couefficient of the internal modes
+
+            Args:
+                dic (dict): dictionary {pin_name (str) : input_amplitude (complex)}. Dictionary containing the complex amplitudes at each input port. Missing port are assumed wiht amplitude 0.0
+            
+            Returs:
+                numpy array: array of the coefficient of the input modes
+                numpy array: array of the coefficient of the output modes
+            """
+            u = np.zeros(len(self.in_list), dtype=complex)
+            d = np.zeros(len(st.out_list), dtype=complex)
+            for name, value in dic.items():
+                mapped = pin_mapping[name]
+                if mapped in self.in_list: u[self.in_pins[mapped]] = value
+                if mapped in st.out_list: d[st.out_pins[mapped]] = value
+            uo,do = self.Sproc.int_complete(st.Sproc,u,d)
+            return uo,do
+        return solve_inter, st.in_pins
 
 
     def get_model(self,pin_mapping=None):

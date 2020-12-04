@@ -26,6 +26,17 @@ Classes and Methods for building a circuit:
     Solver.put
     connect
 
+.. rubric:: Naming external pins
+.. autosummary::
+
+    Pin
+    Pin.put
+
+.. rubric:: Adding monitors
+.. autosummary::
+
+    add_structure_to_monitors
+    Solver.monitor_structure
 
 .. rubric:: Available Models
 .. autosummary::
@@ -77,5 +88,9 @@ Calsses and Methods for extraction of the data after the simulation is run:
     SolvedModel.get_data
     SolvedModel.get_full_output
     
+.. rubric:: Data from monitors
+.. autosummary::
+    
+    SolvedModel.get_monitor
 
 

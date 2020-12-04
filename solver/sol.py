@@ -42,6 +42,7 @@ class Solver:
         self.default_params = {'wl' : None}
         self.default_params.update(self.param_dic)
         self.param_mapping = {} if param_mapping is None else param_mapping
+        self.monitor_st={}
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
@@ -138,6 +139,16 @@ class Solver:
         copy_dic=copy(self.pin_mapping)
         for pinname,(st,pin) in copy_dic.items():
             if st is structure: self.pin_mapping.pop(pinname)
+
+    def monitor_structure(self,structure=None, name='Monitor'):
+        """Add structure to the ones to be monitored for internal modes
+
+        Args:
+            structure (Structure): structure to be added
+            name (string): name to the associated with this monitor. Default is 'Monitor' 
+        """
+        if structure not in self.structures: raise('Error: structure {structure} not in {self}')
+        self.monitor_st[structure] = name        
                 
         
     def connect(self,structure1,pin1,structure2,pin2):
@@ -230,48 +241,56 @@ class Solver:
         Returs:
             SolvedModel : model containing the scattering matrix
         """
-        #print(f'Calling solve of {self}')
-        #for par,value in kwargs.items():
-        #    kwargs[par]=np.reshape(value,-1)
-        #self.param_dic.update(self.default_params)
-        #self.param_dic.update()
+        func = None
+        monitor_mapping = None
         self.update_params(kwargs)
         for par,value in self.param_dic.items():
             self.param_dic[par]=np.reshape(value,-1)
         for st in self.structures:
             st.update_params(self.param_dic)
-        st_list=copy(self.structures)
-        #for st in st_list:
-        #    if len(st.connected_to)==0:
-        #        st.createS()
+        st_list = [st for st in self.structures if st not in self.monitor_st]
         if len(st_list)==1:
             st_list[0].createS()
         while len(st_list)!=1:
             source_st=st_list[0].gone_to
-            if len(st_list[0].connected_to)==0:
-                tar_st=st_list[1]
-            else:
-                tar_st=st_list[0].connected_to[0].gone_to
-            #print('Started join step')
-            #print('Source structure: %50s inside %50s' % (source_st,source_st.gone_to))
-            #print('Target structure: %50s inside %50s' % (tar_st,tar_st.gone_to))
-            #print('\nSource connections')
-            #source_st.print_conn()
-            #print('\nTarget connections')
-            #tar_st.print_conn()
+            for st in (st_list[0].connected_to + st_list[1:]):
+                if st.gone_to in st_list:
+                    tar_st = st.gone_to
+                    break
             new_st=source_st.join(tar_st)
             st_list.remove(source_st)
             st_list.remove(tar_st)
             st_list.append(new_st)
-            #print('\nGener. structure: %50s' % (new_st))
-            #print('Generated connections')
-            #new_st.print_conn()
-            #print('\n')
-        self.Final=st_list[0]
+        self.main=st_list[0]
+
+        if self.monitor_st!={}:
+            st_list = list(self.monitor_st.keys())
+            if len(st_list)==1:
+                st_list[0].createS()
+            while len(st_list)!=1:
+                source_st=st_list[0].gone_to
+                for st in (st_list[0].connected_to + st_list[1:]):
+                    if st.gone_to in st_list:
+                        tar_st = st.gone_to
+                        break
+                new_st=source_st.join(tar_st)
+                st_list.remove(source_st)
+                st_list.remove(tar_st)
+                st_list.append(new_st)
+            self.monitor = st_list[0]
+            self.total = self.main.join(self.monitor)
+            func, pins = self.main.intermediate(self.monitor, self.pin_mapping)
+            monitor_mapping = {f'{self.monitor_st[st]}_{pin}' : i for (st,pin),i in pins.items()}
+
+        else:
+            self.total = self.main
+
+
         for st in self.structures:
             st.reset()
-        mod=st_list[0].get_model(self.pin_mapping)
+        mod=self.total.get_model(self.pin_mapping)
         mod.solved_params=deepcopy(self.param_dic)
+        if func is not None: mod.set_intermediate(func, monitor_mapping)
         self.param_dic={}
         return mod
 
@@ -444,6 +463,8 @@ class Pin():
         if self.pin is not None:
             sol_list[-1].map_pins({self.name:pin})
 
+
+sol_list.append(Solver())
 def putpin(name,tup):
     """Maps a pin of the current active solver
 
@@ -513,6 +534,13 @@ def solve(**kwargs):
     """
     return sol_list[-1].solve(**kwargs)     
 
+def add_structure_to_monitors(structure, name='Monitor'): 
+    """Add structure to the ones to be monitored for internal modes. It effects the active solver
 
+    Args:
+        structure (Structure): structure to be added
+        name (string): name to the associated with this monitor. Default is 'Monitor' 
+    """
+    sol_list[-1].monitor_structure(structure=structure, name=name)
  
 

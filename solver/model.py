@@ -311,14 +311,20 @@ class SolvedModel(Model):
 
     Do not use this class directly. It is retuned from all solve methods. It is convinient for extracting data
     """
-    def __init__(self,pin_dic={},param_dic={},Smatrix=None):
+    def __init__(self,pin_dic={},param_dic={},Smatrix=None, int_func = None, monitor_mapping=None):
         self.pin_dic=pin_dic
         self.N=len(pin_dic)
         self.S= Smatrix
         self.solved_params=deepcopy(param_dic)
         self.ns=np.shape(Smatrix)[0]
+        self.int_func = int_func
+        self.monitor_mapping = {} if monitor_mapping is None else monitor_mapping
         self.create_S=self._create_S
 
+    def set_intermediate(self, int_func, monitor_mapping):
+        self.int_func = int_func
+        self.monitor_mapping = monitor_mapping
+        
 
     def get_data(self,pin1,pin2):
         """Function for returning transmission data between two ports
@@ -397,6 +403,40 @@ class SolvedModel(Model):
         return pan
 
 
+    def get_monitor(self, input_dic, power = True):
+        """Function for returning data from monitors
+
+        This function returs the mode coefficients if inputs and outputs of every structure selected as monitors
+
+        Args:
+            input_dic (dict): Dictionary of the input amplitudes. Format is {'pinname' : amplitude (float or complex)}. Missin pins assume 0 amplitde.
+
+        Returns:
+            pandas DataFrame: DataFrame with the amplitude at the ports. It has one column for each parameter given to solve plus two columns for monitor port.
+        """    
+        params={}
+        if self.ns==1:
+            params=deepcopy(self.solved_params)
+        else:
+            for name,values in self.solved_params.items():
+                if len(values)==1:
+                    params[name]=np.array([values[0] for i in range(self.ns)])
+                elif len(values)==self.ns:
+                    params[name]=values
+                else:
+                    raise Exception('Not able to convert to pandas')
+
+        u,d = self.int_func(input_dic)
+        for pin,i in self.monitor_mapping.items():
+            params[f'{pin}_i']=np.abs(u[:,i])**2.0 if power else u[:,i] 
+            params[f'{pin}_o']=np.abs(d[:,i])**2.0 if power else d[:,i] 
+
+        pan=pd.DataFrame.from_dict(params)
+        return pan
+
+
+        return u,d
+        
  
 class Waveguide(Model):
     """Model of a simple waveguide

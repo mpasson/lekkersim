@@ -144,13 +144,34 @@ class S_matrix:
 #        return (uo,do)
 
 
-#    def int_complete(self,S2,u,d):
-#        ID=np.identity(self.N)
-#        ut=np.matmul(self.S11,u)
-#        dt=np.matmul(S2.S22,d)
-#        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),ut+np.matmul(self.S12,dt))
-#        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),dt+np.matmul(S2.S21,ut))
-#        return (uo,do)
+    def int_complete(self,S2,u,d):
+        """Function for computing the internal modal coefficients between two structures
+
+        Args:
+            S2 (S_matrix): Second Scattering Matrix
+            u (numpy array): coefficients of input of first scattering matrix
+            d (numpy array): coefficients of input of second scattering matrix
+  
+        Returns:
+            numpy array: coefficients of intermediate modes (first to second)
+            numpy array: coefficients of intermediate modes (second to first)           
+        """
+        ID=np.identity(self.M)
+        ut=np.matmul(self.S11,np.expand_dims(u,-1)) if len(u)>0 else np.zeros((self.M,1))
+        dt=np.matmul(S2.S22,np.expand_dims(d,-1)) if len(d)>0 else np.zeros((self.M,1))
+
+        print(ut)        
+        print(dt)        
+
+
+        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),ut+np.matmul(self.S12,dt))
+        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),dt+np.matmul(S2.S21,ut))
+
+        print(np.shape(uo))
+        print(np.shape(do))
+
+
+        return (np.squeeze(uo,-1),np.squeeze(do,-1))
 
             
 

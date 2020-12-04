@@ -11,6 +11,7 @@ Direct methods
     :toctree: generated/
 
     add_param
+    add_structure_to_monitors
     connect
     diag_blocks
     putpin
@@ -51,6 +52,9 @@ Methods
     Model.solve
     Model.update_params
 
+    SolvedModel.get_data
+    SolvedModel.get_full_output
+    SolvedModel.get_monitor
 
 
 
@@ -99,6 +103,7 @@ Methods
    Solver.inspect
    Solver.map_pins
    Solver.maps_all_pins
+   Solver.monitor_structure
    Solver.prune
    Solver.put
    Solver.remove_structure
@@ -138,6 +143,7 @@ Methods
     Structure.get_in_from
     Structure.get_model
     Structure.get_out_to
+    Structure.intermediate
     Structure.join
     Structure.pin
     Structure.print_conn
@@ -169,6 +175,7 @@ Methods
     S_matrix.S_print
     S_matrix.add
     S_matrix.det
+    S_matrix.int_complete
     S_matrix.matrix
 
 
