@@ -55,6 +55,7 @@ Methods
     SolvedModel.get_data
     SolvedModel.get_full_output
     SolvedModel.get_monitor
+    SolvedModel.set_intermediate
 
 
 

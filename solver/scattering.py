@@ -160,16 +160,8 @@ class S_matrix:
         ut=np.matmul(self.S11,np.expand_dims(u,-1)) if len(u)>0 else np.zeros((self.M,1))
         dt=np.matmul(S2.S22,np.expand_dims(d,-1)) if len(d)>0 else np.zeros((self.M,1))
 
-        print(ut)        
-        print(dt)        
-
-
         uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),ut+np.matmul(self.S12,dt))
         do=linalg.solve(ID-np.matmul(S2.S21,self.S12),dt+np.matmul(S2.S21,ut))
-
-        print(np.shape(uo))
-        print(np.shape(do))
-
 
         return (np.squeeze(uo,-1),np.squeeze(do,-1))
 
