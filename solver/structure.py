@@ -3,6 +3,7 @@ from solver.scattering import S_matrix
 from copy import deepcopy
 from copy import copy
 import solver.model as mod
+from solver.log import logger
 
 
 class Structure:
@@ -491,23 +492,16 @@ class Structure:
         Smod=np.zeros((self.ns,self.N,self.N),complex)
         if pin_mapping is None:
             pin_mapping=self.solver.pin_mapping
-        if len(pin_mapping)!=len(self.pin_dic):
-            print(self.solver)
-            print('')
-            for t in pin_mapping.items():
-                print(t)
-            print('')
-            for t in self.pin_dic.items():
-                print(t)
-
-            raise Exception('Not all pins mapped correctly')
-        pin_dic={}
-        for i,pin_name in enumerate(pin_mapping):
-            pin_dic[pin_name]=i
-            #print(i,pin_name,pin_mapping[pin_name])
-            for j,pin_namej in enumerate(pin_mapping):
-                Smod[:,i,j]=self.Smatrix[:,self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]]
-        MOD=mod.SolvedModel(pin_dic=pin_dic,param_dic=self.param_dic,Smatrix=Smod)
+        #if len(pin_mapping)!=len(self.pin_dic):
+            #raise Exception('Not all pins mapped correctly')
+        #    logger.warning(f'{self}:Running solve without complete mapping: some pins will not be not accessible')
+        #for i,pin_name in enumerate(pin_mapping):
+        #    pin_dic[pin_name]=i
+        #   #print(i,pin_name,pin_mapping[pin_name])
+        #    for j,pin_namej in enumerate(pin_mapping):
+        #        Smod[:,i,j]=self.Smatrix[:,self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]] 
+        pin_dic = {name : self.pin_dic[pin] for name,pin in pin_mapping.items()}
+        MOD=mod.SolvedModel(pin_dic=pin_dic,param_dic=self.param_dic,Smatrix=self.Smatrix)
         return MOD    
 
     #def return_model(self):

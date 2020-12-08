@@ -13,6 +13,7 @@ from copy import copy
 from copy import deepcopy
 from solver.structure import Structure
 from solver import sol_list
+from solver import logger
 
 
         
@@ -241,6 +242,8 @@ class Solver:
         Returs:
             SolvedModel : model containing the scattering matrix
         """
+        if len(self.free_pins)>len(self.pin_mapping):
+            logger.warning(f'{self}:Running solve without complete mapping: some pins will not be not accessible')
         func = None
         monitor_mapping = None
         self.update_params(kwargs)

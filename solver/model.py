@@ -17,6 +17,7 @@ import numpy as np
 from solver.scattering import S_matrix
 import solver.structure
 from solver import sol_list
+from solver import logger
 from copy import deepcopy
 from copy import copy
 import pandas as pd
@@ -65,6 +66,9 @@ class Model:
         """
         self.pin_dic={} if pin_dic is None else pin_dic
         self.N=len(self.pin_dic)
+        if Smatrix is not None:
+            if self.N!=np.shape(Smatrix)[-1]:
+                self.N = np.shape(Smatrix)[-1]
         self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
         self.param_dic = {} if param_dic is None else param_dic
         self.default_params=deepcopy(self.param_dic)
@@ -122,7 +126,7 @@ class Model:
         Returns:
             float: Energy transmission between the ports            
         """
-        if np.shape(self.S)[0] > 1: warnings.warn('You are using get_T on a parametric solve. First value is returned, nut get_data should be used instead')
+        if np.shape(self.S)[0] > 1: logger.warning(f'{self}:Using get_T on a sweep solve. Consider using get_data')
         return np.abs(self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]])**2.0
 
     def get_PH(self,pin1,pin2):
@@ -137,7 +141,7 @@ class Model:
         Returns:
             float: Phase of the transmission between the ports            
         """
-        if np.shape(self.S)[0] > 1: warnings.warn('You are using get_PH on a parametric solve. First value is returned, nut get_data should be used instead')
+        if np.shape(self.S)[0] > 1: logger.warning(f'{self}:Using get_PH on a sweep solve. Consider using get_data')
         return np.angle(self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]])
 
     def get_A(self,pin1,pin2):
@@ -150,7 +154,7 @@ class Model:
         Returns:
             float: Complex amplitude of the transmission between the ports            
         """
-        if np.shape(self.S)[0] > 1: warnings.warn('You are using get_A on a parametric solve. First value is returned, nut get_data should be used instead')
+        if np.shape(self.S)[0] > 1: logger.warning(f'{self}:Using get_A on a sweep solve. Consider using get_data')
         return self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]]
 
 
@@ -186,6 +190,7 @@ class Model:
         Returns:
             dict: Dictionary containing the outputs in the form {pin_name (str) : output (float or complex)}
         """
+        if np.shape(self.S)[0] > 1: logger.warning(f'{self}:Using get_output on a sweep solve. Consider using get_full_output')
         l1=list(self.pin_dic.keys())
         l2=list(input_dic.keys())
         for pin in l2:
@@ -311,15 +316,12 @@ class SolvedModel(Model):
 
     Do not use this class directly. It is retuned from all solve methods. It is convinient for extracting data
     """
-    def __init__(self,pin_dic={},param_dic={},Smatrix=None, int_func = None, monitor_mapping=None):
-        self.pin_dic=pin_dic
-        self.N=len(pin_dic)
-        self.S= Smatrix
+    def __init__(self, pin_dic=None, param_dic=None, Smatrix=None, int_func = None, monitor_mapping=None):
+        super().__init__(pin_dic = pin_dic, param_dic = param_dic, Smatrix = Smatrix)
         self.solved_params=deepcopy(param_dic)
         self.ns=np.shape(Smatrix)[0]
         self.int_func = int_func
         self.monitor_mapping = {} if monitor_mapping is None else monitor_mapping
-        self.create_S=self._create_S
 
     def set_intermediate(self, int_func, monitor_mapping):
         self.int_func = int_func
