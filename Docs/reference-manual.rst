@@ -13,7 +13,9 @@ Direct methods
     add_param
     add_structure_to_monitors
     connect
+    debugfile
     diag_blocks
+    logfile
     putpin
     raise_pins
     set_default_params
@@ -48,6 +50,7 @@ Methods
     Model.print_S
     Model.prune
     Model.put
+    Model.S2PD
     Model.show_free_pins
     Model.solve
     Model.update_params

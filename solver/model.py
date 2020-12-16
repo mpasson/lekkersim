@@ -96,11 +96,21 @@ class Model:
 
     def print_S(self, func=None):
         """Function for nice printing of scattering matrix in agreement with pins
+
+        Args:
+            func (callable): function to be applied at the scatterinf matrix before returning.
+                if None (default), the raw complex coefficients are printed
         """
         func = (lambda x:x) if func is None else func
         a=list(self.pin_dic.keys())
-        a.sort()
-        S=self.create_S()[0,:,:]
+        ind=list(self.pin_dic.values())
+        indsort = np.argsort(a)
+        a=[a[i] for i in indsort]
+        indsort = np.array(ind)[indsort]
+        S = self.create_S()
+        I,J = np.meshgrid(indsort, indsort, indexing='ij')
+        S = S[0,I,J] if len(np.shape(S))==3 else S[I,J]
+        S = func(S) if func is not None else S
         st='            '
         for p in a:
             st+=f' {p:8} '
@@ -112,7 +122,28 @@ class Model:
                 st+=f' {pr:8.4f} '
             st+='\n'
         print(st)
-           
+
+    def S2PD(self, func=None):
+        """Function for returning the the Scattering Matrix as a PD Dataframe
+
+        Args:
+            func (callable): function to be applied at the scatterinf matrix before returning.
+                if None (default), the raw complex coefficients are returned
+
+        Returns:
+            Pandas DataFrame: Scattering Matrix with name of pins  
+        """
+        a=list(self.pin_dic.keys())
+        ind=list(self.pin_dic.values())
+        indsort = np.argsort(a)
+        a=[a[i] for i in indsort]
+        indsort = np.array(ind)[indsort]
+        S = self.create_S()
+        I,J = np.meshgrid(indsort, indsort, indexing='ij')
+        S = S[0,I,J] if len(np.shape(S))==3 else S[I,J]
+        S = func(S) if func is not None else S
+        data = pd.DataFrame(data=S, index=a, columns=a)
+        return data           
 
     def get_T(self,pin1,pin2):
         """Function for returning the energy transmission between two ports
@@ -324,6 +355,12 @@ class SolvedModel(Model):
         self.monitor_mapping = {} if monitor_mapping is None else monitor_mapping
 
     def set_intermediate(self, int_func, monitor_mapping):
+        """Methods for setting the function and mapping for monitors
+
+        Args:
+            int_func (callable): Function linking the the modal amplitudes at the monitor port to the inputs aplitudes
+            monitor_mapping (dict): Dictionary connectinge the name of the monitor ports with the index in the aplitude arrays
+        """
         self.int_func = int_func
         self.monitor_mapping = monitor_mapping
         
