@@ -94,7 +94,7 @@ class Model:
         """
         return self.S
 
-    def print_S(self, func=None):
+    def print_S(self, func=np.abs):
         """Function for nice printing of scattering matrix in agreement with pins
 
         Args:
@@ -107,6 +107,10 @@ class Model:
         indsort = np.argsort(a)
         a=[a[i] for i in indsort]
         indsort = np.array(ind)[indsort]
+        for pin,i in self.pin_dic.items():
+            print(pin,i)
+        print(a)
+        print(indsort)
         S = self.create_S()
         I,J = np.meshgrid(indsort, indsort, indexing='ij')
         S = S[0,I,J] if len(np.shape(S))==3 else S[I,J]
@@ -115,13 +119,15 @@ class Model:
         for p in a:
             st+=f' {p:8} '
         st+='\n'
-        for pi in a:
+        for i,pi in enumerate(a):
             st+=f' {pi:8} '
-            for pj in a:
-                pr=func(S[self.pin_dic[pi],self.pin_dic[pj]])
+            for j,pj in enumerate(a):
+                pr= S[i,j]
                 st+=f' {pr:8.4f} '
             st+='\n'
         print(st)
+
+
 
     def S2PD(self, func=None):
         """Function for returning the the Scattering Matrix as a PD Dataframe
@@ -189,23 +195,24 @@ class Model:
         return self.S[0,self.pin_dic[pin1],self.pin_dic[pin2]]
 
 
-    def expand_pol(self,pol_list=[0]):
-        """This function expands the model by adding additional modes based on pol_list.
+    def expand_mode(self,mode_list):
+        """This function expands the model by adding additional modes.
         
-        For each pin a number of pins equal the the length of pol_list will be created. The pin names will be "{pinname}_pol{pol}" for pol in pol_list
+        For each pin a number of pins equal the the length of mode_list will be created. The pin names will be "{pinname}_{modename}}".
+        Each mode will have the same behavior.
         
         Args:
-            pol_list (list) : list of integers with the indexing of modes to be considered. Default is [0]
+            mode_list (list) : list of strings containing the modenames
 
         Returns:
-            Model : new model with expanded polarization 
+            Model : new model with expanded modes 
         """
-        self.np=len(pol_list)
-        self.pol_list=pol_list
+        self.np=len(mode_list)
+        self.mode_list=mode_list
         new_pin_dic={}
-        for i,pol in enumerate(self.pol_list):
-            for name,n in self.pin_dic.items():
-                new_pin_dic[f'{name}_pol{pol}']=i*self.N+n
+        for name,n in self.pin_dic.items():
+            for i,mode in enumerate(self.mode_list):
+                new_pin_dic[f'{name}_{mode}']=i*self.N+n
         self.pin_dic=new_pin_dic
         self.create_S=self._expand_S
         self.N=self.N*self.np
@@ -227,15 +234,11 @@ class Model:
         for pin in l2:
             l1.remove(pin)
         if l1!=[]:
-            #print('WARNING: Not all input pin provided, assumed 0')
-            pass
             for pin in l1:
                 input_dic[pin]=0.0+0.0j
         u=np.zeros(self.N,complex)
         for pin,i in self.pin_dic.items():
             u[i]=input_dic[pin]
-        #for pin,i in self.pin_dic.items():
-        #    print(pin,i,u[i])
         d=np.dot(self.S[0,:,:],u)
         out_dic={}
         for pin,i in self.pin_dic.items():
@@ -336,6 +339,26 @@ class Model:
         """
         return self.pin_dic == {}
 
+    def get_pin_modes(self, pin):
+        """Parse the pins for locating the pins with the same base name
+
+        Assumes for the pins a name in the form pinname_modename.
+
+        Args:
+            pin (str): base name of the pin
+     
+        Returns:
+            list: list of modenames for wich pinname==pin
+        """
+        li = []
+        for pin in self.pin_dic:
+            try:
+                pinname, modename = pin.split('_')
+            except ValueError:
+                pinname, modename = pin, ''
+            li.append(modename)
+        return li
+
     def __str__(self):
         """Formatter function for printing
         """
@@ -426,8 +449,6 @@ class SolvedModel(Model):
         for pin in l2:
             l1.remove(pin)
         if l1!=[]:
-            #print('WARNING: Not all input pin provided, assumed 0')
-            pass
             for pin in l1:
                 input_dic[pin]=0.0+0.0j
         u=np.zeros(self.N,complex)
@@ -522,31 +543,25 @@ class UserWaveguide(Model):
     Args:
         L (float): length of the waveguide
         func (function): index function of the waveguide
-        param_dic (dict): dictionary of the default parameters to be used
-        pol_list (list): list of integers representing the analyzed modes
+        param_dic (dict): dictionary of the default parameters to be used (common to all modes)
+        allowedmodes (dict): Dict of allowed modes and settins. Form is name:extra.
+            extra is a dictionary containing the extra parameters to be passed to func
+            Default is for 1 mode, with no name and no parameters
     
-    Note for nazca:
-        This model is the one used in the building of the circit model for cell in naza. 
-        If the user wants to create a personal funciton to be used with that, the function must have at least the following arguments as a keywork arguments:
-            - wl (float) : the wavelegth (in um)
-            - W (float) : waveguide width (in um)
-            - R (float) : waveguide bending radius (in um)
-            - pol (int) : index of the mode
-
     """
-    def __init__(self, L , func, param_dic, pol_list = None):
-        if pol_list is None:
-            self.pin_dic={'a0':0,'b0':1}        
-            self.N=2
-        else:
-            #self.pin_dic = {f'a0_pol{p}' : 2*i for i, p in enumerate(pol_list)}.update({ f'b0_pol{p}' : 2*i+1 for i, p in enumerate(pol_list)})        
-            self.pin_dic = {}
-            for i, p in enumerate(pol_list):
-                self.pin_dic[f'a0_pol{p}'] = 2*i
-                self.pin_dic[f'b0_pol{p}'] = 2*i+1
-            self.N = 2*len(pol_list)
+    def __init__(self, L , func, param_dic, allowedmodes=None):
+        self.allowed = {'' : {}} if allowedmodes is None else allowedmodes
+        self.pin_dic = {}
         
-        self.pol_list = pol_list
+        for i,mode in enumerate(self.allowed):
+            if mode=='':
+                self.pin_dic[f'a0'] = 2*i
+                self.pin_dic[f'b0'] = 2*i+1
+            else:
+                self.pin_dic[f'a0_{mode}'] = 2*i
+                self.pin_dic[f'b0_{mode}'] = 2*i+1
+        
+        self.N = len(self.pin_dic)
         self.S=np.identity(self.N,complex)
         self.param_dic=deepcopy(param_dic)
         self.default_params=deepcopy(self.param_dic)
@@ -558,21 +573,14 @@ class UserWaveguide(Model):
         """Created the scattering Matrix
         """
         wl=self.param_dic['wl']
-        if self.pol_list is None:
+        S_list=[]
+        for mode, extra in self.allowed.items():
+            self.param_dic.update(extra)
             n=self.index_func(**self.param_dic)
             S=np.zeros((2,2),complex)
             S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
             S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
-            S_list=[S]
-        else:
-            S_list=[]
-            for p in self.pol_list:
-                self.param_dic.update({'pol' : p})
-                n=self.index_func(**self.param_dic)
-                S=np.zeros((2,2),complex)
-                S[0,1]=np.exp(2.0j*np.pi*n/wl*self.L)
-                S[1,0]=np.exp(2.0j*np.pi*n/wl*self.L)
-                S_list.append(S)
+            S_list.append(S)
         self.S = diag_blocks(S_list)
         return self.S
 
@@ -624,16 +632,17 @@ class GeneralWaveguide(Model):
         """
         return f'Model of waveguide of lenght {self.L:.3} (id={id(self)})'        
 
-class MultiPolWave(Model):
+class MultiModeWave(Model):
     """Model of multimode dispersive waveguide
 
         Args:
             L (float) : length of the waveguide
-            Neff (function) : function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
-            pol_list (list)  : list of int cotaining the relevant modes of the waveguide
-            wl (float) : default wavelength of the waveguide
-            w  (float) : default width of the waveguide
-            R  (float) : default bending radius of the waveguide
+            Neff (function)     : function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+            wl (float)          : default wavelength of the waveguide
+            w  (float)          : default width of the waveguide
+            R  (float)          : default bending radius of the waveguide
+            allowedmodes (dict) : dict of allowed modes. Structure is name:extra
+                name is the name of the allowed mode, extra is a tuple of the parameters to be fittend in the Neff function 
     """
     def __init__(self,L,Neff,pol_list=[0],R=None,w=None, wl=None):
         """Creator
@@ -704,8 +713,9 @@ class GeneralBeamSplitter(Model):
     """Model of variable ration beam splitter
 
         Args:
-            ratio (float) : splitting ratio of beam-splitter (ratio of the coupled power)
-            phase (float) : phase shift of the coupled ray (in unit of pi)
+            ratio (float) : Power coupling coefficient. It is also the splitting ratio if t is not provided.
+            t (float): Power transmission coefficent. If None (defalut) it is calculated from the ratio assiming no loss in the component.
+            phase (float) : phase shift of the coupled ray (in unit of pi). Defauls is 0.5
     """
     def __init__(self,ratio=0.5,t=None,phase=0.5):
         """Creator
@@ -803,13 +813,12 @@ class PhaseShifter(Model):
 
 class PushPullPhaseShifter(Model):
     """Model of multimode variable phase shifter
-
-        Args:
-            param_name (str) : name of the parameter of the Phase Shifter
-            pol_list (list)  : list of int cotaining the relevant modes
     """
     def __init__(self,param_name='PS'):
         """Creator
+
+        Args:
+            param_name (str) : name of the parameter of the Phase Shifter
         """
         self.param_dic={}
         self.pin_dic={'a0':0,'b0':1,'a1':2,'b1': 3}
@@ -1082,11 +1091,9 @@ class AWGfromVPI(Model):
             dd=io.StringIO(t)
             ar=np.loadtxt(dd)
             LAM=ar[:,0]
-            #print(pin_in,pin_out)
             coeff[(pin_in,pin_out)]=np.sqrt(ar[:,1])*np.exp(1.0j*np.pi/180*0*ar[:,2])
 
         pins.sort()
-        #print(pins)
         S=np.zeros((len(LAM),len(pins),len(pins)),dtype=complex)
         for i,ipin in enumerate(pins):
             for j,jpin in enumerate(pins):
@@ -1111,5 +1118,74 @@ class AWGfromVPI(Model):
         return self.S
 
 
+class Model_from_NazcaCM(Model):
+    """Class for model from a nazca cell with compact models 
+    """
 
+    def __init__(self, cell, tracker, allowed=None):
+        """Creator of the class
+        
+        Args:
+            cell (Nazca Cell): it expects a Nazca cell with some compact model defined.
+            tracker (str): tracker to use to define the compact models
+            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and thee extra information to pass to the compact model to build the optical length. 
+        """
+        self.pin_dic = {}
+        self.param_dic={}
+        self.default_params={}
+        opt_conn = {}
+        n=0
+        for name, pin in cell.pin.items():       
+            opt = list(pin.path_nb_iter(tracker))
+            if len(opt)!=0:
+                opt_conn[pin] = opt
+                for mode in allowed:
+                    if mode=='':
+                        self.pin_dic[name] = n
+                    else:
+                        self.pin_dic['_'.join([name,mode])] = n
+                    n+=1
+        self.N = len(self.pin_dic)
+        self.CM = {}
+        for pin, conn in opt_conn.items():
+            for stuff in conn:
+                target = stuff[0]
+                CM = stuff[1]
+                for mode, extra in allowed.items():
+                    tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
+                    if callable(CM):
+                        self.CM[tup] = CM(extra)
+                    else:
+                        self.CM[tup] = CM                
+        self.create_S=self._create_S
+
+    @classmethod
+    def check_init(cls, cell, tracker, allowed=None):
+        try:
+            obj = cls(cell=cell, tracker=tracker, allowed=allowed)
+            obj.solve(wl=1.55)
+            return obj
+        except AttributeError:
+            return None
+
+
+
+    def _create_S(self):
+        """Creates the scattering matrix
+
+        Returns:
+            ndarray: Scattering Matrix
+        """
+        self.S = np.zeros((self.N,self.N), dtype='complex')
+        wl = self.param_dic['wl']
+        for (pin1, pin2), CM in self.CM.items():
+            if callable(CM):
+                self.S[self.pin_dic[pin1], self.pin_dic[pin2]] = np.exp(2.0j*np.pi/wl*CM(**self.param_dic))
+            else:
+                self.S[self.pin_dic[pin1], self.pin_dic[pin2]] = np.exp(2.0j*np.pi/wl*CM)
+
+        return self.S 
+                    
+            
+                
 

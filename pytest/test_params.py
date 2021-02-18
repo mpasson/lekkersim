@@ -107,20 +107,20 @@ def test_double2():
 
 
 def test_complex():
-    def func(wl,R,pol,w=1.0):
-        return 3.2
+    def func(wl,pol,**kwargs):
+        return 3.2-0.1*pol
 
     with sv.Solver(name='EOBiasSection') as ActivePhaseShifter:
-        wg = sv.MultiPolWave(500.0,func,pol_list=[0,1]).put()
-        ps = sv.PhaseShifter().expand_pol([0,1]).put()
+        wg = sv.UserWaveguide(500.0,func=func, param_dic={'wl':None}, allowedmodes={'TE':{'pol':0}, 'TM':{'pol':1}}).put()
+        ps = sv.PhaseShifter().expand_mode(['TE','TM']).put()
         
-        sv.connect(wg.pin['b0_pol0'],ps.pin['a0_pol0'])
-        sv.connect(wg.pin['b0_pol1'],ps.pin['a0_pol1'])
+        sv.connect(wg.pin['b0_TE'],ps.pin['a0_TE'])
+        sv.connect(wg.pin['b0_TM'],ps.pin['a0_TM'])
         
-        sv.Pin('o1_pol0').put(wg.pin['a0_pol0'])
-        sv.Pin('o1_pol1').put(wg.pin['a0_pol1'])
-        sv.Pin('o2_pol0').put(ps.pin['b0_pol0'])
-        sv.Pin('o2_pol1').put(ps.pin['b0_pol1'])
+        sv.Pin('o1_TE').put(wg.pin['a0_TE'])
+        sv.Pin('o1_TM').put(wg.pin['a0_TM'])
+        sv.Pin('o2_TE').put(ps.pin['b0_TE'])
+        sv.Pin('o2_TM').put(ps.pin['b0_TM'])
 
         
     with sv.Solver(name='EOBiasTwinSection') as TwinPhaseShifter:
@@ -128,9 +128,9 @@ def test_complex():
         a2=ActivePhaseShifter.put(param_mapping={'PS' : 'BOTTOM'})
         
         for l in [1,2]:
-            for pol in [0,1]:
-                sv.Pin(f'o{l}_pol{pol}').put(a1.pin[f'o{l}_pol{pol}'])
-                sv.Pin(f'o{l+2}_pol{pol}').put(a2.pin[f'o{l}_pol{pol}'])
+            for pol in ['TE','TM']:
+                sv.Pin(f'o{l}_{pol}').put(a1.pin[f'o{l}_{pol}'])
+                sv.Pin(f'o{l+2}_{pol}').put(a2.pin[f'o{l}_{pol}'])
                 
     ActivePhaseShifter.solve(wl=1.55)
     TwinPhaseShifter.solve(wl=1.55)

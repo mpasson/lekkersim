@@ -66,6 +66,26 @@ class Structure:
         dic={pin:(self,pin) for sl,pin in self.pin_list}
         return dic
 
+    def get_pin_basenames(self):
+        """Return the set of the basename of the pins
+        """
+        return set([pin[1].split('_')[0] for pin in self.pin_list])
+
+    def get_pin_modenames(self, target):
+        """Return list of mode names given a pin basename
+        """
+        li = []
+        for pin in self.pin_list:
+            try:
+                pinname, modename = pin[1].split('_')
+            except ValueError:
+                pinname, modename = pin[1], ''
+            if pinname==target:
+                li.append(modename)
+        return li
+
+        
+
     def update_params(self,param_dic):
         """Updated the parametes dictionary of the represented optic componet
 
