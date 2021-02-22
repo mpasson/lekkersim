@@ -178,6 +178,28 @@ class Solver:
         structure1.add_conn(pin1,structure2,pin2)    
         structure2.add_conn(pin2,structure1,pin1)    
 
+    def connect_all(self,structure1,pin1,structure2,pin2):
+        """Connect the two structures using all the pins with the matching basename
+
+        Args:
+            structure1 (Structure): first structure
+            pin1 (str): basename of pin in structure1
+            structure2 (Structure): second structure
+            pin2 (str): basename of pin in structure2
+
+        Returns:
+            None
+        """
+        modes1 = set(structure1.get_pin_modenames(pin1))
+        modes2 = set(structure2.get_pin_modenames(pin2))
+        if modes1!=modes2: logger.error(f'{pin1} in {structure1} and {pin2} in {structure2} and have differents modes: only matching modes connected') 
+        modes = modes1.intersection(modes2)
+        for m in modes:
+            p1 = pin1 if m=='' else '_'.join([pin1,m])
+            p2 = pin2 if m=='' else '_'.join([pin2,m])
+            self.connect(structure1,p1,structure2,p2)
+        
+
 
     def show_free_pins(self):
         """Print all pins of the structure in the solver whcih are not connected. If a pin mapping exists, it is also reported
@@ -485,6 +507,20 @@ def connect(tup1,tup2):
         tup1 (tuple) : tuple of (structure (Structure), pin (str)) containing the data of the second pin
     """
     sol_list[-1].connect(tup1[0],tup1[1],tup2[0],tup2[1])
+
+def connect_all(structure1,pin1,structure2,pin2):
+    """Connect in the active solver the two structures using all the pins with the matching basename
+
+    Args:
+        structure1 (Structure): first structure
+        pin1 (str): basename of pin in structure1
+        structure2 (Structure): second structure
+        pin2 (str): basename of pin in structure2
+
+    Returns:
+        None
+    """
+    sol_list[-1].connect_all(structure1,pin1,structure2,pin2)
 
 def add_param(old_name, func, default = None):
     """Define a paramter of the active solver in term of new paramter(s)

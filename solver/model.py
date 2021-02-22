@@ -1154,7 +1154,7 @@ class Model_from_NazcaCM(Model):
                 for mode, extra in allowed.items():
                     tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
                     if callable(CM):
-                        self.CM[tup] = CM(extra)
+                        self.CM[tup] = CM(**extra)
                     else:
                         self.CM[tup] = CM                
         self.create_S=self._create_S

@@ -84,6 +84,20 @@ class Structure:
                 li.append(modename)
         return li
 
+    def get_pins(self, basename=None):
+        """Return list of the pins tuple
+
+        Args:
+            basename (str): if pins are in the form 'basename_modename', only the ones with the corresponding basename are returned
+
+        Returs:
+            list: list of pin tuples
+        """
+        if basename is None:
+            return self.pin_list
+        else:
+            return [pin for pin in self.pin_list if pin.split('_')[0] == basename]
+
         
 
     def update_params(self,param_dic):

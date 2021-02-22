@@ -13,6 +13,7 @@ Direct methods
     add_param
     add_structure_to_monitors
     connect
+    connect_all
     debugfile
     diag_blocks
     logfile
@@ -40,20 +41,21 @@ Methods
 .. autosummary::
     :toctree: generated/
 
-    Model.expand_pol
+    Model.expand_mode
     Model.get_A
     Model.get_PH
     Model.get_T
     Model.get_output
+    Model.get_pin_modes
     Model.inspect
     Model.pin_mapping
     Model.print_S
     Model.prune
     Model.put
-    Model.S2PD
     Model.show_free_pins
     Model.solve
     Model.update_params
+
 
     SolvedModel.get_data
     SolvedModel.get_full_output
@@ -83,6 +85,7 @@ Functional Models
    PerfectMirror
    FPR_NxM
    TH_PhaseShifter
+   Model_from_NazcaCM
 
 Solver
 =============
@@ -98,27 +101,29 @@ Methods
 
 
 .. autosummary::
-   :toctree: generated/
+    :toctree: generated/
 
-   Solver.__enter__
-   Solver.add_param
-   Solver.add_structure
-   Solver.connect
-   Solver.inspect
-   Solver.map_pins
-   Solver.maps_all_pins
-   Solver.monitor_structure
-   Solver.prune
-   Solver.put
-   Solver.remove_structure
-   Solver.set_param
-   Solver.show_connections
-   Solver.show_default_params
-   Solver.show_free_pins
-   Solver.show_pin_mapping
-   Solver.show_structures
-   Solver.solve
-   Solver.update_params
+    Solver.__enter__
+    Solver.add_param
+    Solver.add_structure
+    Solver.connect
+    Solver.connect_all
+    Solver.inspect
+    Solver.map_pins
+    Solver.maps_all_pins
+    Solver.monitor_structure
+    Solver.prune
+    Solver.put
+    Solver.remove_structure
+    Solver.set_param
+    Solver.show_connections
+    Solver.show_default_params
+    Solver.show_free_pins
+    Solver.show_pin_mapping
+    Solver.show_structures
+    Solver.solve
+    Solver.update_params
+
 
     
 

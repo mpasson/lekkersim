@@ -232,7 +232,7 @@ def test_twopol_basic(two_pol):
     xsShallow,MMI=two_pol
 
     strt=demo.shallow.strt(100.0)
-    sol=nd.get_solver(strt, allowed={'TE':(0,0), 'TM':(1,0)})
+    sol=nd.get_solver(strt, allowed={'TE':dict(pol=0, mode=0), 'TM':dict(pol=1, mode=0)})
     mod=sol.solve(wl=1.55)
     assert mod.get_T('a0_TE','b0_TE') == pt.approx(1.0, 1e-8)
     assert mod.get_T('a0_TM','b0_TM') == pt.approx(1.0, 1e-8)
@@ -291,7 +291,7 @@ def test_twopol_MZM(two_pol):
         nd.Pin('b0',pin=m2.pin['b0']).put()
         nd.Pin('b1',pin=m2.pin['b1']).put()
 
-    sol=nd.get_solver(MZM_bal, infolevel=0, drc=True, allowed={'TE' : (0,0), 'TM' : (1,0)})
+    sol=nd.get_solver(MZM_bal, infolevel=0, drc=True, allowed={'TE':dict(pol=0, mode=0), 'TM':dict(pol=1, mode=0)})
 
 
     wll=np.linspace(1.5,1.6,101)
@@ -313,9 +313,6 @@ def test_twopol_MZM(two_pol):
     assert np.allclose(T1_1,T1_1_ref)
     assert np.allclose(T1_2,T1_2_ref)
 
-    #assert np.allclose(T0_2,np.cos((2.5/wll*20.0-0.25)*np.pi)**2.0)
-    #assert np.allclose(T1_1,np.cos((3.0/wll*20.0)*np.pi)**2.0)
-    #assert np.allclose(T1_2,np.cos((3.0/wll*20.0-0.25)*np.pi)**2.0)
 
 
 if __name__ == "__main__":
