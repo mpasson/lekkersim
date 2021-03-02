@@ -264,6 +264,7 @@ class Solver:
         Returs:
             SolvedModel : model containing the scattering matrix
         """
+        logger.debug(f'Solving {self}')
         if len(self.free_pins)>len(self.pin_mapping):
             logger.warning(f'{self}:Running solve without complete mapping: some pins will not be not accessible')
         func = None

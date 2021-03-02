@@ -280,6 +280,7 @@ class Model:
         Returns:
             model: solved model of self
         """
+        logger.debug(f'Solving Model {self}')
         self.param_dic.update(self.default_params)
         ns=1
         for name in kargs:
@@ -1130,6 +1131,7 @@ class Model_from_NazcaCM(Model):
             tracker (str): tracker to use to define the compact models
             allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and thee extra information to pass to the compact model to build the optical length. 
         """
+        self.name = cell.cell_name
         self.pin_dic = {}
         self.param_dic={}
         self.default_params={}
@@ -1186,6 +1188,9 @@ class Model_from_NazcaCM(Model):
 
         return self.S 
                     
-            
+    def __str__(self):
+        """Formatter function for printing
+        """
+        return f'Model (id={id(self)}) from Nazca {self.name:20}'
                 
 
