@@ -58,11 +58,11 @@ class Solver:
         self.name=name
 
     def __enter__(self):
-        """Make the newly created Solver the active solver
+        """Make the Solver the active solver
             
         Usage:
             >>> with Solver() as MySol:
-            >>>    stuff
+            >>>     stuff
  
             
         Until the with statement is closed, every change (for example, from put methods) will be applied to MySol
@@ -71,7 +71,7 @@ class Solver:
         return self
 
     def __exit__(self,*args):
-        """__enter__ function for the with statement. Remove last element of sol_list
+        """Delete the solver from the list of the active ones.
         """
         sol_list.pop()
         
@@ -115,6 +115,36 @@ class Solver:
             else:
                 default_dic[key] = value
         self.default_params.update(default_dic)
+
+    def cut_structure(self,structure):
+        """Remove structure from solver, cutting all the connections to other structures (pins in connected structure are not removed, but freed again)
+
+        Args:
+            structure (Structure) : structure to be removed          
+
+        Returns:
+            None
+        """
+        if structure not in self.structures:
+            raise Exception('Structure {structure} is not in solver {self}')
+        self.structures.remove(structure)
+        for st in structure.connected_to:
+            st.cut_connections(structure)
+        copy_dic=copy(self.connections)
+        for (st1,pin1),(st2,pin2) in copy_dic.items():
+            if st1 is structure or st2 is structure: 
+                self.connections.pop((st1,pin1))
+                self.free_pins.append((st2,pin2))
+                self.free_pins.append((st1,pin1))
+                self.connections_list.remove((st2,pin2))
+                self.connections_list.remove((st1,pin1))
+        copy_dic=copy(self.free_pins)
+        for st,pin in copy_dic:
+            if st is structure: self.free_pins.remove((st,pin))
+        copy_dic=copy(self.pin_mapping)
+        for pinname,(st,pin) in copy_dic.items():
+            if st is structure: self.pin_mapping.pop(pinname)
+
         
     def remove_structure(self,structure):
         """Remove structure from solver, also removing all the connections to other structures
@@ -270,8 +300,17 @@ class Solver:
         func = None
         monitor_mapping = None
         self.update_params(kwargs)
+        ns = 1
         for par,value in self.param_dic.items():
             self.param_dic[par]=np.reshape(value,-1)
+            if len(self.param_dic[par])==1: continue
+            if ns == 1:
+                ns = len(self.param_dic[par])
+            elif ns!= len(self.param_dic[par]):
+                raise ValueError('Calling solve with parameters of different shapes')
+
+        for par, value in self.param_dic.items():
+            self.param_dic[par] = np.array([value[0] for i in range(ns)]) if len(value)==1 else value 
         for st in self.structures:
             st.update_params(self.param_dic)
         st_list = [st for st in self.structures if st not in self.monitor_st]
@@ -348,6 +387,7 @@ class Solver:
             Structure: the Structure instance created from the Solver
         """
         ST=Structure(solver=deepcopy(self),param_mapping=param_mapping)
+        #ST=Structure(solver=self,param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
@@ -363,6 +403,69 @@ class Solver:
 
         return ST
 
+    def flatten_top_level(self):
+        """Flatten top level of a solver
+
+        Reduce the depth of the solver of one level, starting from the top.
+        If depth is already 1, nothing is done and the function returns False
+
+        Returns:
+            bool: True if reduction is done, False if depth is already 1 
+        """
+
+        solvers = [structure for structure in self.structures if structure.solver is not None]
+        old_conn = copy(self.connections)
+        old_mapping = copy(self.pin_mapping)
+        if solvers == []: return False
+
+        for st in solvers:
+            self.cut_structure(st)
+            if st.solver.param_mapping != {}: logger.error('During flattening: solver {st.solver} has custom parametes. Simulation results will not be correct.')
+            for lower_st in st.solver.structures:
+                self.add_structure(lower_st)
+            for pin1, pin2 in st.solver.connections.items():
+                self.connect(*pin1, *pin2)
+        for tup1, tup2 in old_conn.items():
+            if tup1[0] in solvers:
+                if tup2[0] in solvers:
+                    self.connect(*tup1[0].solver.pin_mapping[tup1[1]], *tup2[0].solver.pin_mapping[tup2[1]])
+                else:
+                    self.connect(*tup1[0].solver.pin_mapping[tup1[1]], *tup2)
+            elif tup2[0] in solvers:
+                self.connect(*tup1[0], *tup2[0].solver.pin_mapping[tup2[1]])
+        new_mapping = {}
+        for pin, tup in old_mapping.items():
+            if tup[0] in solvers:
+                new_mapping[pin] = tup[0].solver.pin_mapping[tup[1]]
+        self.map_pins(new_mapping)
+        
+        for st in solvers:
+            up_dic = {}
+            for lower_st in st.solver.structures:
+                up_dic[lower_st] = {}
+                for top, middle in st.param_mapping.items():
+                    if middle in lower_st.param_mapping:
+                        bottom = lower_st.param_mapping.pop(middle)
+                        up_dic[lower_st][top] = bottom
+                    elif top not in lower_st.param_mapping:
+                        up_dic[lower_st][top] = middle
+            for lower_st in st.solver.structures:
+                lower_st.param_mapping.update(up_dic[lower_st])
+                        
+        return True
+                
+        
+    def flatten(self):
+        """Collapse the hyerarchycal structure of the solver in only one level.      
+
+        Returns:
+            None
+        """
+        dec = True
+        while dec:
+            dec = self.flatten_top_level()
+        return None                    
+    
 
     def inspect(self):
         """Print the full hierarchy of the solver

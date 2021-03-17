@@ -40,6 +40,7 @@ class Structure:
         if solver is not None:
             for pin in solver.pin_mapping:
                 self.pin_list.append((self,pin))
+                self.pin_dic[(self,pin)]=None
         self.solver=solver
         self.param_mapping={}
         param_mapping = {} if param_mapping is None else param_mapping
@@ -285,8 +286,10 @@ class Structure:
         Returns:
             None
         """
-        if (self,pin) in self.conn_dict:
-            raise Exception('Pin already connected')
+        tup = self.conn_dict.get((self,pin))
+        if tup is not None:
+            if tup != (target,target_pin):
+                raise Exception('Pin already connected')
         else:
             self.conn_dict[(self,pin)]=(target,target_pin)
         if target not in self.connected_to:
@@ -310,6 +313,27 @@ class Structure:
             self.pin_dic.pop((self,pin))
         else:
             raise Exception(f'Pin {pin} not in conn_dict')
+
+
+    def cut_connections(self, target):
+        """Remove all connection to target structure. Pins in self are kept
+
+        Args:
+            target (Structure) : structore to which to remove connnetions
+
+        Returns:
+            None
+        """
+        if target not in self.connected_to:
+            raise Exception(f'Structure {target} is not connected to {self}. Impossible to remove.')
+        self.connected_to.remove(target)
+        copy_dic=copy(self.conn_dict)
+        for (s,pin),(t,tpin) in copy_dic.items():
+            if t is target:
+                if (s,pin) in self.conn_dict:
+                    self.conn_dict.pop((s,pin))
+                else:
+                    raise Exception(f'Pin {pin} not in conn_dict')
 
 
     def remove_connections(self,target):    
@@ -453,7 +477,7 @@ class Structure:
         for (st_source,pin_source),(st_target,pin_target) in {**self.conn_dict,**st.conn_dict}.items():
             if not ((st_source in new_st.structures) and (st_target in new_st.structures)):
                 new_st.conn_dict[(st_source,pin_source)]=(st_target,pin_target)
-        
+     
         if self.ns==st.ns : new_st.ns=self.ns
 
         return new_st

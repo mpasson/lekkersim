@@ -108,6 +108,9 @@ Methods
     Solver.add_structure
     Solver.connect
     Solver.connect_all
+    Solver.cut_structure
+    Solver.flatten
+    Solver.flatten_top_level
     Solver.inspect
     Solver.map_pins
     Solver.maps_all_pins
@@ -149,6 +152,7 @@ Methods
     Structure.add_pin
     Structure.createS
     Structure.get_S_back
+    Structure.cut_connections
     Structure.get_in_from
     Structure.get_model
     Structure.get_out_to
