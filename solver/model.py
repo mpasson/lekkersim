@@ -72,7 +72,7 @@ class Model:
         self.S=np.identity(self.N,complex) if Smatrix is None else Smatrix
         self.param_dic = {} if param_dic is None else param_dic
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
     def _expand_S(self):
         self.N=self.N//self.np
@@ -86,7 +86,7 @@ class Model:
         """
         print(f'{self}')
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
 
         Returns:
@@ -214,6 +214,7 @@ class Model:
             for i,mode in enumerate(self.mode_list):
                 new_pin_dic[f'{name}_{mode}']=i*self.N+n
         self.pin_dic=new_pin_dic
+        self._create_S = self.create_S
         self.create_S=self._expand_S
         self.N=self.N*self.np
         return self
@@ -518,10 +519,10 @@ class Waveguide(Model):
         self.param_dic['wl']=wl
         self.n=n
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -566,11 +567,11 @@ class UserWaveguide(Model):
         self.S=np.identity(self.N,complex)
         self.param_dic=deepcopy(param_dic)
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
         self.index_func=func
         self.L=L
 
-    def _create_S(self):
+    def create_S(self):
         """Created the scattering Matrix
         """
         wl=self.param_dic['wl']
@@ -614,9 +615,9 @@ class GeneralWaveguide(Model):
         else:
             self.param_dic['pol']=pol
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
         
-    def _create_S(self):
+        
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -663,9 +664,9 @@ class MultiModeWave(Model):
         self.param_dic['w']=w
         self.param_dic['wl']=wl
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -706,7 +707,7 @@ class BeamSplitter(Model):
         self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[-1.0,np.exp(-1.0j*p1)]])
         self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[np.exp(-1.0j*p1),1.0],[-1.0,np.exp(1.0j*p1)]])
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
 
@@ -735,7 +736,7 @@ class GeneralBeamSplitter(Model):
         #self.S[2:,:2]=np.array([[t,c],[c,-t]])
         self.S[:2,2:]=np.array([[t,c*np.exp(-1.0j*p1)],[c*np.exp(1.0j*p1),-t]])
         self.S[2:,:2]=np.array([[t,c*np.exp(-1.0j*p1)],[c*np.exp(1.0j*p1),-t]])
-        self.create_S=self._create_S
+        
 
     def __str__(self):
         """Formatter function for printing
@@ -754,7 +755,7 @@ class Splitter1x2(Model):
         self.S=1.0/np.sqrt(2.0)*np.array([[0.0,1.0,1.0],[1.0,0.0,0.0],[1.0,0.0,0.0]],complex)
         self.param_dic={}
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
     def __str__(self):
@@ -778,7 +779,7 @@ class Splitter1x2Gen(Model):
         t=np.sqrt(0.5-cross)
         p1=np.pi*phase
         self.S=np.array([[0.0,t,t],[t,0.0,c*np.exp(1.0j*p1)],[t,c*np.exp(-1.0j*p1),0.0]],complex)
-        self.create_S=self._create_S
+        
 
 
 class PhaseShifter(Model):
@@ -798,10 +799,10 @@ class PhaseShifter(Model):
         self.param_dic={}
         self.param_dic[param_name]=param_default    
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -828,10 +829,10 @@ class PushPullPhaseShifter(Model):
         self.param_dic={}
         self.param_dic[param_name]=0.0    
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -877,10 +878,10 @@ class PolRot(Model):
             self.S[:2,2:]=np.array([[c,s],[-s,c]])
             self.S[2:,:2]=np.array([[c,-s],[s,c]])
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -913,7 +914,7 @@ class Attenuator(Model):
         self.S[0,1]=10.0**(-0.05*loss)
         self.S[1,0]=10.0**(-0.05*loss)
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
 class Mirror(Model):
@@ -936,7 +937,7 @@ class Mirror(Model):
         c=np.sqrt(1.0-self.ref)
         p1=np.pi*self.phase
         self.S=np.array([[t*np.exp(1.0j*p1),c],[-c,t*np.exp(-1.0j*p1)]],complex)
-        self.create_S=self._create_S
+        
 
 
 
@@ -956,7 +957,7 @@ class PerfectMirror(Model):
         self.phase=phase
         p1=np.pi*self.phase
         self.S=np.array([[np.exp(1.0j*p1)]],complex)
-        self.create_S=self._create_S
+        
 
 
 class FPR_NxM(Model):   
@@ -980,7 +981,7 @@ class FPR_NxM(Model):
                 Sint[i,j]=np.exp(-1.0j*np.pi*phi*(i-0.5*N+0.5)*(j-0.5*M+0.5))
         Sint2=np.conj(np.transpose(Sint))
         self.S=np.concatenate([np.concatenate([np.zeros((N,N),complex),Sint/np.sqrt(M)],axis=1),np.concatenate([Sint2/np.sqrt(N),np.zeros((M,M),complex)],axis=1)],axis=0)      
-        self.create_S=self._create_S
+        
   
 
 class Ring(Model):
@@ -1006,11 +1007,11 @@ class Ring(Model):
         self.param_dic={}
         self.param_dic['wl']=None
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -1052,10 +1053,10 @@ class TH_PhaseShifter(Model):
         self.param_dic['pol']=pol
         self.param_dic[param_name]=0.0
         self.default_params=deepcopy(self.param_dic)
-        self.create_S=self._create_S
+        
 
 
-    def _create_S(self):
+    def create_S(self):
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -1105,7 +1106,7 @@ class AWGfromVPI(Model):
         self.N=len(pins)
         self.param_dic={}
         self.default_params={}
-        self.create_S=self._create_S
+        
 
         self.S_func=interp1d(LAM,S,axis=0)
 
@@ -1113,7 +1114,7 @@ class AWGfromVPI(Model):
         self.lamc=(LAM[-1]+LAM[0])/2.0
 
 
-    def _create_S(self):
+    def create_S(self):
         lam=self.param_dic['wl']
         self.S=self.S_func(self.lamc-0.5*self.fsr+np.mod(lam-self.lamc+0.5*self.fsr,self.fsr))
         return self.S
@@ -1159,7 +1160,7 @@ class Model_from_NazcaCM(Model):
                         self.CM[tup] = CM(**extra)
                     else:
                         self.CM[tup] = CM                
-        self.create_S=self._create_S
+        
 
     @classmethod
     def check_init(cls, cell, tracker, allowed=None):
@@ -1172,7 +1173,7 @@ class Model_from_NazcaCM(Model):
 
 
 
-    def _create_S(self):
+    def create_S(self):
         """Creates the scattering matrix
 
         Returns:

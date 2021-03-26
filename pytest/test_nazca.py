@@ -44,11 +44,6 @@ def two_pol():
 
 
 
-    MMI=demo.mmi2x2_sh()
-    MMI.model_info['model']=sv.GeneralBeamSplitter(ratio=0.5,phase=0.5).expand_pol([0,1])
-    return demo.xsShallow,MMI
-
-
 def test_single(no_pol):
     strt=demo.shallow.strt(100.0)
     sol=nd.get_solver(strt)
