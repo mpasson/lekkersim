@@ -263,7 +263,8 @@ class Model:
         Returns:
             Str  ucture: the Structure instance created from the model
         """
-        ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
+        #ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
+        ST=solver.structure.Structure(model=self,param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])

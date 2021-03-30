@@ -47,6 +47,8 @@ class Solver:
         for pin1,pin2 in self.connections.items():
             self.connections_list.append(pin1)
             self.connections_list.append(pin2)
+            pin1[0].add_conn(pin1[1], *pin2)
+            pin2[0].add_conn(pin2[1], *pin1)
         if len(set(self.connections_list))!=len(self.connections_list):
             raise ValueError('Same pin connected multiple time')
         self.free_pins=[]
@@ -386,8 +388,8 @@ class Solver:
         Returns:
             Structure: the Structure instance created from the Solver
         """
-        ST=Structure(solver=deepcopy(self),param_mapping=param_mapping)
-        #ST=Structure(solver=self,param_mapping=param_mapping)
+        #ST=Structure(solver=deepcopy(self),param_mapping=param_mapping)
+        ST=Structure(solver=self,param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (pins is not None) and (pint is not None):
             sol_list[-1].connect(ST,pins,pint[0],pint[1])
@@ -402,6 +404,41 @@ class Solver:
 #        sol_list[-1].default_params.update(default_dic)
 
         return ST
+    
+    
+    def shallow_copy(self):
+        """Build a shallow copy of the solver
+        
+        This function build a copy of the original solver. Structure objject of the new solver are copies of the old ones. If a structure reference to a model or a solver, the copied structure will still refer to the old model or solver.
+        
+        Returs:
+            Solver: Shallow copy of the solver
+        """
+        copy_dic = {}
+        new_structures=[]
+        for st in self.structures:
+            if st.model is not None:
+                new_st = Structure(model=st.model, param_mapping={val : key for key, val in st.param_mapping.items()})
+            elif st.solver is not None:
+                new_st = Structure(solver=st.solver, param_mapping={val : key for key, val in st.param_mapping.items()})
+            else:
+                new_st = deepcopy(st)
+            new_structures.append(new_st)
+            copy_dic[st] = new_st
+        new_connections = {}
+        for (st1, pin1), (st2, pin2) in self.connections.items():
+            new_connections[(copy_dic[st1], pin1)] = (copy_dic[st2], pin2)
+        sol = Solver(structures=new_structures, 
+                     connections=new_connections, 
+                     param_dic=self.default_params.copy()
+                     )
+        pin_mapping = {name : (copy_dic[st], pin) for name,(st,pin) in self.pin_mapping.items()}
+        sol.map_pins(pin_mapping)
+        sol.param_mapping = self.param_mapping.copy()
+        return sol
+            
+                
+                
 
     def flatten_top_level(self):
         """Flatten top level of a solver
@@ -414,6 +451,8 @@ class Solver:
         """
 
         solvers = [structure for structure in self.structures if structure.solver is not None]
+        for st in solvers:
+            st.solver = st.solver.shallow_copy()
         old_conn = copy(self.connections)
         old_mapping = copy(self.pin_mapping)
         if solvers == []: return False
@@ -465,21 +504,26 @@ class Solver:
         while dec:
             dec = self.flatten_top_level()
         return None                    
-    
 
-    def inspect(self):
+
+    def _inspect(self):
+        """Recursive function for printing one step of the solver hierarchy
+        """
+        for s in self.structures:
+            print(f'{self.space}  {s}')
+            if s.solver is not None:
+                self.__class__.space=self.__class__.space+'  '
+                s.solver._inspect()
+                self.__class__.space=self.__class__.space[:-2]    
+
+        
+    def inspect(self, firstcall = True):
         """Print the full hierarchy of the solver
         """
         print(f'{self.space}{self}')
-        for s in self.structures:
-            if s.solver is not None:
-                self.__class__.space=self.__class__.space+'  '
-                s.solver.inspect()
-                self.__class__.space=self.__class__.space[:-2]    
-            elif s.model is not None:
-                print(f'{self.space}  {s.model}')
-            else:
-                print(f'{self.space}  {s}')
+        self._inspect()                
+                
+
 
     def show_default_params(self):
         """Print the names of all the top-level parameters and corresponding default value
