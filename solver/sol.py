@@ -14,6 +14,7 @@ from copy import deepcopy
 from solver.structure import Structure
 from solver import sol_list
 from solver import logger
+from solver.utils import map_args
 
 
         
