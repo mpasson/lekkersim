@@ -18,12 +18,15 @@ from solver.scattering import S_matrix
 import solver.structure
 from solver import sol_list
 from solver import logger
+import solver
+import solver.log
 from copy import deepcopy
 from copy import copy
 import pandas as pd
 import warnings
 from scipy.interpolate import interp1d
 import io
+import inspect
 
 
 def diag_blocks(array_list):
@@ -73,6 +76,18 @@ class Model:
         self.param_dic = {} if param_dic is None else param_dic
         self.default_params=deepcopy(self.param_dic)
         
+    def is_empty(self):
+        """Checks if model is empy
+        
+        Returns:
+            Bool: False is model has no pins, True otherwise
+
+        """
+        if len(self.pin_dic)>0:
+            return False
+        else:
+            return True
+            
 
     def _expand_S(self):
         self.N=self.N//self.np
@@ -358,7 +373,7 @@ class Model:
             try:
                 pinname, modename = pin.split('_')
             except ValueError:
-                pinname, modename = pin, ''
+                _, modename = pin, ''
             li.append(modename)
         return li
 
@@ -558,8 +573,8 @@ class UserWaveguide(Model):
         
         for i,mode in enumerate(self.allowed):
             if mode=='':
-                self.pin_dic[f'a0'] = 2*i
-                self.pin_dic[f'b0'] = 2*i+1
+                self.pin_dic['a0'] = 2*i
+                self.pin_dic['b0'] = 2*i+1
             else:
                 self.pin_dic[f'a0_{mode}'] = 2*i
                 self.pin_dic[f'b0_{mode}'] = 2*i+1
@@ -702,7 +717,6 @@ class BeamSplitter(Model):
         self.phase=phase
         self.param_dic={}
         p1=np.pi*self.phase
-        p2=np.pi*(1.0-self.phase)
         #self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[-np.exp(-1.0j*p1),1.0]])
         #self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(-1.0j*p1),1.0]])
         self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[np.exp(1.0j*p1),1.0],[-1.0,np.exp(-1.0j*p1)]])
@@ -1125,13 +1139,26 @@ class Model_from_NazcaCM(Model):
     """Class for model from a nazca cell with compact models 
     """
 
-    def __init__(self, cell, tracker, allowed=None):
+    def __init__(self, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
         """Creator of the class
+        
+        This class is for building scattering matrices from the connectivity infomation built in nazca.
+        
+        In the definition of the scattering matrices, tree models can be provided. 
+            - ampl_model: This model returns directly the amplitude complex coefficient A.
+            - loss_model: This model returns the loss used for the calculation of the modulus of the amplitude (in dB): |A|^2 = 10^loss/10.0
+            - optlength_model: This model returns the optical length used for the calculation of the phase of the amplitude: angle(A) = 2.0*pi/wl*optlenght. It assumes the same unit as the wavelegnth.
+            
+        The priority of usage withing the models is the following. 
+            1. ampl: is the model for amplitude is found, the others are ignored. Amplitude between the same pin (reflection) is assumed 0 if not otherwaise specified.
+            2. loss and optlength: if ampl  is not found, a model will be build using the available information between loss and optlength. If either one is missing, it will be assumed as 0 (i.d. no loss means |A|=1, no phase means A purely real), but a warning will be raised. 
         
         Args:
             cell (Nazca Cell): it expects a Nazca cell with some compact model defined.
-            tracker (str): tracker to use to define the compact models
-            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and thee extra information to pass to the compact model to build the optical length. 
+            ampl_model (str): model to the used to diectly get the scattering matrix amplitudes
+            loss_model (str): model to be used to estimate the loss
+            optlength_model (str): model to be used for the optical length (phase)
+            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to the compact model to build the optical length. 
         """
         self.name = cell.cell_name
         self.pin_dic = {}
@@ -1139,8 +1166,11 @@ class Model_from_NazcaCM(Model):
         self.default_params={}
         opt_conn = {}
         n=0
+        
+
+        #Checking for ampl model
         for name, pin in cell.pin.items():       
-            opt = list(pin.path_nb_iter(tracker))
+            opt = list(pin.path_nb_iter(ampl_model))
             if len(opt)!=0:
                 opt_conn[pin] = opt
                 for mode in allowed:
@@ -1149,29 +1179,120 @@ class Model_from_NazcaCM(Model):
                     else:
                         self.pin_dic['_'.join([name,mode])] = n
                     n+=1
-        self.N = len(self.pin_dic)
-        self.CM = {}
-        for pin, conn in opt_conn.items():
-            for stuff in conn:
-                target = stuff[0]
-                CM = stuff[1]
-                for mode, extra in allowed.items():
-                    tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
-                    if callable(CM):
-                        self.CM[tup] = CM(**extra)
-                    else:
-                        self.CM[tup] = CM                
-        
+        if n!=0: 
+            logger.info(f'Model for {cell.cell_name}: using amplitude model {ampl_model}')
+            self.N = len(self.pin_dic)
+            self.CM = {}
+            for pin, conn in opt_conn.items():
+                for stuff in conn:
+                    target = stuff[0]
+                    CM = stuff[1]
+                    for mode, extra in allowed.items():
+                        tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
+                        self.CM[tup] = self.__class__.wraps(self.__class__.filter_eval(CM,extra) if callable(CM) else CM)
+        else:
+            opt_conn = {}
+            for name, pin in cell.pin.items():
+                opt = {x[0] : x[1:] for x in pin.path_nb_iter(optlength_model)}
+                lss = {x[0] : x[1:] for x in pin.path_nb_iter(loss_model)}
+                for target in set(opt.keys()).union(set(lss.keys())):
+                    if pin not in opt_conn: opt_conn[pin] = {}
+                    tup1 = opt[target] if target in opt else (0.0, None, None, None, None)
+                    tup2 = lss[target] if target in lss else (0.0, None, None, None, None)
+                    opt_conn[pin][target] = tup1 + tup2
+                if pin in opt_conn:
+                    for mode in allowed:
+                        if mode=='':
+                            self.pin_dic[name] = n
+                        else:
+                            self.pin_dic['_'.join([name,mode])] = n
+                        n+=1
+            logger.info(f'Model for {cell.cell_name}: using optical length model {optlength_model} and loss model {loss_model}')
+            self.N = len(self.pin_dic)
+            self.CM = {}
+                   
+            for pin, conn in opt_conn.items():
+                for target, stuff in conn.items(): 
+                    for mode, extra in allowed.items():
+                        OM = stuff[0]
+                        AM = stuff[5]
+                        OMt = self.__class__.filter_eval(OM,extra) if callable(OM) else OM
+                        AMt = self.__class__.filter_eval(AM,extra) if callable(AM) else AM
+                        tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
+                        self.CM[tup] = self.__class__.generator(OMt, AMt) 
+                
+           
+    @staticmethod        
+    def generator(OM,AM):
+        """Static method for generating the function creting the sattering matrix element from the compact models
 
+        Args:
+            OM (function): Compact model for Optical Length
+            AM (function): Compact model for Loss
+
+        Returns:
+            function: function to crete the element of the scattering matrix.
+
+        """
+        def TOT(**kwargs):
+            OML = Model_from_NazcaCM.filter_eval(OM,kwargs) if callable(OM) else copy(OM)
+            AML = Model_from_NazcaCM.filter_eval(AM,kwargs) if callable(AM) else copy(AM)
+            return 10.0**(0.05*AML)*np.exp(2.0j*np.pi/kwargs.get('wl')*OML)
+        return TOT
+    
+    @staticmethod
+    def wraps(func):
+        def wrapper(**kwargs):
+            Inner = Model_from_NazcaCM.filter_eval(func,kwargs) if callable(func) else copy(func)
+            return Inner
+        return wrapper
+    
+    @staticmethod        
+    def filter_eval(func, kwargs):
+        """Static method for evaluating a funtion filtering the keywork arguments.
+        
+        Allow to call a function with as input a dictionary bigger than the argument the function can accept.
+        If this happen, however, a warning is logged.
+
+        Args:
+            func (function): function to be called.
+            kwargs (dict): dictioonary containing the argument to be passed to func
+
+        Returns:
+            any: result of calling func with the right parameters
+
+        """
+        intargs = kwargs.copy()
+        argspec = inspect.getfullargspec(func)
+        if not argspec.varkw:
+            to_pop = []
+            for key in intargs:
+                if key not in argspec.args:
+                    to_pop.append(key)
+            for key in to_pop:
+                intargs.pop(key)
+                logger.warning(f'Function {func.__name__} does not support argument {key}, so it is ignored. To remove this warning, add **kwargs to the function definition.')
+        return func(**intargs)
+    
+    
+            
     @classmethod
-    def check_init(cls, cell, tracker, allowed=None):
+    def check_init(cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
         try:
-            obj = cls(cell=cell, tracker=tracker, allowed=allowed)
+            obj = cls(cell=cell, ampl_model=ampl_model, loss_model=loss_model, optlength_model=optlength_model, allowed=allowed)
             obj.solve(wl=1.55)
             return obj
         except AttributeError:
             return None
 
+    @classmethod
+    def nazca_init(cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
+        obj = cls(cell=cell, ampl_model=ampl_model, loss_model=loss_model, optlength_model=optlength_model, allowed=allowed)
+        if obj.is_empty():
+            print(f'Model of cell {cell.cell_name} is empy')
+            return solver.Solver(name=cell.cell_name)
+        else:
+            return obj
 
 
     def create_S(self):
@@ -1181,13 +1302,9 @@ class Model_from_NazcaCM(Model):
             ndarray: Scattering Matrix
         """
         self.S = np.zeros((self.N,self.N), dtype='complex')
-        wl = self.param_dic['wl']
         for (pin1, pin2), CM in self.CM.items():
-            if callable(CM):
-                self.S[self.pin_dic[pin1], self.pin_dic[pin2]] = np.exp(2.0j*np.pi/wl*CM(**self.param_dic))
-            else:
-                self.S[self.pin_dic[pin1], self.pin_dic[pin2]] = np.exp(2.0j*np.pi/wl*CM)
-
+            CM = self.CM[(pin1, pin2)]
+            self.S[self.pin_dic[pin1], self.pin_dic[pin2]] = CM(**self.param_dic) if callable(CM) else CM
         return self.S 
                     
     def __str__(self):

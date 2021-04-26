@@ -14,6 +14,36 @@ std.setFormatter(fmt)
 logger.addHandler(std)
 
 
+class DuplicateFilter:
+    """Filter for removing double entry in logger. Works on WARNING level or higher
+    """
+    def __init__(self):
+        self.msgs = set()
+
+    def filter(self, record):
+        """Filtering function
+        """
+        if record.levelno < 30: return True
+        rv = record.msg not in self.msgs
+        self.msgs.add(record.msg)
+        return rv
+
+dup_filter = DuplicateFilter()
+logger.addFilter(dup_filter)
+
+
+def log_filter_on():
+    """Activate filter to remove double log entries (WARNING and above)
+    """
+    logger.addFilter(dup_filter)
+
+def log_filter_off():
+    """Deactivate filter to remove double log entries
+    """
+    logger.removeFilter(dup_filter)
+
+
+
 def logfile(filename = None, stdout = False, level = logging.WARNING):
     """Switch log output to file
 

@@ -85,6 +85,18 @@ class Solver:
             return f'Solver object (id={id(self)})'
         else:
             return f'Solver of {self.name} (id={id(self)})'
+        
+    def is_empty(self):
+        """Checks if solver is empy
+        
+        Returns:
+            Bool: False is model has no pins, True otherwise
+
+        """
+        if len(self.structures)>0:
+            return False
+        else:
+            return True
 
     def add_structure(self,structure):
         """Add a structure to the solver
@@ -601,7 +613,10 @@ class Solver:
         copy_list=copy(self.structures)
         for st in copy_list:
             if st.model is not None:
-                not_empty.append(st)
+                if st.model.is_empty():
+                    self.remove_structure(st)
+                else:
+                    not_empty.append(st)
                 continue
             if st.solver is not None:
                 if st.solver.prune():
