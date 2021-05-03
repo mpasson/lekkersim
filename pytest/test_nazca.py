@@ -1,11 +1,17 @@
 import numpy as np
 import pytest as pt
+import sys
 
-import matplotlib.pyplot as plt
 
 import nazca as nd
+import nazca.cfg as cfg
 from nazca import demofab as demo
-import solver as sv
+
+if 'solver' in sys.modules:
+    import solver as sv
+    
+    
+
 
 @pt.fixture
 def no_pol():
@@ -39,17 +45,17 @@ def two_pol():
     xs.index = DummyIndex()
 
     MMI=demo.mmi2x2_sh()
-    MMI.model_info['model'] = sv.GeneralBeamSplitter().expand_mode(['TE','TM'])
     return xs,MMI
 
 
-
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_single(no_pol):
     strt=demo.shallow.strt(100.0)
     sol=nd.get_solver(strt)
     mod=sol.solve(wl=1.55)
     assert mod.get_T('a0','b0') == pt.approx(1.0, 1e-8)
 
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_1levl_circuit(no_pol):
     xs,MMI=no_pol
 
@@ -76,6 +82,7 @@ def test_1levl_circuit(no_pol):
     Tref=np.abs((a+t*ex)/(a*t+ex))**2.0
     assert np.allclose(T,Tref)
 
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_2levl_circuit(no_pol):
     xsShallow,MMI=no_pol
 
@@ -125,7 +132,7 @@ def test_2levl_circuit(no_pol):
     assert np.allclose(T2,1.0-Tref2)
     assert np.allclose(T3,(1.0-Tref1)*(1.0-Tref2))
 
-
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_params(no_pol):
     xsShallow,MMI=no_pol
 
@@ -163,7 +170,7 @@ def test_params(no_pol):
     assert np.allclose(T1,np.cos(0.5*np.pi*psl)**2.0)
     assert np.allclose(T2,np.cos((0.5*psl-0.25)*np.pi)**2.0)
 
-
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_other_cells(no_pol):
     xsShallow,MMI=no_pol
     with nd.Cell(name='PhaseShifter_wp') as PS:
@@ -222,7 +229,7 @@ def test_other_cells(no_pol):
     assert np.allclose(T1,np.cos(0.5*np.pi*psl)**2.0)
     assert np.allclose(T2,np.cos((0.5*psl-0.25)*np.pi)**2.0)
 
-
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_twopol_basic(two_pol):
     xsShallow,MMI=two_pol
 
@@ -232,7 +239,52 @@ def test_twopol_basic(two_pol):
     assert mod.get_T('a0_TE','b0_TE') == pt.approx(1.0, 1e-8)
     assert mod.get_T('a0_TM','b0_TM') == pt.approx(1.0, 1e-8)
 
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+def test_twopol_MMI(two_pol):
+    xsShallow,MMI=two_pol
 
+    sol=nd.get_solver(MMI, allowed={'TE':dict(pol=0, mode=0), 'TM':dict(pol=1, mode=0)})
+    mod=sol.solve(wl=1.55)
+    ref = np.array([[[ 0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.70710678+0.j        ,  0.        +0.j        ,
+          0.        +0.70710678j,  0.        +0.j        ],
+        [ 0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.70710678+0.j        ,
+          0.        +0.j        ,  0.        +0.70710678j],
+        [ 0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+         -0.        -0.70710678j,  0.        +0.j        ,
+         -0.70710678+0.j        ,  0.        +0.j        ],
+        [ 0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        , -0.        -0.70710678j,
+          0.        +0.j        , -0.70710678+0.j        ],
+        [ 0.70710678+0.j        ,  0.        +0.j        ,
+         -0.        -0.70710678j,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ],
+        [ 0.        +0.j        ,  0.70710678+0.j        ,
+          0.        +0.j        , -0.        -0.70710678j,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ],
+        [ 0.        +0.70710678j,  0.        +0.j        ,
+         -0.70710678+0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ],
+        [ 0.        +0.j        ,  0.        +0.70710678j,
+          0.        +0.j        , -0.70710678+0.j        ,
+          0.        +0.j        ,  0.        +0.j        ,
+          0.        +0.j        ,  0.        +0.j        ]]])
+    
+    assert np.allclose(mod.S, ref)
+    
+    #assert mod.get_T('a0_TE','b0_TE') == pt.approx(1.0, 1e-8)
+    #assert mod.get_T('a0_TM','b0_TM') == pt.approx(1.0, 1e-8)
+
+
+@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
 def test_twopol_MZM(two_pol):
     xsShallow,MMI=two_pol
 
@@ -299,9 +351,8 @@ def test_twopol_MZM(two_pol):
     T1_2=[sol.solve(wl=wl,PS1=0.0,PS2=0.5).get_T('a0_TM','b0_TM') for wl in wll]
     T1_2_ref = [np.cos((demo.xsShallow.index.Neff(wl=wl, pol=1)/wl*20.0-0.25)*np.pi)**2.0 for wl in wll]
     
-    MMI.model_info['model'].print_S()
-    sol.solve(wl=1.55,PS1=0.0,PS2=0.5).print_S()
-    
+
+
 
     assert np.allclose(T0_1,T0_1_ref)
     assert np.allclose(T0_2,T0_2_ref)
@@ -311,4 +362,4 @@ def test_twopol_MZM(two_pol):
 
 
 if __name__ == "__main__":
-    pt.main([__file__, '-s', '-vv']) # -s: show print output
+    pt.main([__file__, '-s', '-v']) # -s: show print output

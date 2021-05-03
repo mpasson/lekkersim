@@ -248,6 +248,52 @@ def test_optlen_lev2():
 
     assert np.allclose(S.solve(wl=1.4).S, ref)
     
+    
+def test_ampl_allowed1():    
+    with nd.Cell(name='test_ampl_allowed1') as T:
+        nd.Pin('a0').put(0.0, 0.0, 180.0)
+        nd.Pin('b0').put(0.0, 0.0, 0.0)
+        nd.connect_path(T.pin['a0'], T.pin['b0'],  1.0, 'Ampl', allowed = [(dict(pol=0, mode=0),dict(pol=1, mode=0))] )
+
+    S=nd.get_solver(T, infolevel=2, allowed = {'TE' : dict(pol=0, mode=0), 'TM' : dict(pol=1, mode=0)})  
+    ref = np.array([[[0.+0.j, 1.+0.j],
+        [1.+0.j, 0.+0.j]]])
+    assert np.allclose(S.solve(wl=1.0).S, ref)
+    
+def test_ampl_allowed2():    
+    with nd.Cell(name='test_ampl_allowed2') as T:
+        nd.Pin('a0').put(0.0, 0.0, 180.0)
+        nd.Pin('b0').put(0.0, 0.0, 0.0)
+        nd.connect_path(T.pin['a0'], T.pin['b0'],  0.0, 'Ampl')
+        nd.connect_path(T.pin['a0'], T.pin['b0'],  1.0, 'Ampl', allowed = [(dict(pol=0, mode=0),dict(pol=1, mode=0))] )
+
+    S=nd.get_solver(T, infolevel=2, allowed = {'TE' : dict(pol=0, mode=0), 'TM' : dict(pol=1, mode=0)})  
+    ref = np.array([[[0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j],
+        [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+        [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+        [1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j]]])
+    assert np.allclose(S.solve(wl=1.0).S, ref)
+    
+ 
+def test_loss_allowed1():    
+    with nd.Cell(name='test_loss_allowed1') as T:
+        nd.Pin('a0').put(0.0, 0.0, 180.0)
+        nd.Pin('b0').put(0.0, 0.0, 0.0)
+        
+        nd.connect_path(T.pin['a0'], T.pin['b0'],  0.0, 'OptLoss')
+        nd.connect_path(T.pin['a0'], T.pin['b0'],  -1e6, 'OptLoss', allowed = [(dict(pol=0, mode=0),dict(pol=0, mode=0))])
+
+    Sol=nd.get_solver(T, infolevel=2, allowed = {'TE' : dict(pol=0, mode=0), 'TM' : dict(pol=1, mode=0), 'TE1' : dict(pol=0, mode=1)})
+    ref = np.array([[[0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+        [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j, 0.+0.j],
+        [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j],
+        [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+        [0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+        [0.+0.j, 0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j]]])
+    assert np.allclose(Sol.solve(wl=1.0).S, ref)
+    
+    
+    print(repr(Sol.solve(wl=1.0).S))
         
     
 if __name__ == "__main__":

@@ -14,7 +14,6 @@
 
 
 import numpy as np
-from solver.scattering import S_matrix
 import solver.structure
 from solver import sol_list
 from solver import logger
@@ -23,7 +22,6 @@ import solver.log
 from copy import deepcopy
 from copy import copy
 import pandas as pd
-import warnings
 from scipy.interpolate import interp1d
 import io
 import inspect
@@ -124,8 +122,6 @@ class Model:
         indsort = np.array(ind)[indsort]
         for pin,i in self.pin_dic.items():
             print(pin,i)
-        print(a)
-        print(indsort)
         S = self.create_S()
         I,J = np.meshgrid(indsort, indsort, indexing='ij')
         S = S[0,I,J] if len(np.shape(S))==3 else S[I,J]
@@ -1169,11 +1165,11 @@ class Model_from_NazcaCM(Model):
         
 
         #Checking for ampl model
-        for name, pin in cell.pin.items():       
-            opt = list(pin.path_nb_iter(ampl_model))
-            if len(opt)!=0:
-                opt_conn[pin] = opt
-                for mode in allowed:
+        for name, pin in cell.pin.items():
+            for mode, extra_in in allowed.items():
+                opt = list(pin.path_nb_iter(ampl_model, extra=extra_in))
+                if len(opt)!=0:
+                    opt_conn[(pin, mode)] = opt
                     if mode=='':
                         self.pin_dic[name] = n
                     else:
@@ -1183,43 +1179,57 @@ class Model_from_NazcaCM(Model):
             logger.info(f'Model for {cell.cell_name}: using amplitude model {ampl_model}')
             self.N = len(self.pin_dic)
             self.CM = {}
-            for pin, conn in opt_conn.items():
+            for (pin, mode), conn in opt_conn.items():
                 for stuff in conn:
                     target = stuff[0]
                     CM = stuff[1]
-                    for mode, extra in allowed.items():
-                        tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
-                        self.CM[tup] = self.__class__.wraps(self.__class__.filter_eval(CM,extra) if callable(CM) else CM)
+                    extra_out = stuff[5]
+                    pin_in  = pin.name if mode == '' else '_'.join([pin.name,mode])
+                    try:
+                        modeo = mode if extra_out is None else list(allowed.keys())[list(allowed.values()).index(extra_out)]
+                    except ValueError:
+                        logger.error(f'Model for {cell.cell_name}: mode {extra_out} is not in allowed {allowed}: ignored')
+                        continue
+                    pin_out  = target.name if modeo == '' else '_'.join([target.name,modeo])
+                    tup = (pin_in, pin_out)
+                    self.CM[tup] = self.__class__.wraps(self.__class__.filter_eval(CM,allowed[mode]) if callable(CM) else CM)
         else:
             opt_conn = {}
             for name, pin in cell.pin.items():
-                opt = {x[0] : x[1:] for x in pin.path_nb_iter(optlength_model)}
-                lss = {x[0] : x[1:] for x in pin.path_nb_iter(loss_model)}
-                for target in set(opt.keys()).union(set(lss.keys())):
-                    if pin not in opt_conn: opt_conn[pin] = {}
-                    tup1 = opt[target] if target in opt else (0.0, None, None, None, None)
-                    tup2 = lss[target] if target in lss else (0.0, None, None, None, None)
-                    opt_conn[pin][target] = tup1 + tup2
-                if pin in opt_conn:
-                    for mode in allowed:
-                        if mode=='':
-                            self.pin_dic[name] = n
-                        else:
-                            self.pin_dic['_'.join([name,mode])] = n
+                for mode, extra_in in allowed.items():
+                    opt = {x[0] : x[1:] for x in pin.path_nb_iter(optlength_model, extra=extra_in)}
+                    lss = {x[0] : x[1:] for x in pin.path_nb_iter(loss_model, extra=extra_in)}
+                    for target in set(opt.keys()).union(set(lss.keys())):
+                        if (pin,mode) not in opt_conn: opt_conn[(pin,mode)] = {}
+                        tup1 = opt[target] if target in opt else (0.0, None, None, None, allowed[mode])
+                        tup2 = lss[target] if target in lss else (0.0, None, None, None, allowed[mode])
+                        opt_conn[(pin, mode)][target] = tup1 + tup2
+                    if (pin,mode) in opt_conn:
+                        pinname = name if mode=='' else '_'.join([name,mode])
+                        self.pin_dic[pinname] = n
                         n+=1
             logger.info(f'Model for {cell.cell_name}: using optical length model {optlength_model} and loss model {loss_model}')
             self.N = len(self.pin_dic)
             self.CM = {}
                    
-            for pin, conn in opt_conn.items():
+            for (pin, mode), conn in opt_conn.items():
                 for target, stuff in conn.items(): 
-                    for mode, extra in allowed.items():
-                        OM = stuff[0]
-                        AM = stuff[5]
-                        OMt = self.__class__.filter_eval(OM,extra) if callable(OM) else OM
-                        AMt = self.__class__.filter_eval(AM,extra) if callable(AM) else AM
-                        tup = (pin.name, target.name) if mode=='' else ('_'.join([pin.name,mode]), '_'.join([target.name,mode]))
-                        self.CM[tup] = self.__class__.generator(OMt, AMt) 
+                    OM = stuff[0]
+                    extra_om = stuff[4]
+                    AM = stuff[5]
+                    extra_am = stuff[9]
+                    if extra_om != extra_am: continue
+                    pin_in  = pin.name if mode == '' else '_'.join([pin.name,mode])
+                    try:
+                        modeo = mode if extra_om is None else list(allowed.keys())[list(allowed.values()).index(extra_om)]
+                    except ValueError:
+                        logger.error(f'Model for {cell.cell_name}: mode {extra_out} is not in allowed {allowed}: ignored')
+                        continue
+                    pin_out  = target.name if modeo == '' else '_'.join([target.name,modeo])
+                    tup = (pin_in, pin_out)
+                    OMt = self.__class__.filter_eval(OM, allowed[mode]) if callable(OM) else OM
+                    AMt = self.__class__.filter_eval(AM, allowed[mode]) if callable(AM) else AM
+                    self.CM[tup] = self.__class__.generator(OMt, AMt) 
                 
            
     @staticmethod        
@@ -1242,6 +1252,14 @@ class Model_from_NazcaCM(Model):
     
     @staticmethod
     def wraps(func):
+        """Static method for generating the function creting the sattering matrix element from the amplitude compact model
+        
+        Args:
+            func (function): Compact model for Amplitude
+
+        Returns:
+            function: function to crete the element of the scattering matrix.
+        """
         def wrapper(**kwargs):
             Inner = Model_from_NazcaCM.filter_eval(func,kwargs) if callable(func) else copy(func)
             return Inner
@@ -1289,7 +1307,7 @@ class Model_from_NazcaCM(Model):
     def nazca_init(cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
         obj = cls(cell=cell, ampl_model=ampl_model, loss_model=loss_model, optlength_model=optlength_model, allowed=allowed)
         if obj.is_empty():
-            print(f'Model of cell {cell.cell_name} is empy')
+            logger.debug(f'Model of cell {cell.cell_name} is empy')
             return solver.Solver(name=cell.cell_name)
         else:
             return obj
