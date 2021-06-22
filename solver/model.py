@@ -19,6 +19,7 @@ from solver import sol_list
 from solver import logger
 import solver
 import solver.log
+from solver.utils import line
 from copy import deepcopy
 from copy import copy
 import pandas as pd
@@ -1129,6 +1130,96 @@ class AWGfromVPI(Model):
         lam=self.param_dic['wl']
         self.S=self.S_func(self.lamc-0.5*self.fsr+np.mod(lam-self.lamc+0.5*self.fsr,self.fsr))
         return self.S
+    
+    
+class FPR(Model):
+    """Simplified model of FPR circle mount
+    """
+
+    def __init__(self, n, m, R, d1, d2, Ri = None):
+        """Creator
+
+        Args:
+            n (int): Number of inputs arms.
+            m (int): Number of output arms.
+            R (float): Radius the output part of FPR FPR (input and output are on the same radius)
+            d1 (float): Distance of inputs on the input plane.
+            d2 (float): Distance of output on the output plane.
+
+        Returns:
+            Model: Model of the FPR region
+
+        """
+        Ri = 0.5*R if Ri is None else Ri 
+        self.n, self.m = n,m
+        self.d1, self.d2 = d1, d2
+        self.R = R
+        d1 = { f'a{i:03}' : i for i in range(n)}
+        d2 = { f'b{i:03}' : n+i for i in range(m)}
+        dic = {**d1, **d2}
+        super().__init__(pin_dic = dic)
+        t1 = self.d1/Ri*np.array(line(n))
+        t2 = self.d2/R*np.array(line(m))
+        T1, T2 = np.meshgrid(t1,t2, indexing='ij')
+        DY = R*np.sin(T2)- Ri*np.sin(T1)
+        DX = R*np.cos(T2) - Ri*(1.0-np.cos(T1))
+        self.DR = np.sqrt(DY**2.0+DX**2.0)
+        self.S = np.zeros((n+m,n+m), dtype=complex)
+        
+    def create_S(self):
+        """Creates the scattering matrix
+        
+        Returns:
+            2darray: Scattering matrix of the FPR
+
+        """
+        lam=self.param_dic['wl']
+        n = self.n
+        Mat = np.exp(2.0j*np.pi/lam*self.DR)/np.sqrt(max(self.m, self.n))        
+        self.S[:n,n:] = Mat
+        self.S[n:,:n] = np.transpose(Mat)
+        return self.S
+    
+class CWA(Model):
+    """Simple model fo a Coupled Waveguide Array
+    """
+        
+    def __init__(self, N, L, n = 1.0, k= 0.1):
+        """Creator
+
+        Args:
+            N (int): Number of waveguides in the array.
+            L (float): Length of the CWA section
+            n (float): Index of the single waveguide in the array.
+            k (float): Coupling coefficient between waveguides.
+
+        Returns:
+            Model: Model of a CWA
+
+        """
+        self.NW = N
+        self.n = n
+        self.k = k
+        self.L = L
+        d1 = { f'a{i}' : i for i in range(N)}
+        d2 = { f'b{i}' : N+i for i in range(N)}
+        dic = {**d1, **d2}
+        super().__init__(pin_dic = dic)
+        i, j = list(range(N)), list(range(N))
+        I, J = np.meshgrid(i,j,indexing = 'ij')
+        self.RM = np.exp(2.0j*np.pi*I*J/self.NW)/np.sqrt(self.NW)
+        self.S = np.zeros((2*N,2*N), dtype=complex)
+
+        
+        
+    def create_S(self):
+        B = [2.0*np.pi*self.n/self.param_dic.get('wl', 1.0) + 2.0*self.k*np.cos(2.0*np.pi*n/self.NW) for n in range(self.NW)]
+        P = np.diag(np.exp(1.0j*np.array(B)*self.L))
+        S = np.dot(np.dot(self.RM, P), self.RM)
+        self.S[:self.NW,self.NW:] = S
+        self.S[self.NW:,:self.NW] = S
+        return self.S
+
 
 
 class Model_from_NazcaCM(Model):
@@ -1142,12 +1233,12 @@ class Model_from_NazcaCM(Model):
         
         In the definition of the scattering matrices, tree models can be provided. 
             - ampl_model: This model returns directly the amplitude complex coefficient A.
-            - loss_model: This model returns the loss used for the calculation of the modulus of the amplitude (in dB): |A|^2 = 10^loss/10.0
+            - loss_model: This model returns the loss used for the calculation of the modulus of the amplitude (in dB): abs(A)^2 = 10^loss/10.0
             - optlength_model: This model returns the optical length used for the calculation of the phase of the amplitude: angle(A) = 2.0*pi/wl*optlenght. It assumes the same unit as the wavelegnth.
             
         The priority of usage withing the models is the following. 
             1. ampl: is the model for amplitude is found, the others are ignored. Amplitude between the same pin (reflection) is assumed 0 if not otherwaise specified.
-            2. loss and optlength: if ampl  is not found, a model will be build using the available information between loss and optlength. If either one is missing, it will be assumed as 0 (i.d. no loss means |A|=1, no phase means A purely real), but a warning will be raised. 
+            2. loss and optlength: if ampl  is not found, a model will be build using the available information between loss and optlength. If either one is missing, it will be assumed as 0 (i.d. no loss means abs(A)=1, no phase means A purely real), but a warning will be raised. 
         
         Args:
             cell (Nazca Cell): it expects a Nazca cell with some compact model defined.
@@ -1252,13 +1343,13 @@ class Model_from_NazcaCM(Model):
     
     @staticmethod
     def wraps(func):
-        """Static method for generating the function creting the sattering matrix element from the amplitude compact model
+        """Static method for generating the function creating the sattering matrix element from the amplitude compact model
         
         Args:
             func (function): Compact model for Amplitude
 
         Returns:
-            function: function to crete the element of the scattering matrix.
+            function: function to create the element of the scattering matrix.
         """
         def wrapper(**kwargs):
             Inner = Model_from_NazcaCM.filter_eval(func,kwargs) if callable(func) else copy(func)
@@ -1296,15 +1387,49 @@ class Model_from_NazcaCM(Model):
             
     @classmethod
     def check_init(cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
+        """Alternative Creator. Mainly used for debugging
+        
+        This creator will directly try to solve the obtained model befor returning. 
+        
+        Args:
+            cls (TYPE): DESCRIPTION.
+            cell (TYPE): DESCRIPTION.
+            ampl_model (TYPE, optional): DESCRIPTION. Defaults to None.
+            loss_model (TYPE, optional): DESCRIPTION. Defaults to None.
+            optlength_model (TYPE, optional): DESCRIPTION. Defaults to None.
+            allowed (TYPE, optional): DESCRIPTION. Defaults to None.
+
+        Returns:
+            Model: Model of the cell.
+
+        Raises:
+            RuntimeError: if calling solve on the Model fails.
+        """
         try:
             obj = cls(cell=cell, ampl_model=ampl_model, loss_model=loss_model, optlength_model=optlength_model, allowed=allowed)
             obj.solve(wl=1.55)
             return obj
         except AttributeError:
-            return None
+            raise RuntimeError(f'Model for cell {cell.cell_name} is not solved')
 
     @classmethod
     def nazca_init(cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
+        """Alternative Creator to be used inside Nazca Integration
+        
+        This alternative creator will check if a model can be obained from the Nazca cell. If not, an empty Solver will be returned instead.
+        For a more detailed description on how to use this class see the __init__ method.
+    
+        Args:
+            cell (Nazca Cell): it expects a Nazca cell with some compact model defined.
+            ampl_model (str): model to the used to diectly get the scattering matrix amplitudes
+            loss_model (str): model to be used to estimate the loss
+            optlength_model (str): model to be used for the optical length (phase)
+            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to the compact model to build the optical length. 
+
+        Returns:
+            Model or Solver: Model of the cell or empy Solver.
+
+        """
         obj = cls(cell=cell, ampl_model=ampl_model, loss_model=loss_model, optlength_model=optlength_model, allowed=allowed)
         if obj.is_empty():
             logger.debug(f'Model of cell {cell.cell_name} is empy')

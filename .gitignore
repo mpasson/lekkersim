@@ -11,3 +11,5 @@ tests
 .gitlab-ci.yml.back
 docs/
 Docs/generated/
+pytest/.coverage
+pytest/htmlcov

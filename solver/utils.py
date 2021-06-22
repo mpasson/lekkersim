@@ -5,7 +5,7 @@ Created on Wed Mar 31 09:48:24 2021
 
 @author: marco
 """
-
+import numpy as np
 import types
 
 def map_args(func, varsmap = {}):
@@ -46,3 +46,21 @@ def map_args(func, varsmap = {}):
                 y.__code__.co_firstlineno, \
                 y.__code__.co_lnotab)
     return types.FunctionType(y_code, y.__globals__, y.__name__, y.__defaults__)
+
+
+def line(N):
+    """It returns N-values spaced by 1 and centered around 0
+    """
+    if (N % 2)==0:
+        return [x+0.5 for x in range(-N//2,N//2)]
+    else:
+        return list(range(-N//2+1,N//2+1))
+    
+    
+def gauss(z,r,w0,n,wl):
+    zr = np.pi*w0**2.0*n/wl
+    wz = w0*np.sqrt(1.0+(z/zr)**2.0)
+    k = 2.0*np.pi*n/wl
+    Rinv = z/(z**2+zr**2.0)
+    phi = np.arctan(z/zr)
+    return (2.0/(w0**2.0*np.pi))**0.25*np.sqrt(w0/wz)*np.exp(-(r/wz)**2.0 - 1.0j*(k*(z+0.5*r**2*Rinv)-phi))
