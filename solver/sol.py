@@ -32,6 +32,7 @@ class Solver:
 
     """
     space = ''
+    depth = 0
 
     def __init__(self,structures=None, connections=None, param_dic=None, name=None, param_mapping = None):
         """Creator
@@ -519,22 +520,35 @@ class Solver:
         return None                    
 
 
-    def _inspect(self):
+    def _inspect(self, max_depth = None):
         """Recursive function for printing one step of the solver hierarchy
+                
+        Args:
+            max_depth (int, optional): Maximum depth for printing the circuit. Default is None (full circuit is printed)
+            
+        Returns:
+            None
         """
         for s in self.structures:
-            print(f'{self.space}  {s}')
+            if max_depth is None or self.__class__.depth < max_depth: print(f'{self.space}  {s}')
             if s.solver is not None:
                 self.__class__.space=self.__class__.space+'  '
-                s.solver._inspect()
+                self.__class__.depth += 1
+                s.solver._inspect(max_depth = max_depth)
                 self.__class__.space=self.__class__.space[:-2]    
-
+                self.__class__.depth -= 1
         
-    def inspect(self, firstcall = True):
+    def inspect(self, max_depth = None):
         """Print the full hierarchy of the solver
+        
+        Args:
+            max_depth (int, optional): Maximum depth for printing the circuit. Default is None (full circuit is printed)
+            
+        Returns:
+            None
         """
         print(f'{self.space}{self}')
-        self._inspect()                
+        self._inspect(max_depth = max_depth)                
                 
 
 
