@@ -1261,15 +1261,24 @@ class Model_from_NazcaCM(Model):
                 opt = list(pin.path_nb_iter(ampl_model, extra=extra_in))
                 if len(opt)!=0:
                     opt_conn[(pin, mode)] = opt
-                    if mode=='':
-                        self.pin_dic[name] = n
-                    else:
-                        self.pin_dic['_'.join([name,mode])] = n
                     n+=1
-        if n!=0: 
+        if n!= 0:
+            n = 0
+            self.CM = {}
+            pins = set([pin for pin, mode in opt_conn])
+            for pi in pins:
+                for mi in allowed:
+                    pin_in   = pi.name if mi == '' else '_'.join([pi.name,mi])
+                    self.pin_dic[pin_in] = n
+                    n+=1
+                    for po in pins:
+                        for mo in allowed:
+                            pin_out  = po.name if mo == '' else '_'.join([po.name,mo])
+                            tup = tup = (pin_in, pin_out)
+                            self.CM[tup] = 0.0
+                    
             logger.info(f'Model for {cell.cell_name}: using amplitude model {ampl_model}')
             self.N = len(self.pin_dic)
-            self.CM = {}
             for (pin, mode), conn in opt_conn.items():
                 for stuff in conn:
                     target = stuff[0]
@@ -1290,6 +1299,7 @@ class Model_from_NazcaCM(Model):
                 for mode, extra_in in allowed.items():
                     opt = {x[0] : x[1:] for x in pin.path_nb_iter(optlength_model, extra=extra_in)}
                     lss = {x[0] : x[1:] for x in pin.path_nb_iter(loss_model, extra=extra_in)}
+                    print(name, opt, lss)
                     for target in set(opt.keys()).union(set(lss.keys())):
                         if (pin,mode) not in opt_conn: opt_conn[(pin,mode)] = {}
                         tup1 = opt[target] if target in opt else (0.0, None, None, None, allowed[mode])
