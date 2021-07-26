@@ -70,6 +70,7 @@ def debugfile(filename = None):
     filename = f'{__main__.__file__}.dbg' if filename is None else filename
     han = logging.FileHandler(filename, mode='w')
     han.setLevel(logging.DEBUG)
+    han.setFormatter(fmt)
     logger.addHandler(han)
     
             
