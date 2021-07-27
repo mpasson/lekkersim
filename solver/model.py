@@ -1297,34 +1297,44 @@ class Model_from_NazcaCM(Model):
             opt_conn = {}
             for name, pin in cell.pin.items():
                 for mode, extra_in in allowed.items():
-                    opt = {x[0] : x[1:] for x in pin.path_nb_iter(optlength_model, extra=extra_in)}
-                    lss = {x[0] : x[1:] for x in pin.path_nb_iter(loss_model, extra=extra_in)}
-                    print(name, opt, lss)
+                    opt = {(x[0], str(x[-1])) : x[1:] for x in pin.path_nb_iter(optlength_model, extra=extra_in)}
+                    lss = {(x[0], str(x[-1])) : x[1:] for x in pin.path_nb_iter(loss_model, extra=extra_in)}
                     for target in set(opt.keys()).union(set(lss.keys())):
                         if (pin,mode) not in opt_conn: opt_conn[(pin,mode)] = {}
                         tup1 = opt[target] if target in opt else (0.0, None, None, None, allowed[mode])
                         tup2 = lss[target] if target in lss else (0.0, None, None, None, allowed[mode])
                         opt_conn[(pin, mode)][target] = tup1 + tup2
-                    if (pin,mode) in opt_conn:
-                        pinname = name if mode=='' else '_'.join([name,mode])
-                        self.pin_dic[pinname] = n
-                        n+=1
             logger.info(f'Model for {cell.cell_name}: using optical length model {optlength_model} and loss model {loss_model}')
-            self.N = len(self.pin_dic)
+            pins = set([pin for pin, mode in opt_conn])
             self.CM = {}
+            for pi in pins:
+                for mi in allowed:
+                    pin_in   = pi.name if mi == '' else '_'.join([pi.name,mi])
+                    self.pin_dic[pin_in] = n
+                    n+=1
+                    for po in pins:
+                        for mo in allowed:
+                            pin_out  = po.name if mo == '' else '_'.join([po.name,mo])
+                            tup = tup = (pin_in, pin_out)
+                            self.CM[tup] = 0.0
+
+            self.N = len(self.pin_dic)
                    
             for (pin, mode), conn in opt_conn.items():
-                for target, stuff in conn.items(): 
+                for (target, extra_target), stuff in conn.items(): 
                     OM = stuff[0]
                     extra_om = stuff[4]
                     AM = stuff[5]
                     extra_am = stuff[9]
-                    if extra_om != extra_am: continue
+                    if extra_om != extra_am:
+                        if extra_om == allowed[mode]:
+                            extra_om = extra_am
+                
                     pin_in  = pin.name if mode == '' else '_'.join([pin.name,mode])
                     try:
                         modeo = mode if extra_om is None else list(allowed.keys())[list(allowed.values()).index(extra_om)]
                     except ValueError:
-                        logger.error(f'Model for {cell.cell_name}: mode {extra_out} is not in allowed {allowed}: ignored')
+                        logger.error(f'Model for {cell.cell_name}: mode {extra_om} is not in allowed {allowed}: ignored')
                         continue
                     pin_out  = target.name if modeo == '' else '_'.join([target.name,modeo])
                     tup = (pin_in, pin_out)

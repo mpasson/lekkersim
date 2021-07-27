@@ -278,7 +278,7 @@ def test_twopol_MMI(two_pol):
           0.        +0.j        ,  0.        +0.j        ,
           0.        +0.j        ,  0.        +0.j        ]]])
     
-    assert np.allclose(mod.S, ref)
+    assert np.allclose(mod.S2PD().values, ref)
     
     #assert mod.get_T('a0_TE','b0_TE') == pt.approx(1.0, 1e-8)
     #assert mod.get_T('a0_TM','b0_TM') == pt.approx(1.0, 1e-8)
