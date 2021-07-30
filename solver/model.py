@@ -1400,7 +1400,7 @@ class Model_from_NazcaCM(Model):
                     to_pop.append(key)
             for key in to_pop:
                 intargs.pop(key)
-                logger.warning(f'Function {func.__name__} does not support argument {key}, so it is ignored. To remove this warning, add **kwargs to the function definition.')
+                logger.warning(f'Function "{func.__name__}" in  file "{func.__code__.co_filename.split("/")[-1]}", line {func.__code__.co_firstlineno} does not support argument "{key}", so it is ignored. To remove this warning, add **kwargs to the function definition.')
         return func(**intargs)
     
     
