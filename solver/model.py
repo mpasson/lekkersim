@@ -1247,7 +1247,7 @@ class Model_from_NazcaCM(Model):
             optlength_model (str): model to be used for the optical length (phase)
             allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to the compact model to build the optical length. 
         """
-        self.name = cell.cell_name
+        self.name = getattr(cell, 'cell_name', cell.name)
         self.pin_dic = {}
         self.param_dic={}
         self.default_params={}
@@ -1268,29 +1268,29 @@ class Model_from_NazcaCM(Model):
             pins = set([pin for pin, mode in opt_conn])
             for pi in pins:
                 for mi in allowed:
-                    pin_in   = pi.name if mi == '' else '_'.join([pi.name,mi])
+                    pin_in   = pi.basename if mi == '' else '_'.join([pi.basename,mi])
                     self.pin_dic[pin_in] = n
                     n+=1
                     for po in pins:
                         for mo in allowed:
-                            pin_out  = po.name if mo == '' else '_'.join([po.name,mo])
+                            pin_out  = po.basename if mo == '' else '_'.join([po.basename,mo])
                             tup = tup = (pin_in, pin_out)
                             self.CM[tup] = 0.0
                     
-            logger.info(f'Model for {cell.cell_name}: using amplitude model {ampl_model}')
+            logger.info(f'Model for {self.name}: using amplitude model {ampl_model}')
             self.N = len(self.pin_dic)
             for (pin, mode), conn in opt_conn.items():
                 for stuff in conn:
                     target = stuff[0]
                     CM = stuff[1]
                     extra_out = stuff[5]
-                    pin_in  = pin.name if mode == '' else '_'.join([pin.name,mode])
+                    pin_in  = pin.basename if mode == '' else '_'.join([pin.basename,mode])
                     try:
                         modeo = mode if extra_out is None else list(allowed.keys())[list(allowed.values()).index(extra_out)]
                     except ValueError:
-                        logger.error(f'Model for {cell.cell_name}: mode {extra_out} is not in allowed {allowed}: ignored')
+                        logger.error(f'Model for {self.name}: mode {extra_out} is not in allowed {allowed}: ignored')
                         continue
-                    pin_out  = target.name if modeo == '' else '_'.join([target.name,modeo])
+                    pin_out  = target.basename if modeo == '' else '_'.join([target.basename,modeo])
                     tup = (pin_in, pin_out)
                     self.CM[tup] = self.__class__.wraps(self.__class__.filter_eval(CM,allowed[mode]) if callable(CM) else CM)
         else:
@@ -1304,17 +1304,17 @@ class Model_from_NazcaCM(Model):
                         tup1 = opt[target] if target in opt else (0.0, None, None, None, allowed[mode])
                         tup2 = lss[target] if target in lss else (0.0, None, None, None, allowed[mode])
                         opt_conn[(pin, mode)][target] = tup1 + tup2
-            logger.info(f'Model for {cell.cell_name}: using optical length model {optlength_model} and loss model {loss_model}')
+            logger.info(f'Model for {self.name}: using optical length model {optlength_model} and loss model {loss_model}')
             pins = set([pin for pin, mode in opt_conn])
             self.CM = {}
             for pi in pins:
                 for mi in allowed:
-                    pin_in   = pi.name if mi == '' else '_'.join([pi.name,mi])
+                    pin_in   = pi.basename if mi == '' else '_'.join([pi.basename,mi])
                     self.pin_dic[pin_in] = n
                     n+=1
                     for po in pins:
                         for mo in allowed:
-                            pin_out  = po.name if mo == '' else '_'.join([po.name,mo])
+                            pin_out  = po.basename if mo == '' else '_'.join([po.basename,mo])
                             tup = tup = (pin_in, pin_out)
                             self.CM[tup] = 0.0
 
@@ -1330,13 +1330,13 @@ class Model_from_NazcaCM(Model):
                         if extra_om == allowed[mode]:
                             extra_om = extra_am
                 
-                    pin_in  = pin.name if mode == '' else '_'.join([pin.name,mode])
+                    pin_in  = pin.basename if mode == '' else '_'.join([pin.basename,mode])
                     try:
                         modeo = mode if extra_om is None else list(allowed.keys())[list(allowed.values()).index(extra_om)]
                     except ValueError:
-                        logger.error(f'Model for {cell.cell_name}: mode {extra_om} is not in allowed {allowed}: ignored')
+                        logger.error(f'Model for {self.name}: mode {extra_om} is not in allowed {allowed}: ignored')
                         continue
-                    pin_out  = target.name if modeo == '' else '_'.join([target.name,modeo])
+                    pin_out  = target.basename if modeo == '' else '_'.join([target.basename,modeo])
                     tup = (pin_in, pin_out)
                     OMt = self.__class__.filter_eval(OM, allowed[mode]) if callable(OM) else OM
                     AMt = self.__class__.filter_eval(AM, allowed[mode]) if callable(AM) else AM
@@ -1430,7 +1430,7 @@ class Model_from_NazcaCM(Model):
             obj.solve(wl=1.55)
             return obj
         except AttributeError:
-            raise RuntimeError(f'Model for cell {cell.cell_name} is not solved')
+            raise RuntimeError(f'Model for cell {obj.name} is not solved')
 
     @classmethod
     def nazca_init(cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None):
@@ -1452,8 +1452,8 @@ class Model_from_NazcaCM(Model):
         """
         obj = cls(cell=cell, ampl_model=ampl_model, loss_model=loss_model, optlength_model=optlength_model, allowed=allowed)
         if obj.is_empty():
-            logger.debug(f'Model of cell {cell.cell_name} is empy')
-            return solver.Solver(name=cell.cell_name)
+            logger.debug(f'Model of cell {obj.name} is empy')
+            return solver.Solver(name=obj.name)
         else:
             return obj
 
