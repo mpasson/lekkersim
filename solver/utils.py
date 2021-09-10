@@ -51,10 +51,7 @@ def map_args(func, varsmap = {}):
 def line(N):
     """It returns N-values spaced by 1 and centered around 0
     """
-    if (N % 2)==0:
-        return [x+0.5 for x in range(-N//2,N//2)]
-    else:
-        return list(range(-N//2+1,N//2+1))
+    return np.linspace(-0.5*(N-1), 0.5*(N-1), N)
     
     
 def gauss(z,r,w0,n,wl):

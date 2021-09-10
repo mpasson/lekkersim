@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 sol_list=[]
 
+from version import __version__
 from  solver.log import logfile, debugfile
 from  solver.sol import *
 from  solver.structure import *
