@@ -1,17 +1,21 @@
 import logging
 from solver import logger
 import __main__
+import solver as sv
 
 
 logger.setLevel(logging.DEBUG)
 
 std = logging.StreamHandler()
-std.setLevel(logging.WARNING)
+std.setLevel(logging.INFO)
 fmt = logging.Formatter('%(levelname)s:%(name)s:%(message)s') 
 std.setFormatter(fmt)
 
 
 logger.addHandler(std)
+logger.info(f'version {sv.__version__}')
+if not sv.git_clean:
+    logger.error('repository not clean')
 
 
 class DuplicateFilter:
