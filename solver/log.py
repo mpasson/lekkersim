@@ -48,7 +48,7 @@ def log_filter_off():
 
 
 
-def logfile(filename = None, stdout = False, level = logging.WARNING):
+def logfile(filename = None, stdout = False, level = logging.INFO):
     """Switch log output to file
 
     Args:
@@ -61,8 +61,14 @@ def logfile(filename = None, stdout = False, level = logging.WARNING):
     han.setFormatter(fmt)
     logger.addHandler(han)
     han.setLevel(level)
-    if not stdout:
-        logger.removeHandler(std)
+    logger.removeHandler(std)
+    log_filter_off()
+    logger.info(f'version {sv.__version__}')
+    if not sv.git_clean:
+        logger.error('repository not clean')
+    log_filter_on()
+    if stdout:
+        logger.addHandler(std)
     
 
 def debugfile(filename = None):
