@@ -3,6 +3,9 @@ from solver import logger
 import __main__
 import solver as sv
 
+#cleaning logger. Needed if run within Spyder for some reason
+logger.handlers.clear()
+logger.filters = []
 
 logger.setLevel(logging.DEBUG)
 
@@ -14,7 +17,9 @@ std.setFormatter(fmt)
 
 logger.addHandler(std)
 logger.info(f'version {sv.__version__}')
+print(sv.git_clean)
 if not sv.git_clean:
+    print('logging git error')    
     logger.error('repository not clean')
 
 
