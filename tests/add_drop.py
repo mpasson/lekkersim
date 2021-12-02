@@ -51,7 +51,7 @@ def add_drop(R,n,l,c1=0.1,c2=None):
     return S
 
 
-ring = add_drop(100, 1.5, 1e-3, 0.1)
+ring = add_drop(100, 1.5, 1e-4, 0.1)
 mod = ring.solve(wl=np.linspace(1.545, 1.555, 501))
 for pin in ['a0', 'b0', 'a1', 'b1']:
     data = mod.get_data('a0', pin)
