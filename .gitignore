@@ -13,3 +13,4 @@ docs/
 Docs/generated/
 pytest/.coverage
 pytest/htmlcov
+.idea

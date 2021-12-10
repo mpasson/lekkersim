@@ -51,9 +51,50 @@ def add_drop(R,n,l,c1=0.1,c2=None):
     return S
 
 
-ring = add_drop(100, 1.5, 1e-4, 0.1)
-mod = ring.solve(wl=np.linspace(1.545, 1.555, 501))
-for pin in ['a0', 'b0', 'a1', 'b1']:
+def coupled_add_drop(R1, n, l, R2 = None, c1=0.1 , c2=None, c3 = None):
+    c2 = c1 if c2 is None else c2
+    c3 = c1 if c3 is None else c3
+    R2 = R1 if R2 is None else R2
+    with sv.Solver(name='add_drop') as S:
+
+        WG1 = sv.Waveguide(np.pi*R1, n=n)
+        AT1 = sv.Attenuator(loss = l*np.pi*R1)
+
+        WG2 = sv.Waveguide(np.pi*R2, n=n)
+        AT2 = sv.Attenuator(loss = l*np.pi*R2)
+        
+        PS = sv.PhaseShifter()
+        
+        
+        c1 = sv.GeneralBeamSplitter(ratio=c1).put()
+        c2 = sv.GeneralBeamSplitter(ratio=c2).put()
+        c3 = sv.GeneralBeamSplitter(ratio=c3).put()
+        
+        _ = WG1.put('a0', c1.pin['b1'])
+        _ = AT1.put('a0', _.pin['b0'])
+        _ = PS.put('a0', _.pin['b0'], param_mapping={'PS' : 'PS1'})
+        sv.connect(_.pin['b0'], c2.pin['b0'])
+
+        _ = WG1.put('a0', c2.pin['a0'])
+        sv.connect(_.pin['b0'], c1.pin['a1'])
+        
+        _ = WG2.put('a0', c2.pin['b1'])
+        _ = AT2.put('a0', _.pin['b0'])
+        _ = PS.put('a0', _.pin['b0'], param_mapping={'PS' : 'PS2'})
+        sv.connect(_.pin['b0'], c3.pin['b0'])
+        
+        _ = WG2.put('a0', c3.pin['a0'])
+        sv.connect(_.pin['b0'], c2.pin['a1'])
+        
+        sv.raise_pins()
+    return S
+        
+
+
+ring = coupled_add_drop(150, 1.5, 1e-4, c1 = 0.1, R2 = 160, c2 = 0.001)
+mod = ring.solve(wl=np.linspace(1.540, 1.545, 5001), PS1 = 0.062)
+#for pin in ['a0', 'b0', 'a1', 'b1']:
+for pin in ['b0']:
     data = mod.get_data('a0', pin)
-    plt.plot(data['wl'], data['T'], label = 'a0 -> {pin}')
+    plt.plot(data['wl'], data['dB'], label = 'a0 -> {pin}')
 
