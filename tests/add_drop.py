@@ -15,6 +15,14 @@ def add_drop(R,n,l,c1=0.1,c2=None):
         a1 : drop port
         b0 : trough port
         b1 : add port
+
+    a1 ------------- b1
+            __
+           /  \
+          |    |
+           \__/
+    a0 ------------- b0
+
     
 
     Args:
@@ -25,7 +33,7 @@ def add_drop(R,n,l,c1=0.1,c2=None):
         c2 (float, optional): ring-waveguide coupling 1. Defaults to None (c1 will be assumed).
 
     Returns:
-        S (Solver): DESCRIPTION.
+        S (Solver)
 
     """
     c2 = c1 if c2 is None else c2
@@ -52,10 +60,43 @@ def add_drop(R,n,l,c1=0.1,c2=None):
 
 
 def coupled_add_drop(R1, n, l, R2 = None, c1=0.1 , c2=None, c3 = None):
+    """Generate the solver of add-drop with 2 coupled rings.
+    
+    The port are the following:
+        a0 : in-port
+        a1 : add port
+        b0 : trough port
+        b1 : drop port
+
+    a1 ------------- b1
+            __
+           /  \
+          |    |
+           \__/
+            __
+           /  \
+          |    |
+           \__/
+    a0 ------------- b0
+    
+
+    Args:
+        R1 (float): Radius of bottom ring/
+        n (float): effective index if waveguide.
+        l (float): loss of waveguide (dB/um).
+        R2 (float): Radius of top ring. Default to None (same radius as bottom )
+        c1 (float, optional): ring-waveguide coupling (waveguide to bottom ring). Defaults to 0.1.
+        c2 (float, optional): ring-ring coupling. Defaults to None (c1).
+        c3 (float, optional): ring-waveguide coupling (waveguide to top ring). Defaults to None (c1).
+
+    Returns:
+        S (Solver)
+
+    """
     c2 = c1 if c2 is None else c2
     c3 = c1 if c3 is None else c3
     R2 = R1 if R2 is None else R2
-    with sv.Solver(name='add_drop') as S:
+    with sv.Solver(name='add_drop_2') as S:
 
         WG1 = sv.Waveguide(np.pi*R1, n=n)
         AT1 = sv.Attenuator(loss = l*np.pi*R1)
