@@ -1,4 +1,4 @@
-#-------------------------------------------
+# -------------------------------------------
 #
 # GenSol Package
 #
@@ -6,21 +6,20 @@
 #
 # @author: Marco Passoni
 #
-#-------------------------------------------
+# -------------------------------------------
 
 
 """ Initialization file
 """
 
 import logging
+
 logger = logging.getLogger(__name__)
 
-sol_list=[]
+sol_list = []
 
 from .version import __version__, git_clean
-from  solver.log import logfile, debugfile, logger
-from  solver.sol import *
-from  solver.structure import *
-from  solver.model import *
-
-
+from solver.log import logfile, debugfile, logger
+from solver.sol import *
+from solver.structure import *
+from solver.model import *
