@@ -52,6 +52,7 @@ Classes and Methods for building a circuit:
    PushPullPhaseShifter
    PolRot
    Attenuator
+   LinearAttenuator
    Mirror
    PerfectMirror
    FPR_NxM

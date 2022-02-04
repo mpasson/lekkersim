@@ -81,6 +81,7 @@ Functional Models
    PushPullPhaseShifter
    PolRot
    Attenuator
+   LinearAttenuator
    Mirror
    PerfectMirror
    FPR_NxM

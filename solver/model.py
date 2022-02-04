@@ -954,8 +954,9 @@ class LinearAttenuator(Model):
     """Model of attenuator
 
     Args:
-        c: amount of light transmitted:
+        c (float): fraction of power transmitted:
             1.0 -> no loss
+            0.3 -> 30% of the power is transmitted
             0.0 -> no light transmistted
     """
 
@@ -965,8 +966,8 @@ class LinearAttenuator(Model):
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
         self.S = np.zeros((self.N, self.N), complex)
-        self.S[0, 1] = c
-        self.S[1, 0] = c
+        self.S[0, 1] = np.sqrt(c)
+        self.S[1, 0] = np.sqrt(c)
         self.default_params = deepcopy(self.param_dic)
 
 
