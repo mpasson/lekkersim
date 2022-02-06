@@ -1337,7 +1337,7 @@ class Model_from_NazcaCM(Model):
                             tup = tup = (pin_in, pin_out)
                             self.CM[tup] = 0.0
 
-            logger.info(f"Model for {self.name}: using amplitude model {ampl_model}")
+            logger.debug(f"Model for {self.name}: using amplitude model {ampl_model}")
             self.N = len(self.pin_dic)
             for (pin, mode), conn in opt_conn.items():
                 for stuff in conn:
@@ -1397,7 +1397,7 @@ class Model_from_NazcaCM(Model):
                             else (0.0, None, None, None, allowed[mode])
                         )
                         opt_conn[(pin, mode)][target] = tup1 + tup2
-            logger.info(
+            logger.debug(
                 f"Model for {self.name}: using optical length model {optlength_model} and loss model {loss_model}"
             )
             pins = set([pin for pin, mode in opt_conn])
