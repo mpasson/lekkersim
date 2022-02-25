@@ -60,20 +60,20 @@ def test_composition():
 
 
 def test_get_output():
-    BST=sv.Structure(model=sv.BeamSplitter(phase=0.5))
-    BSB=sv.Structure(model=sv.BeamSplitter(phase=0.5))
-    BSC=sv.Structure(model=sv.BeamSplitter(phase=0.5))
+    BST=sv.Structure(model=sv.BeamSplitter())
+    BSB=sv.Structure(model=sv.BeamSplitter())
+    BSC=sv.Structure(model=sv.BeamSplitter())
     SPC=sv.Structure(model=sv.Splitter1x2())
 
 
 
     Sol=sv.Solver(structures=[SPC,BSB,BSC,BST])
 
-    Sol.connect(SPC,'b0',BSB,'b1')  
+    Sol.connect(SPC,'b0',BSB,'b1')
     Sol.connect(BSB,'b0',BSC,'b1')
     Sol.connect(BSC,'b0',BST,'b1')
     Sol.connect(BST,'b0',SPC,'b1')
-      
+
 
     pin_mapping={
         'a0': (SPC,'a0'),
@@ -100,17 +100,17 @@ def test_get_output():
 
     input_dic={'r0':1.0+0.0j,'a0': 1.0}
     out=new.get_output(input_dic)
-    assert out['t0'] == pytest.approx(0.0, 1e-8)
-    assert out['t1'] == pytest.approx(1.0, 1e-8)
-    assert out['b0'] == pytest.approx(0.5, 1e-8)
-    assert out['b1'] == pytest.approx(0.5, 1e-8)
-
-    input_dic={'r0':0.0+1.0j,'a0': 1.0}
-    out=new.get_output(input_dic)
     assert out['t0'] == pytest.approx(0.5, 1e-8)
     assert out['t1'] == pytest.approx(0.5, 1e-8)
     assert out['b0'] == pytest.approx(1.0, 1e-8)
     assert out['b1'] == pytest.approx(0.0, 1e-8)
+
+    input_dic={'r0':0.0+1.0j,'a0': 1.0}
+    out=new.get_output(input_dic)
+    assert out['t0'] == pytest.approx(0.0, 1e-8)
+    assert out['t1'] == pytest.approx(1.0, 1e-8)
+    assert out['b0'] == pytest.approx(0.5, 1e-8)
+    assert out['b1'] == pytest.approx(0.5, 1e-8)
 
     input_dic={'r0':1.0+1.0j,'a0': 1.0}
     out=new.get_output(input_dic)

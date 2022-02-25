@@ -11,20 +11,17 @@ A=np.array([[ 0.00000000e+00+0.j, 0.00000000e+00+0.j, 4.32978028e-17+0.70710678j
  [ 4.32978028e-17-0.70710678j, 7.07106781e-01+0.j, 0.00000000e+00+0.j, 0.00000000e+00+0.j],
  [-7.07106781e-01+0.j ,4.32978028e-17+0.70710678j, 0.00000000e+00+0.j, 0.00000000e+00+0.j]])
 
-A=np.array([[ 0.00000000e+00+0.j        ,  0.00000000e+00+0.j        ,
-         7.07106781e-01+0.j        ,  4.32978028e-17-0.70710678j],
-       [ 0.00000000e+00+0.j        ,  0.00000000e+00+0.j        ,
-         4.32978028e-17+0.70710678j, -7.07106781e-01+0.j        ],
-       [ 7.07106781e-01+0.j        ,  4.32978028e-17-0.70710678j,
-         0.00000000e+00+0.j        ,  0.00000000e+00+0.j        ],
-       [ 4.32978028e-17+0.70710678j, -7.07106781e-01+0.j        ,
-         0.00000000e+00+0.j        ,  0.00000000e+00+0.j        ]])
-
-
-
+A = np.array([[0.        +0.j        , 0.        +0.j        ,
+        0.70710678+0.j        , 0.        +0.70710678j],
+       [0.        +0.j        , 0.        +0.j        ,
+        0.        +0.70710678j, 0.70710678+0.j        ],
+       [0.70710678+0.j        , 0.        +0.70710678j,
+        0.        +0.j        , 0.        +0.j        ],
+       [0.        +0.70710678j, 0.70710678+0.j        ,
+        0.        +0.j        , 0.        +0.j        ]])
 
 def test_simple_model():
-    BS=sv.GeneralBeamSplitter()
+    BS=sv.BeamSplitter()
     S=BS.create_S()
     assert np.allclose(S,A)  
     S=BS.create_S()
@@ -45,7 +42,7 @@ def test_parametric_block():
 
 def test_MZM():
     with sv.Solver(name='MZM_BB') as MZM_BB_sol:
-        BM=sv.GeneralBeamSplitter()
+        BM=sv.BeamSplitter()
         WG=sv.Waveguide(L=500,n=2.5)
         PS=sv.PhaseShifter()
         AT=sv.Attenuator(loss=0.0)
@@ -70,10 +67,10 @@ def test_MZM():
 
 
     psl=np.linspace(0.0,1.0,5)
-    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.0, PS2=0.0).get_data('a0','b0')['T'].to_numpy(), np.cos(0.5*np.pi*psl)**2.0)
-    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.0, PS2=0.5).get_data('a0','b0')['T'].to_numpy(), np.cos((0.5*psl-0.25)*np.pi)**2.0)
-    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.5, PS2=0.0).get_data('a0','b0')['T'].to_numpy(), np.cos((0.5*psl+0.25)*np.pi)**2.0)
-    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.5).get_data('a0','b0')['T'].to_numpy(), np.cos((0.5*psl)*np.pi)**2.0)
+    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.0, PS2=0.0).get_data('a0','b0')['T'].to_numpy(), np.sin(0.5*np.pi*psl)**2.0)
+    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.0, PS2=0.5).get_data('a0','b0')['T'].to_numpy(), np.sin((0.5*psl-0.25)*np.pi)**2.0)
+    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.5, PS2=0.0).get_data('a0','b0')['T'].to_numpy(), np.sin((0.5*psl+0.25)*np.pi)**2.0)
+    assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.5).get_data('a0','b0')['T'].to_numpy(), np.sin((0.5*psl)*np.pi)**2.0)
 
     #assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.5, PS2=0.0).get_data('a0','b0')['T'].to_numpy(), np.cos(0.5*np.pi*psl+0.25)**2.0)
 

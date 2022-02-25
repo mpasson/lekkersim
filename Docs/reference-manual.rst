@@ -74,7 +74,6 @@ Functional Models
    UserWaveguide
    GeneralWaveguide
    BeamSplitter
-   GeneralBeamSplitter
    Splitter1x2
    Splitter1x2Gen
    PhaseShifter

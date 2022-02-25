@@ -709,64 +709,35 @@ class MultiModeWave(Model):
         return self.S
 
 
+
 class BeamSplitter(Model):
-    """Model of 50/50 beam splitter
-
-    Args:
-        phase (float) : phase shift of the coupled ray (in unit of pi)
-    """
-
-    def __init__(self, phase=0.5):
-        """Creator"""
-        self.pin_dic = {"a0": 0, "a1": 1, "b0": 2, "b1": 3}
-        self.N = 4
-        self.S = np.zeros((self.N, self.N), complex)
-        self.phase = phase
-        self.param_dic = {}
-        p1 = np.pi * self.phase
-        # self.S[:2,2:]=1.0/np.sqrt(2.0)*np.array([[1.0,np.exp(1.0j*p1)],[-np.exp(-1.0j*p1),1.0]])
-        # self.S[2:,:2]=1.0/np.sqrt(2.0)*np.array([[1.0,-np.exp(1.0j*p1)],[np.exp(-1.0j*p1),1.0]])
-        self.S[:2, 2:] = (
-            1.0
-            / np.sqrt(2.0)
-            * np.array([[np.exp(1.0j * p1), 1.0], [-1.0, np.exp(-1.0j * p1)]])
-        )
-        self.S[2:, :2] = (
-            1.0
-            / np.sqrt(2.0)
-            * np.array([[np.exp(-1.0j * p1), 1.0], [-1.0, np.exp(1.0j * p1)]])
-        )
-        self.default_params = deepcopy(self.param_dic)
-
-
-class GeneralBeamSplitter(Model):
     """Model of variable ration beam splitter
 
     Args:
         ratio (float) : Power coupling coefficient. It is also the splitting ratio if t is not provided.
         t (float): Power transmission coefficent. If None (defalut) it is calculated from the ratio assiming no loss in the component.
-        phase (float) : phase shift of the coupled ray (in unit of pi). Defauls is 0.5
+        phase (float) : phase shift of the transmitted ray (in unit of pi). Default to 0.0
     """
 
-    def __init__(self, ratio=0.5, t=None, phase=0.5):
+    def __init__(self, ratio=0.5, t=None, phase=0.0):
         """Creator"""
         self.pin_dic = {"a0": 0, "a1": 1, "b0": 2, "b1": 3}
         self.N = 4
         self.ratio = ratio
         self.phase = phase
         p1 = np.pi * self.phase
-        c = np.sqrt(self.ratio)
+        c = 1.0j*np.sqrt(self.ratio)
         t = np.sqrt(1.0 - self.ratio) if t is None else np.sqrt(t)
         self.S = np.zeros((self.N, self.N), complex)
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
         # self.S[:2,2:]=np.array([[t,c],[c,-t]])
         # self.S[2:,:2]=np.array([[t,c],[c,-t]])
-        self.S[:2, 2:] = np.array(
-            [[t, c * np.exp(-1.0j * p1)], [c * np.exp(1.0j * p1), -t]]
+        self.S[:2, 2:] = np.exp(2.0j*np.pi*phase) * np.array(
+            [[t, c], [c, t]]
         )
-        self.S[2:, :2] = np.array(
-            [[t, c * np.exp(-1.0j * p1)], [c * np.exp(1.0j * p1), -t]]
+        self.S[2:, :2] = np.exp(2.0j*np.pi*phase) * np.array(
+            [[t, c], [c, t]]
         )
 
     def __str__(self):
