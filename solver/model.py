@@ -56,11 +56,13 @@ class Model:
     It contains the model (definition of the scattering matrix) for each base photonic building block
     This is the general template for the class, no model is defined here.
     Each model is a separate class based on the main one.
-    The only use case for using this class dicrectrly is to call it without arguments to create an empy model that will be eliminated if prune is called
+    The only use case for using this class directly is to call it without arguments to create an empy
+    model that will be eliminated if prune is called
 
     Args:
-        pin_list (list): list of strings containing the model's pin names
-        param_dic (dictionary): dcitionary {'param_name':param_value} containing the definition of the model's parameters.
+        pin_dic (dictionary): list of strings containing the model's pin names
+        param_dic (dictionary): dictionary {'param_name':param_value} containing the definition of
+            the model's parameters.
         Smatrix (ndarray) : Fixed S_matrix of the model
 
     """
@@ -111,7 +113,7 @@ class Model:
         """Function for nice printing of scattering matrix in agreement with pins
 
         Args:
-            func (callable): function to be applied at the scatterinf matrix before returning.
+            func (callable): function to be applied at the scattering matrix before returning.
                 if None (default), the raw complex coefficients are printed
         """
         func = (lambda x: x) if func is None else func
@@ -139,10 +141,10 @@ class Model:
         print(st)
 
     def S2PD(self, func=None):
-        """Function for returning the the Scattering Matrix as a PD Dataframe
+        """Function for returning the Scattering Matrix as a PD Dataframe
 
         Args:
-            func (callable): function to be applied at the scatterinf matrix before returning.
+            func (callable): function to be applied at the scattering matrix before returning.
                 if None (default), the raw complex coefficients are returned
 
         Returns:
@@ -163,7 +165,7 @@ class Model:
     def get_T(self, pin1, pin2):
         """Function for returning the energy transmission between two ports
 
-        If the two ports are the same the returned value has the meaning of relection
+        If the two ports are the same the returned value has the meaning of reflection
 
         Args:
             pin1 (str): Name of input pin
@@ -181,7 +183,7 @@ class Model:
     def get_PH(self, pin1, pin2):
         """Function for returning the phase of the transmission between two ports
 
-        If the two ports are the same the returned value has the meaning of relection
+        If the two ports are the same the returned value has the meaning of reflection
 
         Args:
             pin1 (str): Name of input pin
@@ -215,7 +217,8 @@ class Model:
     def expand_mode(self, mode_list):
         """This function expands the model by adding additional modes.
 
-        For each pin a number of pins equal the the length of mode_list will be created. The pin names will be "{pinname}_{modename}}".
+        For each pin a number of pins equal the length of mode_list will be created. The pin names will be
+            "{pinname}_{modename}}".
         Each mode will have the same behavior.
 
         Args:
@@ -240,8 +243,11 @@ class Model:
         """Returns the outputs from all ports of the model given the inputs amplitudes
 
         Args:
-            input_dic (dict): dictionary {pin_name (str) : input_amplitude (complex)}. Dictionary containing the complex amplitudes at each input port. Missing port are assumed wiht amplitude 0.0
-            power (bool): If True, returned values are power transmissions. If False, complex amplitudes are instead returned. Default is True
+            input_dic (dict): dictionary {pin_name (str) : input_amplitude (complex)}.
+                Dictionary containing the complex amplitudes at each input port. Missing port are assumed
+                    with amplitude 0.0.
+            power (bool): If True, returned values are power transmissions. If False, complex amplitudes
+                are instead returned. Default is True.
 
         Returns:
             dict: Dictionary containing the outputs in the form {pin_name (str) : output (float or complex)}
@@ -276,12 +282,14 @@ class Model:
          If both pins and pint are provided, the connection also is made.
 
         Args:
-             pin (str): pin of model to be connected
-             pint (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to which to connect pins of model
-             param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters
+             pins (str): pin of model to be connected
+             pint (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to
+                which to connect pins of model
+             param_mapping (dict): dictionary of {oldname (str) : newname (str)} containing the mapping
+                of the names of the parameters
 
          Returns:
-             Str  ucture: the Structure instance created from the model
+             Structure: the Structure instance created from the model
         """
         # ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
         ST = solver.structure.Structure(model=self, param_mapping=param_mapping)
@@ -325,7 +333,7 @@ class Model:
         )
 
     def show_free_pins(self):
-        """Funciton for printing pins of model"""
+        """Function for printing pins of model"""
         print(f"Pins of model {self} (id={id(self)})")
         for pin, n in self.pin_dic.items():
             print(f"{pin:5s}:{n:5}")
@@ -351,7 +359,8 @@ class Model:
         """Update the parameters of model, setting defaults when value is not provides
 
         Args:
-            update_dic (dict) : dictionary of parameters in the from {param_name (str) : param_value (usually float)}
+            update_dic (dict) : dictionary of parameters in the from
+                {param_name (str) : param_value (usually float)}
         """
         self.param_dic.update(self.default_params)
         self.param_dic.update(update_dic)
@@ -373,7 +382,7 @@ class Model:
             pin (str): base name of the pin
 
         Returns:
-            list: list of modenames for wich pinname==pin
+            list: list of modenames for which pinname==pin
         """
         li = []
         for pin in self.pin_dic:
@@ -392,7 +401,7 @@ class Model:
 class SolvedModel(Model):
     """Class for storing data of a solver mode.
 
-    Do not use this class directly. It is retuned from all solve methods. It is convinient for extracting data
+    Do not use this class directly. It is returned from all solve methods. It is convenient for extracting data
     """
 
     def __init__(
@@ -413,8 +422,10 @@ class SolvedModel(Model):
         """Methods for setting the function and mapping for monitors
 
         Args:
-            int_func (callable): Function linking the the modal amplitudes at the monitor port to the inputs aplitudes
-            monitor_mapping (dict): Dictionary connectinge the name of the monitor ports with the index in the aplitude arrays
+            int_func (callable): Function linking the modal amplitudes at the monitor port to the
+                inputs amplitudes
+            monitor_mapping (dict): Dictionary connecting the name of the monitor ports with the
+                index in the amplitude arrays
         """
         self.int_func = int_func
         self.monitor_mapping = monitor_mapping
@@ -427,11 +438,12 @@ class SolvedModel(Model):
             pin2 (str): name of the output pin
 
         Returns:
-            pandas DataFrame: Dataframe containging the data. It contains one columns per parameter given to solve, plus the following:
-                'T'         : Transmisison in absolute units
-                'dB'        : Transmission in dB units
-                'Phase'     : Phase of the transmision
-                'Amplitude' : Complex amplitude of the transission
+            pandas DataFrame: Dataframe containing the data. It contains one column per parameter
+                given to solve, plus the following:
+                    'T'         : Transmission in absolute units
+                    'dB'        : Transmission in dB units
+                    'Phase'     : Phase of the transmission
+                    'Amplitude' : Complex amplitude of the transmission
 
         """
         params = {}
@@ -458,11 +470,14 @@ class SolvedModel(Model):
         """Function for getting the output do the system given the inputs
 
         Args:
-            input_dic (dict): Dictionary of the input amplitudes. Format is {'pinname' : amplitude (float or complex)}. Missin pins assume 0 amplitde.
-            power (bool): if True, power (in absolute units) between the ports is returned, otherwise the complex amplitude is returned. Default is True
+            input_dic (dict): Dictionary of the input amplitudes. Format is
+                {'pinname' : amplitude (float or complex)}. Missing pins are  assumed to have 0 amplitude.
+            power (bool): if True, power (in absolute units) between the ports is returned, otherwise the
+                complex amplitude is returned. Default is True
 
         Returns:
-            pandas DataFrame: DataFrame with the outputs. It has one column for each parameter given to solve plus one columns for each pin.
+            pandas DataFrame: DataFrame with the outputs. It has one column for each parameter
+                given to solve plus one column for each pin.
         """
         params = {}
         if self.ns == 1:
@@ -497,13 +512,16 @@ class SolvedModel(Model):
     def get_monitor(self, input_dic, power=True):
         """Function for returning data from monitors
 
-        This function returs the mode coefficients if inputs and outputs of every structure selected as monitors
+        This function returns the mode coefficients if inputs and outputs of every structure selected
+            as monitors
 
         Args:
-            input_dic (dict): Dictionary of the input amplitudes. Format is {'pinname' : amplitude (float or complex)}. Missin pins assume 0 amplitde.
+            input_dic (dict): Dictionary of the input amplitudes. Format is
+                {'pinname' : amplitude (float or complex)}. Missing pins are assumed to have 0 amplitude.
 
         Returns:
-            pandas DataFrame: DataFrame with the amplitude at the ports. It has one column for each parameter given to solve plus two columns for monitor port.
+            pandas DataFrame: DataFrame with the amplitude at the ports. It has one column for each
+                parameter given to solve plus two columns for monitor port.
         """
         params = {}
         if self.ns == 1:
@@ -543,8 +561,7 @@ class Waveguide(Model):
         self.N = 2
         self.S = np.identity(self.N, complex)
         self.L = L
-        self.param_dic = {}
-        self.param_dic["wl"] = wl
+        self.param_dic = {"wl": wl}
         self.n = n
         self.default_params = deepcopy(self.param_dic)
 
@@ -572,7 +589,7 @@ class UserWaveguide(Model):
         L (float): length of the waveguide
         func (function): index function of the waveguide
         param_dic (dict): dictionary of the default parameters to be used (common to all modes)
-        allowedmodes (dict): Dict of allowed modes and settins. Form is name:extra.
+        allowedmodes (dict): Dict of allowed modes and settings. Form is name:extra.
             extra is a dictionary containing the extra parameters to be passed to func
             Default is for 1 mode, with no name and no parameters
 
@@ -618,7 +635,8 @@ class GeneralWaveguide(Model):
 
     Args:
         L (float) : length of the waveguide
-        Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+        Neff (function): function returning the effecive index of the waveguide.
+            It must be a function of wl, R, w, and pol
         wl (float) : default wavelength of the waveguide
         w  (float) : default width of the waveguide
         R  (float) : default bending radius of the waveguide
@@ -632,10 +650,7 @@ class GeneralWaveguide(Model):
         self.N = 2
         self.Neff = Neff
         self.L = L
-        self.param_dic = {}
-        self.param_dic["R"] = R
-        self.param_dic["w"] = w
-        self.param_dic["wl"] = wl
+        self.param_dic = {"R": R, "w": w, "wl": wl}
         if pol is None:
             self.param_dic["pol"] = 0
         else:
@@ -664,12 +679,14 @@ class MultiModeWave(Model):
 
     Args:
         L (float) : length of the waveguide
-        Neff (function)     : function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+        Neff (function)     : function returning the effective index of the waveguide. It must be a function
+            of wl, R, w and pol
         wl (float)          : default wavelength of the waveguide
         w  (float)          : default width of the waveguide
         R  (float)          : default bending radius of the waveguide
         allowedmodes (dict) : dict of allowed modes. Structure is name:extra
-            name is the name of the allowed mode, extra is a tuple of the parameters to be fittend in the Neff function
+            name is the name of the allowed mode, extra is a tuple of the parameters to be fittend in the
+            Neff function
     """
 
     def __init__(self, L, Neff, pol_list=[0], R=None, w=None, wl=None):
@@ -684,10 +701,7 @@ class MultiModeWave(Model):
         self.N = 2 * self.mp
         self.Neff = Neff
         self.L = L
-        self.param_dic = {}
-        self.param_dic["R"] = R
-        self.param_dic["w"] = w
-        self.param_dic["wl"] = wl
+        self.param_dic = {"R": R, "w": w, "wl": wl}
         self.default_params = deepcopy(self.param_dic)
 
     def create_S(self):
@@ -709,13 +723,13 @@ class MultiModeWave(Model):
         return self.S
 
 
-
 class BeamSplitter(Model):
     """Model of variable ration beam splitter
 
     Args:
         ratio (float) : Power coupling coefficient. It is also the splitting ratio if t is not provided.
-        t (float): Power transmission coefficent. If None (defalut) it is calculated from the ratio assiming no loss in the component.
+        t (float): Power transmission coefficient. If None (default) it is calculated from the ratio assuming
+            no loss in the component.
         phase (float) : phase shift of the transmitted ray (in unit of pi). Default to 0.0
     """
 
@@ -765,7 +779,8 @@ class Splitter1x2(Model):
 
 
 class Splitter1x2Gen(Model):
-    """Model of 1x2 Splitter with possible reflection between the 2 port side. TODO: verify this model makes sense
+    """Model of 1x2 Splitter with possible reflection between the 2 port side.
+        TODO: verify this model makes sense
 
     Args:
         cross (float) : ratio of reflection (power ratio)
@@ -795,8 +810,8 @@ class PhaseShifter(Model):
     """Model of multimode variable phase shifter
 
     Args:
-        param_name (str)       : name of the parameter of the Phase Shifter
-        param_default (float)  : default value of the Phase Shift in pi units
+        param_name (str): name of the parameter of the Phase Shifter
+        param_default (float): default value of the Phase Shift in pi units
     """
 
     def __init__(self, param_name="PS", param_default=0.0):
@@ -805,8 +820,7 @@ class PhaseShifter(Model):
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
         self.pn = param_name
-        self.param_dic = {}
-        self.param_dic[param_name] = param_default
+        self.param_dic = {param_name: param_default}
         self.default_params = deepcopy(self.param_dic)
 
     def create_S(self):
@@ -834,8 +848,7 @@ class PushPullPhaseShifter(Model):
         self.pin_dic = {"a0": 0, "b0": 1, "a1": 2, "b1": 3}
         self.N = 4
         self.pn = param_name
-        self.param_dic = {}
-        self.param_dic[param_name] = 0.0
+        self.param_dic = {param_name: 0.0}
         self.default_params = deepcopy(self.param_dic)
 
     def create_S(self):
@@ -860,7 +873,8 @@ class PushPullPhaseShifter(Model):
 class PolRot(Model):
     """Model of a 2 modes polarization rotator
 
-    If angle is provided the rotation is fixed to that value. If not, the rotation is assumed variable and the angle will be fetched form the parameter dictionary.
+    If angle is provided the rotation is fixed to that value. If not, the rotation is assumed
+        variable and the angle will be fetched form the parameter dictionary.
 
     Args:
         angle (float) : fixed value of the rotation angle (in pi units). Default is None
@@ -928,7 +942,7 @@ class LinearAttenuator(Model):
         c (float): fraction of power transmitted:
             1.0 -> no loss
             0.3 -> 30% of the power is transmitted
-            0.0 -> no light transmistted
+            0.0 -> no light transmitted
     """
 
     def __init__(self, c=1.0):
@@ -943,7 +957,7 @@ class LinearAttenuator(Model):
 
 
 class Mirror(Model):
-    """Model of partilly reflected Mirror
+    """Model of partially reflected Mirror
 
     Args:
         ref (float) : ratio of reflected power
@@ -1021,8 +1035,8 @@ class Ring(Model):
     Args:
         R (float) : radius of the ring
         n (float) : effective index of the waveguide in the ring
-        alpha (float) : one trip loss coefficient (remaingin complex amplitude)
-        t (float) : transission of the beam splitter (complex amplitude)
+        alpha (float) : one trip loss coefficient (remaining complex amplitude)
+        t (float) : transmission of the beam splitter (complex amplitude)
     """
 
     def __init__(self, R, n, alpha, t):
@@ -1034,9 +1048,7 @@ class Ring(Model):
         self.n = n
         self.alpha = alpha
         self.t = t
-
-        self.param_dic = {}
-        self.param_dic["wl"] = None
+        self.param_dic = {"wl": None}
         self.default_params = deepcopy(self.param_dic)
 
     def create_S(self):
@@ -1060,7 +1072,8 @@ class TH_PhaseShifter(Model):
 
     Args:
         L (float) : length of the waveguide
-        Neff (function): function returning the effecive index of the wavegude. It must be function of wl,R,w, and pol
+        Neff (function): function returning the effective index of the wavegude. It must be a function of
+            wl,R,w, and pol
         wl (float) : default wavelength of the waveguide
         w  (float) : default width of the waveguide
         R  (float) : default bending radius of the waveguide
@@ -1075,12 +1088,7 @@ class TH_PhaseShifter(Model):
         self.Neff = Neff
         self.L = L
         self.pn = param_name
-        self.param_dic = {}
-        self.param_dic["R"] = R
-        self.param_dic["w"] = w
-        self.param_dic["wl"] = wl
-        self.param_dic["pol"] = pol
-        self.param_dic[param_name] = 0.0
+        self.param_dic = {"R": R, "w": w, "wl": wl, "pol": pol, param_name: 0.0}
         self.default_params = deepcopy(self.param_dic)
 
     def create_S(self):
@@ -1101,7 +1109,14 @@ class TH_PhaseShifter(Model):
 
 
 class AWGfromVPI(Model):
-    def __init__(self, filename, fsr=1.1):
+    def __init__(self, filename, pol='TE', fsr=1):
+        """Instantiate an AWG from a VPI S-matrix.
+
+        Args:
+            filename (str): Name of the file where the S-matrix is stored.
+            pol (str): Polarization that is considered, while the other value is discarded. Default is TE.
+            fsr (float): TODO
+        """
         with open(filename) as f:
             data = f.read()
 
@@ -1117,12 +1132,12 @@ class AWGfromVPI(Model):
                 continue
             pin_in = p[0]
             pin_out = p[1]
-            if "TM" in pin_in:
+            if pol not in pin_in:
                 continue
-            if "TM" in pin_out:
+            if pol not in pin_out:
                 continue
-            pin_in = pin_in.split(" ")[2][0] + pin_in.split(" ")[2][-1]
-            pin_out = pin_out.split(" ")[2][0] + pin_out.split(" ")[2][-1]
+            pin_in = pin_in.split()[2].split('#')[0][0] + pin_in.split()[2].split('#')[1]
+            pin_out = pin_out.split()[2].split('#')[0][0] + pin_out.split()[2].split('#')[-1]
             if pin_in not in pins:
                 pins.append(pin_in)
             if pin_out not in pins:
@@ -1130,9 +1145,7 @@ class AWGfromVPI(Model):
             dd = io.StringIO(t)
             ar = np.loadtxt(dd)
             LAM = ar[:, 0]
-            coeff[(pin_in, pin_out)] = np.sqrt(ar[:, 1]) * np.exp(
-                1.0j * np.pi / 180 * 0 * ar[:, 2]
-            )
+            coeff[(pin_in, pin_out)] = ar[:, 1] * np.exp(1.0j * np.pi / 180 * 0 * ar[:, 2])
 
         pins.sort()
         S = np.zeros((len(LAM), len(pins), len(pins)), dtype=complex)
@@ -1148,7 +1161,7 @@ class AWGfromVPI(Model):
 
         self.S_func = interp1d(LAM, S, axis=0)
 
-        self.fsr = (LAM[-1] - LAM[0]) / 1.1
+        self.fsr = (LAM[-1] - LAM[0]) / fsr
         self.lamc = (LAM[-1] + LAM[0]) / 2.0
 
     def create_S(self):
@@ -1170,7 +1183,7 @@ class FPR(Model):
         Args:
             n (int): Number of inputs arms.
             m (int): Number of output arms.
-            R (float): Radius the output part of FPR FPR (input and output are on the same radius)
+            R (float): Radius the output part of FPR (input and output are on the same radius)
             d1 (float): Distance of inputs on the input plane.
             d2 (float): Distance of output on the output plane.
 
@@ -1263,19 +1276,25 @@ class Model_from_NazcaCM(Model):
 
         In the definition of the scattering matrices, tree models can be provided.
             - ampl_model: This model returns directly the amplitude complex coefficient A.
-            - loss_model: This model returns the loss used for the calculation of the modulus of the amplitude (in dB): abs(A)^2 = 10^loss/10.0
-            - optlength_model: This model returns the optical length used for the calculation of the phase of the amplitude: angle(A) = 2.0*pi/wl*optlenght. It assumes the same unit as the wavelegnth.
+            - loss_model: This model returns the loss used for the calculation of the modulus of the amplitude (in dB):
+                abs(A)^2 = 10^loss/10.0
+            - optlength_model: This model returns the optical length used for the calculation of the phase of the
+                amplitude: angle(A) = 2.0*pi/wl*optlenght. It assumes the same unit as the wavelegnth.
 
         The priority of usage withing the models is the following.
-            1. ampl: is the model for amplitude is found, the others are ignored. Amplitude between the same pin (reflection) is assumed 0 if not otherwaise specified.
-            2. loss and optlength: if ampl  is not found, a model will be build using the available information between loss and optlength. If either one is missing, it will be assumed as 0 (i.d. no loss means abs(A)=1, no phase means A purely real), but a warning will be raised.
+            1. ampl: is the model for amplitude is found, the others are ignored. Amplitude between the same pin
+                (reflection) is assumed 0 if not otherwaise specified.
+            2. loss and optlength: if ampl  is not found, a model will be build using the available information
+                between loss and optlength. If either one is missing, it will be assumed as 0
+                (i.d. no loss means abs(A)=1, no phase means A purely real), but a warning will be raised.
 
         Args:
             cell (Nazca Cell): it expects a Nazca cell with some compact model defined.
             ampl_model (str): model to the used to diectly get the scattering matrix amplitudes
             loss_model (str): model to be used to estimate the loss
             optlength_model (str): model to be used for the optical length (phase)
-            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to the compact model to build the optical length.
+            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to
+                the compact model to build the optical length.
         """
         self.name = getattr(cell, "cell_name", cell.name)
         self.pin_dic = {}
@@ -1434,7 +1453,7 @@ class Model_from_NazcaCM(Model):
 
     @staticmethod
     def generator(OM, AM):
-        """Static method for generating the function creting the sattering matrix element from the compact models
+        """Static method for generating the function creating the scattering matrix element from the compact models
 
         Args:
             OM (function): Compact model for Optical Length
@@ -1458,7 +1477,8 @@ class Model_from_NazcaCM(Model):
 
     @staticmethod
     def wraps(func):
-        """Static method for generating the function creating the sattering matrix element from the amplitude compact model
+        """Static method for generating the function creating the scattering matrix element from the amplitude
+        compact model.
 
         Args:
             func (function): Compact model for Amplitude
@@ -1486,7 +1506,7 @@ class Model_from_NazcaCM(Model):
 
         Args:
             func (function): function to be called.
-            kwargs (dict): dictioonary containing the argument to be passed to func
+            kwargs (dict): dictionary containing the argument to be passed to func
 
         Returns:
             any: result of calling func with the right parameters
@@ -1512,7 +1532,7 @@ class Model_from_NazcaCM(Model):
     ):
         """Alternative Creator. Mainly used for debugging
 
-        This creator will directly try to solve the obtained model befor returning.
+        This creator will directly try to solve the obtained model before returning.
 
         Args:
             cls (TYPE): DESCRIPTION.
@@ -1547,15 +1567,16 @@ class Model_from_NazcaCM(Model):
     ):
         """Alternative Creator to be used inside Nazca Integration
 
-        This alternative creator will check if a model can be obained from the Nazca cell. If not, an empty Solver will be returned instead.
-        For a more detailed description on how to use this class see the __init__ method.
+        This alternative creator will check if a model can be obtained from the Nazca cell. If not, an empty Solver will
+        be returned instead. For a more detailed description on how to use this class see the __init__ method.
 
         Args:
             cell (Nazca Cell): it expects a Nazca cell with some compact model defined.
-            ampl_model (str): model to the used to diectly get the scattering matrix amplitudes
+            ampl_model (str): model to the used to directly get the scattering matrix amplitudes
             loss_model (str): model to be used to estimate the loss
             optlength_model (str): model to be used for the optical length (phase)
-            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to the compact model to build the optical length.
+            allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to
+                pass to the compact model to build the optical length.
 
         Returns:
             Model or Solver: Model of the cell or empy Solver.
