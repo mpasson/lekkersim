@@ -7,6 +7,7 @@
 # @author: Marco Passoni
 #
 # ------------------------------------------
+from typing import Any, List, Dict
 
 import numpy as np
 from copy import copy
@@ -36,11 +37,11 @@ class Solver:
 
     def __init__(
         self,
-        structures=None,
-        connections=None,
-        param_dic=None,
-        name=None,
-        param_mapping=None,
+        structures:  List[Structure]=None,
+        connections: List[tuple]=None,
+        param_dic: Dict[str, Any]=None,
+        name: str=None,
+        param_mapping: Dict[str, str]=None,
     ):
         """Creator"""
         self.structures = structures if structures is not None else []
@@ -349,8 +350,13 @@ class Solver:
         if len(st_list) == 1:
             st_list[0].createS()
         while len(st_list) != 1:
+            st_list_pins = [st.pin_count for st in st_list]
+            st_list = [st_list[i] for i in np.argsort(st_list_pins)]
             source_st = st_list[0].gone_to
-            for st in st_list[0].connected_to + st_list[1:]:
+            connected_to = [
+                st_list[0].connected_to[i] for i in np.argsort([_.gone_to.pin_count for _ in st_list[0].connected_to])
+            ]
+            for st in connected_to + st_list[1:]:
                 if st.gone_to in st_list:
                     tar_st = st.gone_to
                     break

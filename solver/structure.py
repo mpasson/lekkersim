@@ -66,6 +66,11 @@ class Structure:
         dic = {pin: (self, pin) for sl, pin in self.pin_list}
         return dic
 
+    @property
+    def pin_count(self):
+        """Number of pins in a structure"""
+        return len(self.pin_list)
+
     def get_pin_basenames(self):
         """Return the set of the basename of the pins"""
         return set([pin[1].split("_")[0] for pin in self.pin_list])
