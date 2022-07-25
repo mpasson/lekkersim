@@ -75,6 +75,7 @@ def test_MZM():
     #assert np.allclose(MZM_BB_sol.solve(wl=1.55, DP=psl, PS1=0.5, PS2=0.0).get_data('a0','b0')['T'].to_numpy(), np.cos(0.5*np.pi*psl+0.25)**2.0)
 
 if __name__=='__main__':    
-    PS=sv.PhaseShifter()
-    a=PS.solve(PS=np.linspace(0.0,1.0,101)).get_data('a0','b0')['Phase']
-    print(a.to_numpy())
+    # PS=sv.PhaseShifter()
+    # a=PS.solve(PS=np.linspace(0.0,1.0,101)).get_data('a0','b0')['Phase']
+    # print(a.to_numpy())
+    pytest.main([__file__, '-s', '-v'])  # -s: show print output

@@ -211,6 +211,5 @@ def test_renaming_introspection():
     assert np.allclose(data['Phase'].to_numpy(), np.linspace(0.0, np.pi, 11))  
 
 
-if __name__=='__main__':
-    test_renaming()
-    test_renaming2()
+if __name__ == '__main__':
+    pytest.main([__file__, '-s', '-v'])  # -s: show print output
