@@ -9,7 +9,7 @@ spec.loader.exec_module(sv)
 def test_waveguide():
     with sv.Solver() as S:
         WG=sv.Waveguide(10.0, 2.5)
-        wg=WG.put()
+        wg= WG.put()
         sv.Pin('a0').put(wg.pin['a0'])
         sv.Pin('b0').put(wg.pin['b0'])
 
@@ -21,7 +21,7 @@ def test_single_composition():
     with sv.Solver() as S:
         WG=sv.Waveguide(0.05,2.5)
         for i in range(10):
-            wg=WG.put()
+            wg= WG.put()
             sv.Pin(f'a{i}').put(wg.pin['a0'])
             sv.Pin(f'b{i}').put(wg.pin['b0'])
 
@@ -41,10 +41,10 @@ def test_composition():
     with sv.Solver() as S:
         WG=sv.Waveguide(0.05,2.5)
         for i in range(10):
-            wg=WG.put()
+            wg= WG.put()
             sv.Pin(f'a{i}').put(wg.pin['a0'])
             for j in range(i):
-                wg=WG.put('a0',wg.pin['b0'])
+                wg= WG.put('a0', wg.pin['b0'])
             sv.Pin(f'b{i}').put(wg.pin['b0'])
 
     M=S.solve(wl=1.55)

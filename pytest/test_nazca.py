@@ -61,10 +61,10 @@ def test_1levl_circuit(no_pol):
 
     def add_drop(radius):
         with nd.Cell(name=f'Shallow_AddDrop_R{radius:.4}') as C:
-            M1=MMI.put()
-            demo.shallow.bend(angle=180.0,radius=radius).put()
-            M2=MMI.put()    
-            demo.shallow.bend(angle=180.0,radius=radius).put()
+            M1= MMI.put()
+            demo.shallow.bend(angle=180.0, radius=radius).put()
+            M2= MMI.put()
+            demo.shallow.bend(angle=180.0, radius=radius).put()
             nd.Pin('a0',pin=M1.pin['a1']).put()
             nd.Pin('a1',pin=M2.pin['b1']).put()
             nd.Pin('b0',pin=M1.pin['b1']).put()
@@ -88,10 +88,10 @@ def test_2levl_circuit(no_pol):
 
     def add_drop(radius):
         with nd.Cell(name=f'Shallow_AddDrop_R{radius:.4}') as C:
-            M1=MMI.put()
-            demo.shallow.bend(angle=180.0,radius=radius).put()
-            M2=MMI.put()    
-            demo.shallow.bend(angle=180.0,radius=radius).put()
+            M1= MMI.put()
+            demo.shallow.bend(angle=180.0, radius=radius).put()
+            M2= MMI.put()
+            demo.shallow.bend(angle=180.0, radius=radius).put()
             nd.Pin('a0',pin=M1.pin['a1']).put()
             nd.Pin('a1',pin=M2.pin['b1']).put()
             nd.Pin('b0',pin=M1.pin['b1']).put()
@@ -137,21 +137,21 @@ def test_params(no_pol):
     xsShallow,MMI=no_pol
 
     with nd.Cell(name='PhaseShifter') as PS:
-        wg=demo.shallow.strt(100.0).put(5.0,0.0,0.0)
+        wg= demo.shallow.strt(100.0).put(5.0, 0.0, 0.0)
         nd.Pin('a0',pin=wg.pin['a0']).put()
         nd.Pin('b0',pin=wg.pin['b0']).put()
         with sv.Solver(name='THPS') as S:
-            wave = sv.UserWaveguide(100.0 , demo.xsShallow.index.Neff, {}, {'':dict(pol=0, mode=0)}).put()
+            wave = sv.UserWaveguide(100.0, demo.xsShallow.index.Neff, {}, {'': dict(pol=0, mode=0)}).put()
             ps = sv.PhaseShifter().put('a0', wave.pin['b0'])
             sv.raise_pins()            
         PS.model_info['model']=S
 
     with nd.Cell(name='MZM') as MZM_bal:
-        m1=MMI.put()
+        m1= MMI.put()
         demo.shallow.sbend(offset=50.0).put()
         ps=PS.put(param_mapping={'PS': 'PS1'})
         demo.shallow.sbend(offset=-50.0).put()
-        m2=MMI.put()
+        m2= MMI.put()
         demo.shallow.sbend(offset=-50.0).put(m1.pin['b1'])
         ps2=PS.put(param_mapping={'PS': 'PS2'})
         demo.shallow.sbend(offset=50.0).put()
@@ -174,11 +174,11 @@ def test_params(no_pol):
 def test_other_cells(no_pol):
     xsShallow,MMI=no_pol
     with nd.Cell(name='PhaseShifter_wp') as PS:
-        t1=demo.metaldc.taper(width2=2.0,length=10.0).put()
-        demo.metaldc.strt(90.0,width=2.0).put()
-        t2=demo.metaldc.taper(width1=2.0,length=10.0).put()
+        t1= demo.metaldc.taper(width2=2.0, length=10.0).put()
+        demo.metaldc.strt(90.0, width=2.0).put()
+        t2= demo.metaldc.taper(width1=2.0, length=10.0).put()
         
-        wg=demo.shallow.strt(100.0).put(5.0,0.0,0.0)
+        wg= demo.shallow.strt(100.0).put(5.0, 0.0, 0.0)
         
         nd.Pin('c0',pin=t1.pin['a0']).put()
         nd.Pin('c1',pin=t2.pin['b0']).put()
@@ -186,21 +186,21 @@ def test_other_cells(no_pol):
         nd.Pin('b0',pin=wg.pin['b0']).put()
         
         with sv.Solver(name='THPS') as S:
-            wave = sv.UserWaveguide(100.0 , demo.xsShallow.index.Neff, {}, {'':dict(pol=0, mode=0)}).put()
+            wave = sv.UserWaveguide(100.0, demo.xsShallow.index.Neff, {}, {'': dict(pol=0, mode=0)}).put()
             ps = sv.PhaseShifter().put('a0', wave.pin['b0'])
             sv.raise_pins()            
         PS.model_info['model']=S
         
     with nd.Cell(name='DC_pad') as DCp:
-        demo.metaldc.strt(100.0,width=100.0).put(-50.0,0,0)
+        demo.metaldc.strt(100.0, width=100.0).put(-50.0, 0, 0)
         nd.Pin('a0',xs=demo.metaldc.xs).put(0,0,90.0)
 
     with nd.Cell(name='MZM_wp') as MZM_bal:
-        m1=MMI.put()
+        m1= MMI.put()
         demo.shallow.sbend(offset=50.0).put()
         ps=PS.put(param_mapping={'PS': 'PS1'})
         demo.shallow.sbend(offset=-50.0).put()
-        m2=MMI.put()
+        m2= MMI.put()
         demo.shallow.sbend(offset=-50.0).put(m1.pin['b1'])
         ps2=PS.put(param_mapping={'PS': 'PS2'})
         demo.shallow.sbend(offset=50.0).put()
@@ -289,11 +289,11 @@ def test_twopol_MZM(two_pol):
     xsShallow,MMI=two_pol
 
     with nd.Cell(name='PhaseShifter') as PS:
-        t1=demo.metaldc.taper(width2=2.0,length=10.0).put()
-        demo.metaldc.strt(90.0,width=2.0).put()
-        t2=demo.metaldc.taper(width1=2.0,length=10.0).put()
+        t1= demo.metaldc.taper(width2=2.0, length=10.0).put()
+        demo.metaldc.strt(90.0, width=2.0).put()
+        t2= demo.metaldc.taper(width1=2.0, length=10.0).put()
         
-        wg=demo.shallow.strt(100.0).put(5.0,0.0,0.0)
+        wg= demo.shallow.strt(100.0).put(5.0, 0.0, 0.0)
         
         nd.Pin('c0',pin=t1.pin['a0']).put()
         nd.Pin('c1',pin=t2.pin['b0']).put()
@@ -301,23 +301,24 @@ def test_twopol_MZM(two_pol):
         nd.Pin('b0',pin=wg.pin['b0']).put()
         
         with sv.Solver(name='THPS') as S:
-            wave = sv.UserWaveguide(100.0 , demo.xsShallow.index.Neff, {}, {'TE':dict(pol=0, mode=0), 'TM':dict(pol=1, mode=0)}).put()
-            ps = sv.PhaseShifter().expand_mode(['TE','TM']).put()
+            wave = sv.UserWaveguide(100.0, demo.xsShallow.index.Neff, {},
+                                    {'TE': dict(pol=0, mode=0), 'TM': dict(pol=1, mode=0)}).put()
+            ps = sv.PhaseShifter().expand_mode(['TE', 'TM']).put()
             sv.connect(wave.pin['b0_TE'], ps.pin['a0_TE'])
             sv.connect(wave.pin['b0_TM'], ps.pin['a0_TM'])
             sv.raise_pins()            
         PS.model_info['model']=S
         
     with nd.Cell(name='DC_pad') as DCp:
-        demo.metaldc.strt(100.0,width=100.0).put(-50.0,0,0)
+        demo.metaldc.strt(100.0, width=100.0).put(-50.0, 0, 0)
         nd.Pin('a0',xs=demo.metaldc.xs).put(0,0,90.0)
 
     with nd.Cell(name='MZM') as MZM_bal:
-        m1=MMI.put()
+        m1= MMI.put()
         demo.shallow.sbend(offset=410.0).put()
         ps=PS.put(param_mapping={'PS': 'PS1'})
         demo.shallow.sbend(offset=-410.0).put()
-        m2=MMI.put()
+        m2= MMI.put()
         demo.shallow.sbend(offset=-400.0).put(m1.pin['b1'])
         ps2=PS.put(param_mapping={'PS': 'PS2'})
         demo.shallow.sbend(offset=400.0).put()

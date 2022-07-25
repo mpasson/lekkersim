@@ -41,8 +41,8 @@ def add_drop(R,n,l,c1=0.1,c2=None):
         WG = sv.Waveguide(np.pi*R, n=n)
         AT = sv.Attenuator(loss = l*np.pi*R)
         
-        bm1 = sv.GeneralBeamSplitter(ratio = c1).put()
-        bm2 = sv.GeneralBeamSplitter(ratio = c2).put()
+        bm1 = sv.GeneralBeamSplitter(ratio=c1).put()
+        bm2 = sv.GeneralBeamSplitter(ratio=c2).put()
         
         wg1 = WG.put()
         at1 = AT.put('a0', wg1.pin['b0'])
@@ -113,7 +113,7 @@ def coupled_add_drop(R1, n, l, R2 = None, c1=0.1 , c2=None, c3 = None):
         
         _ = WG1.put('a0', c1.pin['b1'])
         _ = AT1.put('a0', _.pin['b0'])
-        _ = PS.put('a0', _.pin['b0'], param_mapping={'PS' : 'PS1'})
+        _ = PS.put('a0', _.pin['b0'], param_mapping={'PS': 'PS1'})
         sv.connect(_.pin['b0'], c2.pin['b0'])
 
         _ = WG1.put('a0', c2.pin['a0'])
@@ -121,7 +121,7 @@ def coupled_add_drop(R1, n, l, R2 = None, c1=0.1 , c2=None, c3 = None):
         
         _ = WG2.put('a0', c2.pin['b1'])
         _ = AT2.put('a0', _.pin['b0'])
-        _ = PS.put('a0', _.pin['b0'], param_mapping={'PS' : 'PS2'})
+        _ = PS.put('a0', _.pin['b0'], param_mapping={'PS': 'PS2'})
         sv.connect(_.pin['b0'], c3.pin['b0'])
         
         _ = WG2.put('a0', c3.pin['a0'])

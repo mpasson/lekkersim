@@ -20,6 +20,8 @@ sol_list = []
 
 from .version import __version__, git_clean
 from solver.log import logfile, debugfile, logger
+from solver.structure import Structure
 from solver.sol import *
-from solver.structure import *
 from solver.model import *
+
+

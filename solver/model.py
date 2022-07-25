@@ -11,6 +11,8 @@
 
 """File containing the model calls and related methods
 """
+from __future__ import annotations
+from typing import Any, List, Dict, Tuple, Callable
 
 
 import numpy as np
@@ -20,6 +22,7 @@ from solver import logger
 import solver
 import solver.log
 from solver.utils import line
+#from solver.structure import Structure
 from copy import deepcopy
 from copy import copy
 import pandas as pd
@@ -28,7 +31,7 @@ import io
 import inspect
 
 
-def diag_blocks(array_list):
+def diag_blocks(array_list: List[np.ndarray]) -> np.ndarray:
     """Function building a block diagonal array for list of array
 
     Args:
@@ -67,7 +70,12 @@ class Model:
 
     """
 
-    def __init__(self, pin_dic=None, param_dic=None, Smatrix=None):
+    def __init__(
+        self,
+        pin_dic: Dict[str, int] = None,
+        param_dic: Dict[str, Any] = None,
+        Smatrix=np.ndarray,
+    ) -> None:
         """Creator of the class"""
         self.pin_dic = {} if pin_dic is None else pin_dic
         self.N = len(self.pin_dic)
@@ -78,7 +86,7 @@ class Model:
         self.param_dic = {} if param_dic is None else param_dic
         self.default_params = deepcopy(self.param_dic)
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Checks if model is empy
 
         Returns:
@@ -90,18 +98,18 @@ class Model:
         else:
             return True
 
-    def _expand_S(self):
+    def _expand_S(self) -> np.ndarray:
         self.N = self.N // self.np
         S = self._create_S()
         self.N = self.N * self.np
         # self.S= diag_blocks(self.np*[S])
         return diag_blocks(self.np * [S])
 
-    def inspect(self):
+    def inspect(self) -> None:
         """Function that print self. It mocks the same function of Solver"""
         print(f"{self}")
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
 
         Returns:
@@ -109,7 +117,7 @@ class Model:
         """
         return self.S
 
-    def print_S(self, func=np.abs):
+    def print_S(self, func: Callable = np.abs) -> None:
         """Function for nice printing of scattering matrix in agreement with pins
 
         Args:
@@ -140,7 +148,7 @@ class Model:
             st += "\n"
         print(st)
 
-    def S2PD(self, func=None):
+    def S2PD(self, func: Callable = None) -> pd.DataFrame:
         """Function for returning the Scattering Matrix as a PD Dataframe
 
         Args:
@@ -162,7 +170,7 @@ class Model:
         data = pd.DataFrame(data=S, index=a, columns=a)
         return data
 
-    def get_T(self, pin1, pin2):
+    def get_T(self, pin1: str, pin2: str) -> float:
         """Function for returning the energy transmission between two ports
 
         If the two ports are the same the returned value has the meaning of reflection
@@ -180,7 +188,7 @@ class Model:
             )
         return np.abs(self.S[0, self.pin_dic[pin1], self.pin_dic[pin2]]) ** 2.0
 
-    def get_PH(self, pin1, pin2):
+    def get_PH(self, pin1: str, pin2: str) -> float:
         """Function for returning the phase of the transmission between two ports
 
         If the two ports are the same the returned value has the meaning of reflection
@@ -198,7 +206,7 @@ class Model:
             )
         return np.angle(self.S[0, self.pin_dic[pin1], self.pin_dic[pin2]])
 
-    def get_A(self, pin1, pin2):
+    def get_A(self, pin1: str, pin2: str) -> complex:
         """Function for returning complex amplitude of the transmission between two ports
 
         Args:
@@ -214,7 +222,7 @@ class Model:
             )
         return self.S[0, self.pin_dic[pin1], self.pin_dic[pin2]]
 
-    def expand_mode(self, mode_list):
+    def expand_mode(self, mode_list: List[str]):
         """This function expands the model by adding additional modes.
 
         For each pin a number of pins equal the length of mode_list will be created. The pin names will be
@@ -239,7 +247,9 @@ class Model:
         self.N = self.N * self.np
         return self
 
-    def get_output(self, input_dic, power=True):
+    def get_output(
+        self, input_dic: Dict[str, float], power: bool = True
+    ) -> Dict[str, float]:
         """Returns the outputs from all ports of the model given the inputs amplitudes
 
         Args:
@@ -275,15 +285,15 @@ class Model:
                 out_dic[pin] = d[i]
         return out_dic
 
-    def put(self, pins=None, pint=None, param_mapping={}):
+    def put(self, source_pin: str=None, target_pin =None, param_mapping={}) -> solver.Solver:
         """Function for putting a model in a Solver object, and eventually specify connections
 
          This function creates a Structure object for the model and place it in the current active Solver
          If both pins and pint are provided, the connection also is made.
 
         Args:
-             pins (str): pin of model to be connected
-             pint (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to
+             source_pin (str): pin of model to be connected
+             target_pin (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to
                 which to connect pins of model
              param_mapping (dict): dictionary of {oldname (str) : newname (str)} containing the mapping
                 of the names of the parameters
@@ -294,8 +304,8 @@ class Model:
         # ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
         ST = solver.structure.Structure(model=self, param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
-        if (pins is not None) and (pint is not None):
-            sol_list[-1].connect(ST, pins, pint[0], pint[1])
+        if (source_pin is not None) and (target_pin is not None):
+            sol_list[-1].connect(ST, source_pin, target_pin[0], target_pin[1])
         return ST
 
     def solve(self, **kargs):
@@ -740,19 +750,15 @@ class BeamSplitter(Model):
         self.ratio = ratio
         self.phase = phase
         p1 = np.pi * self.phase
-        c = 1.0j*np.sqrt(self.ratio)
+        c = 1.0j * np.sqrt(self.ratio)
         t = np.sqrt(1.0 - self.ratio) if t is None else np.sqrt(t)
         self.S = np.zeros((self.N, self.N), complex)
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
         # self.S[:2,2:]=np.array([[t,c],[c,-t]])
         # self.S[2:,:2]=np.array([[t,c],[c,-t]])
-        self.S[:2, 2:] = np.exp(2.0j*np.pi*phase) * np.array(
-            [[t, c], [c, t]]
-        )
-        self.S[2:, :2] = np.exp(2.0j*np.pi*phase) * np.array(
-            [[t, c], [c, t]]
-        )
+        self.S[:2, 2:] = np.exp(2.0j * np.pi * phase) * np.array([[t, c], [c, t]])
+        self.S[2:, :2] = np.exp(2.0j * np.pi * phase) * np.array([[t, c], [c, t]])
 
     def __str__(self):
         """Formatter function for printing"""
@@ -1109,7 +1115,7 @@ class TH_PhaseShifter(Model):
 
 
 class AWGfromVPI(Model):
-    def __init__(self, filename, pol='TE', fsr=1):
+    def __init__(self, filename, pol="TE", fsr=1):
         """Instantiate an AWG from a VPI S-matrix.
 
         Args:
@@ -1136,8 +1142,12 @@ class AWGfromVPI(Model):
                 continue
             if pol not in pin_out:
                 continue
-            pin_in = pin_in.split()[2].split('#')[0][0] + pin_in.split()[2].split('#')[1]
-            pin_out = pin_out.split()[2].split('#')[0][0] + pin_out.split()[2].split('#')[-1]
+            pin_in = (
+                pin_in.split()[2].split("#")[0][0] + pin_in.split()[2].split("#")[1]
+            )
+            pin_out = (
+                pin_out.split()[2].split("#")[0][0] + pin_out.split()[2].split("#")[-1]
+            )
             if pin_in not in pins:
                 pins.append(pin_in)
             if pin_out not in pins:
@@ -1145,7 +1155,9 @@ class AWGfromVPI(Model):
             dd = io.StringIO(t)
             ar = np.loadtxt(dd)
             LAM = ar[:, 0]
-            coeff[(pin_in, pin_out)] = ar[:, 1] * np.exp(1.0j * np.pi / 180 * 0 * ar[:, 2])
+            coeff[(pin_in, pin_out)] = ar[:, 1] * np.exp(
+                1.0j * np.pi / 180 * 0 * ar[:, 2]
+            )
 
         pins.sort()
         S = np.zeros((len(LAM), len(pins), len(pins)), dtype=complex)
