@@ -285,7 +285,7 @@ class Model:
                 out_dic[pin] = d[i]
         return out_dic
 
-    def put(self, source_pin: str=None, target_pin =None, param_mapping={}) -> solver.Solver:
+    def put(self, source_pin: str=None, target_pin =None, param_mapping={}) -> solver.Structure:
         """Function for putting a model in a Solver object, and eventually specify connections
 
          This function creates a Structure object for the model and place it in the current active Solver
@@ -308,7 +308,7 @@ class Model:
             sol_list[-1].connect(ST, source_pin, target_pin[0], target_pin[1])
         return ST
 
-    def solve(self, **kargs):
+    def solve(self, **kargs) -> solver.SolvedModel:
         """Function for returning the solved model
 
         This function is to align the behavior of the Model and Solver class.
@@ -342,14 +342,14 @@ class Model:
             pin_dic=self.pin_dic, param_dic=kargs, Smatrix=np.array(S_list)
         )
 
-    def show_free_pins(self):
+    def show_free_pins(self) -> None:
         """Function for printing pins of model"""
         print(f"Pins of model {self} (id={id(self)})")
         for pin, n in self.pin_dic.items():
             print(f"{pin:5s}:{n:5}")
         print("")
 
-    def pin_mapping(self, pin_mapping):
+    def pin_mapping(self, pin_mapping: Dict[str, str]):
         """Function for changing the names of the pins of a model
 
         Args:
@@ -365,7 +365,7 @@ class Model:
                 self.pin_dic[pin_mapping[pin]] = n
         return self
 
-    def update_params(self, update_dic):
+    def update_params(self, update_dic: Dict[str, Any]) -> None:
         """Update the parameters of model, setting defaults when value is not provides
 
         Args:
@@ -375,7 +375,7 @@ class Model:
         self.param_dic.update(self.default_params)
         self.param_dic.update(update_dic)
 
-    def prune(self):
+    def prune(self) -> None:
         """Check if the model is empty
 
         Returns:
@@ -383,7 +383,7 @@ class Model:
         """
         return self.pin_dic == {}
 
-    def get_pin_modes(self, pin):
+    def get_pin_modes(self, pin: str) -> List[Tuple[str, str]]:
         """Parse the pins for locating the pins with the same base name
 
         Assumes for the pins a name in the form pinname_modename.
@@ -395,12 +395,13 @@ class Model:
             list: list of modenames for which pinname==pin
         """
         li = []
-        for pin in self.pin_dic:
+        for _pin in self.pin_dic:
             try:
-                pinname, modename = pin.split("_")
+                pinname, modename = _pin.split("_")
             except ValueError:
-                _, modename = pin, ""
-            li.append(modename)
+                pinname, modename = pin, ""
+            if pinname == pin:
+                li.append((pinname, modename))
         return li
 
     def __str__(self):
@@ -416,19 +417,19 @@ class SolvedModel(Model):
 
     def __init__(
         self,
-        pin_dic=None,
-        param_dic=None,
-        Smatrix=None,
-        int_func=None,
-        monitor_mapping=None,
-    ):
+        pin_dic : Dict[str, int]=None,
+        param_dic : Dict[str, Any]=None,
+        Smatrix : np.ndarray=None,
+        int_func: Callable=None,
+        monitor_mapping: Dict[str, Tuple[solver.Structure, str]]=None,
+    ) -> None:
         super().__init__(pin_dic=pin_dic, param_dic=param_dic, Smatrix=Smatrix)
         self.solved_params = deepcopy(param_dic)
         self.ns = np.shape(Smatrix)[0]
         self.int_func = int_func
         self.monitor_mapping = {} if monitor_mapping is None else monitor_mapping
 
-    def set_intermediate(self, int_func, monitor_mapping):
+    def set_intermediate(self, int_func: Callable, monitor_mapping: Dict[str, Tuple[solver.Structure, str]]):
         """Methods for setting the function and mapping for monitors
 
         Args:
@@ -440,7 +441,7 @@ class SolvedModel(Model):
         self.int_func = int_func
         self.monitor_mapping = monitor_mapping
 
-    def get_data(self, pin1, pin2):
+    def get_data(self, pin1: str, pin2: str) -> pd.DataFrame:
         """Function for returning transmission data between two ports
 
         Args:
@@ -476,7 +477,7 @@ class SolvedModel(Model):
         pan = pd.DataFrame.from_dict(params)
         return pan
 
-    def get_full_output(self, input_dic, power=True):
+    def get_full_output(self, input_dic: Dict[str, float], power: bool=True) -> pd.DataFrame:
         """Function for getting the output do the system given the inputs
 
         Args:
