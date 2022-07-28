@@ -55,14 +55,107 @@ def line(N):
     return np.linspace(-0.5 * (N - 1), 0.5 * (N - 1), N)
 
 
-def gauss(z, r, w0, n, wl):
-    zr = np.pi * w0 ** 2.0 * n / wl
-    wz = w0 * np.sqrt(1.0 + (z / zr) ** 2.0)
-    k = 2.0 * np.pi * n / wl
-    Rinv = z / (z ** 2 + zr ** 2.0)
-    phi = np.arctan(z / zr)
-    return (
-        (2.0 / (w0 ** 2.0 * np.pi)) ** 0.25
-        * np.sqrt(w0 / wz)
-        * np.exp(-((r / wz) ** 2.0) - 1.0j * (k * (z + 0.5 * r ** 2 * Rinv) - phi))
-    )
+class GaussianBeam:
+    def __init__(
+            self,
+            w0,
+            n,
+            wl,
+            z0=0.0,
+            x0=0.0,
+            theta=0.0,
+    ):
+        """Gaussian beam for propagation in 2D slabs.
+
+        The beam is launched at (z0, x0) at an angle theta with respect to the z-axis and is characterized by
+        a beam waist w0. The medium is assumed to be uniform in x and z, so that the power is constant among two
+        xy planes.
+
+        Args:
+            w0 (float): Beam waist in [um].
+            n (float): Refractive index of the medium.
+            wl (float): Wavelength in [um].
+            z0 (float): Initial z position of the beam.
+            x0 (float): Initial x position of the beam.
+            theta (float): Launch angle in [deg] with respect to the x-axis.
+
+        """
+        self.wl = wl
+        self.w0 = w0
+        self.n = n
+        self.z_r = np.pi * w0 * w0 * n / wl  # Rayleigh range
+        self.z0 = z0
+        self.x0 = x0
+        self.theta = np.deg2rad(-theta)  # Convert to radians here
+
+    def rotate(self, z, x):
+        """Creates a 2D rotation matrix based on the angle theta.
+
+        Args:
+            z (list | np.array): The z position vector (horizontal).
+            x (list | np.array): The x position vector (vertical).
+
+        Returns:
+            np.array, np.array: The rotated vectors
+        """
+        z = z - self.z0
+        x = x - self.x0
+        _z = np.cos(self.theta) * z - np.sin(self.theta) * x
+        _x = np.sin(self.theta) * z + np.cos(self.theta) * x
+        return _z, _x
+
+    def waist(self, z):
+        """Beam waist.
+
+        Args:
+            z (float | list | numpy.array): Position in [um].
+
+        Returns:
+            float | list | numpy.array: The beam waist at the position z.
+        """
+        return self.w0 * np.sqrt(1 + (z / self.z_r) ** 2)
+
+    def curvature(self, z):
+        """Curvature radius.
+
+        Args:
+            z (float | list | numpy.array): Position in [um].
+
+        Returns:
+            float | list | numpy.array: The curvature at the position z.
+        """
+        return z * (1 + (self.z_r / z) ** 2)
+
+    def gouy(self, z):
+        """Gouy phase.
+
+        Args:
+            z (float | list | numpy.array): Position in [um].
+
+        Returns:
+            float | list | numpy.array: The Gouy phase at the position z.
+        """
+        return np.arctan(z / self.z_r)
+
+    def field(self, z, x):
+        """Complex electric field.
+
+        Args:
+            z (float | list | numpy.array): z position in [um].
+            x (float): x position in [um].
+
+        Returns:
+            np.ndarray: x, z, field
+        """
+        _z, _x = self.rotate(z, x)
+
+        k_z = 2 * np.pi * self.n / self.wl
+        k_x = 2 * np.pi * self.n / self.wl
+        _waist = self.waist(_z)
+
+        _amplitude = np.sqrt(np.sqrt(2 / np.pi) / _waist) * np.exp(-_x * _x / (_waist * _waist))
+        _phase = np.exp(-1j * (k_z * _z + k_x * _x * _x / (2 * self.curvature(_z)) - self.gouy(_z)))
+
+        _field = _amplitude * _phase
+
+        return _field

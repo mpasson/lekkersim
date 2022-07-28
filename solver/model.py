@@ -14,20 +14,23 @@
 from __future__ import annotations
 from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING
 
-
+import matplotlib.axes
 import numpy as np
 import solver.structure
 from solver import sol_list
 from solver import logger
 import solver
 import solver.log
-from solver.utils import line
+from solver.utils import line, GaussianBeam
 from copy import deepcopy
 from copy import copy
 import pandas as pd
 from scipy.interpolate import interp1d
 import io
 import inspect
+from scipy.integrate import quad_vec
+import matplotlib.pyplot as plt
+
 
 if TYPE_CHECKING:
     import nazca as nd
@@ -1170,6 +1173,129 @@ class FPR(Model):
         self.S[:n, n:] = Mat
         self.S[n:, :n] = np.transpose(Mat)
         return self.S
+
+
+class FPRGaussian(Model):
+    """Simplified model of FPR circle mount based on Gaussian beams."""
+
+    def __init__(
+            self,
+            n: int,
+            m: int,
+            R: float,
+            d1: float,
+            d2: float,
+            w1: float,
+            w2: float,
+            n_slab: float,
+            Ri: float = None,
+    ) -> None:
+        """Creator
+
+        Args:
+            n (int): Number of inputs arms.
+            m (int): Number of output arms.
+            R (float): Radius the output part of FPR (input and output are on the same radius) in [um].
+            d1 (float): Center-to-center distance of inputs on the input plane in [um].
+            d2 (float): Center-to-center distance of output on the output plane in [um].
+            n_slab (float | callable): Effective index of the slab mode.
+            R_i (float): Input radius. If it is not specified it is set equal to the output one. Default is None.
+
+        Returns:
+            Model: Model of the FPR region
+
+        """
+        Ri = R if Ri is None else Ri
+        self.n, self.m = n, m
+        self.d1, self.d2 = d1, d2
+        self.Ri = Ri
+        self.R = R
+        self.n_slab = n_slab
+        self.w1 = w1
+        self.w2 = w2
+        d1 = {f"a{i:03}": i for i in range(n)}
+        d2 = {f"b{i:03}": n + i for i in range(m)}
+        dic = {**d1, **d2}
+        super().__init__(pin_dic=dic)
+
+        self.t1 = self.d1 / Ri * line(n)
+        self.t2 = self.d2 / R * line(m)
+        self.pos1 = [(Ri * (1 - np.cos(self.t1[i])), Ri * np.sin(self.t1[i])) for i in range(n)]
+        self.pos2 = [(R * np.cos(self.t2[i]), R * np.sin(self.t2[i])) for i in range(m)]
+
+        self.S = np.zeros((n + m, n + m), dtype=complex)
+
+    def create_S(self):
+        """Creates the scattering matrix
+
+        Returns:
+            2darray: Scattering matrix of the FPR
+
+        """
+        lam = self.param_dic["wl"]
+        if type(self.n_slab) == float or type(self.n_slab) == int:
+            n_slab = self.n_slab
+        elif callable(self.n_slab):
+            n_slab = self.n_slab(lam)
+
+        n = self.n
+        m = self.m
+        mat = np.zeros((n, m), dtype=complex)
+        z = 0.5 * self.R
+        for i in range(n):
+            beam1 = GaussianBeam(
+                w0=self.w1,
+                n=n_slab,
+                wl=lam,
+                z0=self.pos1[i][0],
+                x0=self.pos1[i][1],
+                theta=-np.rad2deg(self.t1[i])
+            )
+            for j in range(m):
+                beam2 = GaussianBeam(
+                    w0=self.w2,
+                    n=n_slab,
+                    wl=lam,
+                    z0=self.pos2[j][0],
+                    x0=self.pos2[j][1],
+                    theta=np.rad2deg(self.t2[j])
+                )
+
+                def to_integrate(x):
+                    integrand = beam1.field(z=z, x=x) * np.conjugate(beam2.field(z=z, x=x))
+                    return np.array([integrand.real, integrand.imag])
+
+                res = quad_vec(to_integrate, -np.inf, np.inf)
+                mat[i, j] = res[0][0] + 1j * res[0][1]
+
+        self.S[:n, n:] = mat
+        self.S[n:, :n] = np.transpose(mat)
+        return self.S
+
+    def show(self, ax: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+        """Shows the input and output ports of the FPR.
+
+        Args:
+            ax (matplotlib.axes.Axes): Axis onto which the plot is mapped.
+
+        Returns:
+            matplotlib.axes.Axes: The axis.
+
+        """
+        x_in = [el[0] for el in self.pos1]
+        x_out = [el[0] for el in self.pos2]
+        y_in = [el[1] for el in self.pos1]
+        y_out = [el[1] for el in self.pos2]
+        if ax in None:
+            fig, ax = plt.subplots()
+        ax.scatter(x_in, y_in, label='input')
+        ax.scatter(x_out, y_out, label='output')
+        ax.legend(loc='lower center')
+        ax.set_xlabel('x [$\mu$m]')
+        ax.set_ylabel('y [$\mu$m]')
+        ax.set_title(f'FPR: R$_i$={self.Ri} $\mu$m, R$_o$={self.R} $\mu$m')
+
+        return ax
 
 
 class CWA(Model):
