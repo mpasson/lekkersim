@@ -7,15 +7,17 @@
 # @author: Marco Passoni
 #
 # -------------------------------------------
-
+from __future__ import annotations
 import numpy as np
 import numpy.linalg as linalg
+
+import solver
 
 
 class S_matrix:
     """Class implmenting the scattering matrix object and recursion alghoritms for joining two of them"""
 
-    def __init__(self, N, M, ns=None):
+    def __init__(self, N: int, M: int, ns: int = None) -> None:
         """Creator
 
         Args:
@@ -46,7 +48,7 @@ class S_matrix:
     #    self.S22=np.matmul(self.S22,T2)
 
     # NEW RECURSION VERSION
-    def add(self, s):
+    def add(self, s: S_matrix) -> S_matrix:
         """Recursion algorith for joining two matrices
 
         Args:
@@ -69,7 +71,7 @@ class S_matrix:
         S.S22 = np.matmul(T2, s.S22)
         return S
 
-    def S_print(self, i=None, j=None):
+    def S_print(self, i: int = None, j: int = None) -> None:
         """Print scattering matrix as numpy array
 
         Args:
@@ -89,7 +91,7 @@ class S_matrix:
             )
         print(S)
 
-    def det(self):
+    def det(self) -> float:
         """Calculated determinat of scattering matrix"""
         return linalg.det(
             np.vstack(
@@ -97,30 +99,7 @@ class S_matrix:
             )
         )
 
-    #    def S_modes(self):
-    #        ID=np.identity(self.N)
-    #        Z=np.zeros((self.N,self.N))
-    #        S1=np.vstack([np.hstack([self.S11,Z]),np.hstack([self.S21,-ID])])
-    #        S2=np.vstack([np.hstack([ID,-self.S12]),np.hstack([Z,-self.S22])])
-    #        [W,V]=linalg.eig(S1,b=S2)
-    #        return [W,V]
-
-    #    def det_modes(self,kz,d):
-    #        ID=np.identity(self.N)
-    #        Z=np.zeros((self.N,self.N))
-    #        S1=np.vstack([np.hstack([self.S11,Z]),np.hstack([self.S21,-ID])])
-    #        S2=np.vstack([np.hstack([ID,-self.S12]),np.hstack([Z,-self.S22])])
-    #        return linalg.det(S1-np.exp((0.0+1.0j)*kz*d)*S2)
-
-    #    def der(self,Sm,Sp,h=0.01):
-    #        S=np.vstack([np.hstack([self.S11,self.S12]),np.hstack([self.S21,self.S22])])
-    #        S_m=np.vstack([np.hstack([Sm.S11,Sm.S12]),np.hstack([Sm.S21,Sm.S22])])
-    #        S_p=np.vstack([np.hstack([Sp.S11,Sp.S12]),np.hstack([Sp.S21,Sp.S22])])
-    #        S1=(S_p-S_m)/(2.0*h)
-    #        S2=(S_p+S_m-2.0*S)/(h*h)
-    #        return (S1,S2)
-
-    def matrix(self):
+    def matrix(self) -> np.ndarray:
         """Return scattering matrix as ndarray
 
         Returns:
@@ -130,32 +109,7 @@ class S_matrix:
             [np.hstack([self.S11, self.S12]), np.hstack([self.S21, self.S22])]
         )
 
-    #    def output(self,u1,d2):
-    #        u2=np.add(np.matmul(self.S11,u1),np.matmul(self.S12,d2))
-    #        d1=np.add(np.matmul(self.S21,u1),np.matmul(self.S22,d2))
-    #        return (u2,d1)
-
-    #    def left(self,u1,d1):
-    #        d2=linalg.solve(self.S22,d1-np.matmul(self.S21,u1))
-    #        u2=np.add(np.matmul(self.S11,u1),np.matmul(self.S21,d2))
-    #        return (u2,d2)
-
-    #    def int_f(self,S2,u):
-    #        ID=np.identity(self.N)
-    #        ut=np.matmul(self.S11,u)
-    #        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),ut)
-    #        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),np.matmul(S2.S21,ut))
-    #        return (uo,do)
-
-    #    def int_f_tot(self,S2,u,d):
-    #        ID=np.identity(self.N)
-    #        ut=np.matmul(self.S11,u)
-    #        dt=np.matmul(S2.S22,d)
-    #        uo=linalg.solve(ID-np.matmul(self.S12,S2.S21),np.add(ut,np.matmul(self.S12,dt)))
-    #        do=linalg.solve(ID-np.matmul(S2.S21,self.S12),np.add(np.matmul(S2.S21,ut),dt))
-    #        return (uo,do)
-
-    def int_complete(self, S2, u, d):
+    def int_complete(self, S2: S_matrix, u: np.ndarray, d: np.ndarray):
         """Function for computing the internal modal coefficients between two structures
 
         Args:

@@ -12,7 +12,7 @@
 """File containing the model calls and related methods
 """
 from __future__ import annotations
-from typing import Any, List, Dict, Tuple, Callable
+from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING
 
 
 import numpy as np
@@ -22,13 +22,15 @@ from solver import logger
 import solver
 import solver.log
 from solver.utils import line
-#from solver.structure import Structure
 from copy import deepcopy
 from copy import copy
 import pandas as pd
 from scipy.interpolate import interp1d
 import io
 import inspect
+
+if TYPE_CHECKING:
+    import nazca as nd
 
 
 def diag_blocks(array_list: List[np.ndarray]) -> np.ndarray:
@@ -74,7 +76,7 @@ class Model:
         self,
         pin_dic: Dict[str, int] = None,
         param_dic: Dict[str, Any] = None,
-        Smatrix=np.ndarray,
+        Smatrix: np.ndarray = None,
     ) -> None:
         """Creator of the class"""
         self.pin_dic = {} if pin_dic is None else pin_dic
@@ -285,7 +287,9 @@ class Model:
                 out_dic[pin] = d[i]
         return out_dic
 
-    def put(self, source_pin: str=None, target_pin =None, param_mapping={}) -> solver.Structure:
+    def put(
+        self, source_pin: str = None, target_pin=None, param_mapping={}
+    ) -> solver.Structure:
         """Function for putting a model in a Solver object, and eventually specify connections
 
          This function creates a Structure object for the model and place it in the current active Solver
@@ -417,11 +421,11 @@ class SolvedModel(Model):
 
     def __init__(
         self,
-        pin_dic : Dict[str, int]=None,
-        param_dic : Dict[str, Any]=None,
-        Smatrix : np.ndarray=None,
-        int_func: Callable=None,
-        monitor_mapping: Dict[str, Tuple[solver.Structure, str]]=None,
+        pin_dic: Dict[str, int] = None,
+        param_dic: Dict[str, Any] = None,
+        Smatrix: np.ndarray = None,
+        int_func: Callable = None,
+        monitor_mapping: Dict[str, Tuple[solver.Structure, str]] = None,
     ) -> None:
         super().__init__(pin_dic=pin_dic, param_dic=param_dic, Smatrix=Smatrix)
         self.solved_params = deepcopy(param_dic)
@@ -429,7 +433,11 @@ class SolvedModel(Model):
         self.int_func = int_func
         self.monitor_mapping = {} if monitor_mapping is None else monitor_mapping
 
-    def set_intermediate(self, int_func: Callable, monitor_mapping: Dict[str, Tuple[solver.Structure, str]]):
+    def set_intermediate(
+        self,
+        int_func: Callable,
+        monitor_mapping: Dict[str, Tuple[solver.Structure, str]],
+    ):
         """Methods for setting the function and mapping for monitors
 
         Args:
@@ -477,7 +485,9 @@ class SolvedModel(Model):
         pan = pd.DataFrame.from_dict(params)
         return pan
 
-    def get_full_output(self, input_dic: Dict[str, float], power: bool=True) -> pd.DataFrame:
+    def get_full_output(
+        self, input_dic: Dict[str, float], power: bool = True
+    ) -> pd.DataFrame:
         """Function for getting the output do the system given the inputs
 
         Args:
@@ -520,7 +530,9 @@ class SolvedModel(Model):
         pan = pd.DataFrame.from_dict(params)
         return pan
 
-    def get_monitor(self, input_dic, power=True):
+    def get_monitor(
+        self, input_dic: Dict[str, float], power: bool = True
+    ) -> pd.DataFrame:
         """Function for returning data from monitors
 
         This function returns the mode coefficients if inputs and outputs of every structure selected
@@ -566,7 +578,7 @@ class Waveguide(Model):
         wl (float) : default wavelength of the waveguide
     """
 
-    def __init__(self, L, n=1.0, wl=1.0):
+    def __init__(self, L: float, n: float = 1.0, wl: float = 1.0) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
@@ -576,7 +588,7 @@ class Waveguide(Model):
         self.n = n
         self.default_params = deepcopy(self.param_dic)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -606,7 +618,13 @@ class UserWaveguide(Model):
 
     """
 
-    def __init__(self, L, func, param_dic, allowedmodes=None):
+    def __init__(
+        self,
+        L: float,
+        func: Callable,
+        param_dic: Dict[str, Any] = None,
+        allowedmodes: Dict[str, Dict] = None,
+    ) -> None:
         self.allowed = {"": {}} if allowedmodes is None else allowedmodes
         self.pin_dic = {}
 
@@ -620,13 +638,13 @@ class UserWaveguide(Model):
 
         self.N = len(self.pin_dic)
         self.S = np.identity(self.N, complex)
-        self.param_dic = deepcopy(param_dic)
+        self.param_dic = deepcopy(param_dic) if param_dic else {}
         self.default_params = deepcopy(self.param_dic)
 
         self.index_func = func
         self.L = L
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Created the scattering Matrix"""
         wl = self.param_dic["wl"]
         S_list = []
@@ -641,99 +659,6 @@ class UserWaveguide(Model):
         return self.S
 
 
-class GeneralWaveguide(Model):
-    """Model of dispersive waveguide
-
-    Args:
-        L (float) : length of the waveguide
-        Neff (function): function returning the effecive index of the waveguide.
-            It must be a function of wl, R, w, and pol
-        wl (float) : default wavelength of the waveguide
-        w  (float) : default width of the waveguide
-        R  (float) : default bending radius of the waveguide
-        pol (int)  : default mode of the waveguide
-
-    """
-
-    def __init__(self, L, Neff, R=None, w=None, wl=None, pol=None):
-        """Creator"""
-        self.pin_dic = {"a0": 0, "b0": 1}
-        self.N = 2
-        self.Neff = Neff
-        self.L = L
-        self.param_dic = {"R": R, "w": w, "wl": wl}
-        if pol is None:
-            self.param_dic["pol"] = 0
-        else:
-            self.param_dic["pol"] = pol
-        self.default_params = deepcopy(self.param_dic)
-
-    def create_S(self):
-        """Function for returning the scattering matrix of the model
-        Returns:
-            ndarray: Scattering matrix of the model
-        """
-        wl = self.param_dic["wl"]
-        n = self.Neff(**self.param_dic)
-        self.S = np.zeros((self.N, self.N), complex)
-        self.S[0, 1] = np.exp(2.0j * np.pi * n / wl * self.L)
-        self.S[1, 0] = np.exp(2.0j * np.pi * n / wl * self.L)
-        return self.S
-
-    def __str__(self):
-        """Formatter function for printing"""
-        return f"Model of waveguide of lenght {self.L:.3} (id={id(self)})"
-
-
-class MultiModeWave(Model):
-    """Model of multimode dispersive waveguide
-
-    Args:
-        L (float) : length of the waveguide
-        Neff (function)     : function returning the effective index of the waveguide. It must be a function
-            of wl, R, w and pol
-        wl (float)          : default wavelength of the waveguide
-        w  (float)          : default width of the waveguide
-        R  (float)          : default bending radius of the waveguide
-        allowedmodes (dict) : dict of allowed modes. Structure is name:extra
-            name is the name of the allowed mode, extra is a tuple of the parameters to be fittend in the
-            Neff function
-    """
-
-    def __init__(self, L, Neff, pol_list=[0], R=None, w=None, wl=None):
-        """Creator"""
-        self.pin_dic = {}
-        self.pol_list = pol_list
-        self.mp = len(pol_list)
-        for i, pol in enumerate(pol_list):
-            self.pin_dic[f"a0_pol{i}"] = i
-            self.pin_dic[f"b0_pol{i}"] = i + self.mp
-
-        self.N = 2 * self.mp
-        self.Neff = Neff
-        self.L = L
-        self.param_dic = {"R": R, "w": w, "wl": wl}
-        self.default_params = deepcopy(self.param_dic)
-
-    def create_S(self):
-        """Function for returning the scattering matrix of the model
-        Returns:
-            ndarray: Scattering matrix of the model
-        """
-        R = self.param_dic["R"]
-        w = self.param_dic["w"]
-        wl = self.param_dic["wl"]
-        mp = self.mp
-        St = np.zeros((mp, mp), complex)
-        for i, pol in enumerate(self.pol_list):
-            n = self.Neff(wl=wl, w=w, R=R, pol=pol)
-            St[i, i] = np.exp(2.0j * np.pi * n / wl * self.L)
-        self.S = np.zeros((self.N, self.N), complex)
-        self.S[:mp, -mp:] = St
-        self.S[-mp:, :mp] = St
-        return self.S
-
-
 class BeamSplitter(Model):
     """Model of variable ration beam splitter
 
@@ -744,7 +669,7 @@ class BeamSplitter(Model):
         phase (float) : phase shift of the transmitted ray (in unit of pi). Default to 0.0
     """
 
-    def __init__(self, ratio=0.5, t=None, phase=0.0):
+    def __init__(self, ratio: float = 0.5, t: float = None, phase: float = 0.0) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "a1": 1, "b0": 2, "b1": 3}
         self.N = 4
@@ -769,7 +694,7 @@ class BeamSplitter(Model):
 class Splitter1x2(Model):
     """Model of 1x2 Splitter"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "b0": 1, "b1": 2}
         self.N = 3
@@ -794,7 +719,7 @@ class Splitter1x2Gen(Model):
         phase (float) : phase shift of the reflected ray (in unit of pi)
     """
 
-    def __init__(self, cross=0.0, phase=0.0):
+    def __init__(self, cross: float = 0.0, phase: float = 0.0) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "b0": 1, "b1": 2}
         self.N = 3
@@ -821,7 +746,7 @@ class PhaseShifter(Model):
         param_default (float): default value of the Phase Shift in pi units
     """
 
-    def __init__(self, param_name="PS", param_default=0.0):
+    def __init__(self, param_name: str = "PS", param_default: float = 0.0) -> None:
         """Creator"""
         self.param_dic = {}
         self.pin_dic = {"a0": 0, "b0": 1}
@@ -830,7 +755,7 @@ class PhaseShifter(Model):
         self.param_dic = {param_name: param_default}
         self.default_params = deepcopy(self.param_dic)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -845,7 +770,7 @@ class PhaseShifter(Model):
 class PushPullPhaseShifter(Model):
     """Model of multimode variable phase shifter"""
 
-    def __init__(self, param_name="PS"):
+    def __init__(self, param_name: str = "PS") -> None:
         """Creator
 
         Args:
@@ -858,7 +783,7 @@ class PushPullPhaseShifter(Model):
         self.param_dic = {param_name: 0.0}
         self.default_params = deepcopy(self.param_dic)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -888,7 +813,7 @@ class PolRot(Model):
         angle_name (str) : name of the angle parameter
     """
 
-    def __init__(self, angle=None, angle_name="angle"):
+    def __init__(self, angle: float = None, angle_name: str = "angle") -> None:
         """Creator:"""
         self.pin_dic = {"a0_pol0": 0, "a0_pol1": 1, "b0_pol0": 2, "b0_pol1": 3}
         self.N = 4
@@ -906,7 +831,7 @@ class PolRot(Model):
             self.S[2:, :2] = np.array([[c, -s], [s, c]])
         self.default_params = deepcopy(self.param_dic)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -930,7 +855,7 @@ class Attenuator(Model):
         loss: value of the loss (in dB)
     """
 
-    def __init__(self, loss=0.0):
+    def __init__(self, loss: float = 0.0) -> None:
         """Creator"""
         self.param_dic = {}
         self.pin_dic = {"a0": 0, "b0": 1}
@@ -952,7 +877,7 @@ class LinearAttenuator(Model):
             0.0 -> no light transmitted
     """
 
-    def __init__(self, c=1.0):
+    def __init__(self, c: float = 1.0) -> None:
         """Creator"""
         self.param_dic = {}
         self.pin_dic = {"a0": 0, "b0": 1}
@@ -971,7 +896,7 @@ class Mirror(Model):
         phase (float): phase shift of the reflected ray (in pi units)
     """
 
-    def __init__(self, ref=0.5, phase=0.0):
+    def __init__(self, ref: float = 0.5, phase: float = 0.0) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "b0": 1}
         self.param_dic = {}
@@ -994,7 +919,7 @@ class PerfectMirror(Model):
         phase (float): phase of the reflected ray (in pi unit)
     """
 
-    def __init__(self, phase=0.0):
+    def __init__(self, phase: float = 0.0) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0}
         self.param_dic = {}
@@ -1014,7 +939,7 @@ class FPR_NxM(Model):
         phi (float) : phase difference between adjacent ports
     """
 
-    def __init__(self, N, M, phi=0.1):
+    def __init__(self, N: int, M: int, phi: float = 0.1) -> None:
         """Creator"""
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
@@ -1046,7 +971,7 @@ class Ring(Model):
         t (float) : transmission of the beam splitter (complex amplitude)
     """
 
-    def __init__(self, R, n, alpha, t):
+    def __init__(self, R: float, n: float, alpha: float, t: float) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
@@ -1058,7 +983,7 @@ class Ring(Model):
         self.param_dic = {"wl": None}
         self.default_params = deepcopy(self.param_dic)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -1088,7 +1013,16 @@ class TH_PhaseShifter(Model):
         param_name (str) : name of the parameter of the Phase Shifter
     """
 
-    def __init__(self, L, Neff, R=None, w=None, wl=None, pol=None, param_name="PS"):
+    def __init__(
+        self,
+        L: float,
+        Neff: Callable,
+        R: float = None,
+        w: float = None,
+        wl: float = None,
+        pol: int = None,
+        param_name: str = "PS",
+    ) -> None:
         """Creator"""
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
@@ -1098,7 +1032,7 @@ class TH_PhaseShifter(Model):
         self.param_dic = {"R": R, "w": w, "wl": wl, "pol": pol, param_name: 0.0}
         self.default_params = deepcopy(self.param_dic)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
         Returns:
             ndarray: Scattering matrix of the model
@@ -1116,13 +1050,14 @@ class TH_PhaseShifter(Model):
 
 
 class AWGfromVPI(Model):
-    def __init__(self, filename, pol="TE", fsr=1):
+    def __init__(self, filename: str, pol: str = "TE", fsr: float = 1.0) -> None:
         """Instantiate an AWG from a VPI S-matrix.
 
         Args:
             filename (str): Name of the file where the S-matrix is stored.
             pol (str): Polarization that is considered, while the other value is discarded. Default is TE.
-            fsr (float): TODO
+            fsr (float): ratio between the provided portion spectrum and the fpr of the AWG.
+                if wavelength outside the spectrum are provided they will be reconstructed assuming periodicity.
         """
         with open(filename) as f:
             data = f.read()
@@ -1177,7 +1112,7 @@ class AWGfromVPI(Model):
         self.fsr = (LAM[-1] - LAM[0]) / fsr
         self.lamc = (LAM[-1] + LAM[0]) / 2.0
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         lam = self.param_dic["wl"]
         self.S = self.S_func(
             self.lamc
@@ -1190,7 +1125,9 @@ class AWGfromVPI(Model):
 class FPR(Model):
     """Simplified model of FPR circle mount"""
 
-    def __init__(self, n, m, R, d1, d2, Ri=None):
+    def __init__(
+        self, n: int, m: int, R: float, d1: float, d2: float, Ri: float = None
+    ) -> None:
         """Creator
 
         Args:
@@ -1220,7 +1157,7 @@ class FPR(Model):
         self.DR = np.sqrt(DY ** 2.0 + DX ** 2.0)
         self.S = np.zeros((n + m, n + m), dtype=complex)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Creates the scattering matrix
 
         Returns:
@@ -1238,7 +1175,7 @@ class FPR(Model):
 class CWA(Model):
     """Simple model fo a Coupled Waveguide Array"""
 
-    def __init__(self, N, L, n=1.0, k=0.1):
+    def __init__(self, N: int, L: float, n: float = 1.0, k: float = 0.1):
         """Creator
 
         Args:
@@ -1264,7 +1201,7 @@ class CWA(Model):
         self.RM = np.exp(2.0j * np.pi * I * J / self.NW) / np.sqrt(self.NW)
         self.S = np.zeros((2 * N, 2 * N), dtype=complex)
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         B = [
             2.0 * np.pi * self.n / self.param_dic.get("wl", 1.0)
             + 2.0 * self.k * np.cos(2.0 * np.pi * n / self.NW)
@@ -1281,7 +1218,12 @@ class Model_from_NazcaCM(Model):
     """Class for model from a nazca cell with compact models"""
 
     def __init__(
-        self, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None
+        self,
+        cell: nd.Cell,
+        ampl_model=None,
+        loss_model=None,
+        optlength_model=None,
+        allowed=None,
     ):
         """Creator of the class
 
