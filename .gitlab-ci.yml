@@ -8,8 +8,9 @@ run_test:
   before_script:
     - pip install -r requirements.txt
     - pip install pytest
-    - apt-get update && apt-get install -y git
   script:
+    - pwd
+    - git describe
     - python -m pytest pytest/
 
 pages:
