@@ -1,15 +1,22 @@
 import numpy as np
 import pytest as pt
-import sys
 
+skip = False
+reason = ''
 
-import nazca as nd
-import nazca.cfg as cfg
-from nazca import demofab as demo
-
-if 'solver' in sys.modules:
+try:
     import solver as sv
-    
+except ModuleNotFoundError:
+    skip=True
+    reason = 'Missing solver'
+
+try:
+    import nazca as nd
+    from nazca import demofab as demo
+except ModuleNotFoundError:
+    skip=True
+    reason = 'Missing Nazca'
+
     
 
 
@@ -48,14 +55,14 @@ def two_pol():
     return xs,MMI
 
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_single(no_pol):
     strt=demo.shallow.strt(100.0)
     sol=nd.get_solver(strt)
     mod=sol.solve(wl=1.55)
     assert mod.get_T('a0','b0') == pt.approx(1.0, 1e-8)
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_1levl_circuit(no_pol):
     xs,MMI=no_pol
 
@@ -82,7 +89,7 @@ def test_1levl_circuit(no_pol):
     Tref=np.abs((a+t*ex)/(a*t+ex))**2.0
     assert np.allclose(T,Tref)
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_2levl_circuit(no_pol):
     xsShallow,MMI=no_pol
 
@@ -132,7 +139,7 @@ def test_2levl_circuit(no_pol):
     assert np.allclose(T2,1.0-Tref2)
     assert np.allclose(T3,(1.0-Tref1)*(1.0-Tref2))
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_params(no_pol):
     xsShallow,MMI=no_pol
 
@@ -170,7 +177,7 @@ def test_params(no_pol):
     assert np.allclose(T1,np.cos(0.5*np.pi*psl)**2.0)
     assert np.allclose(T2,np.cos((0.5*psl-0.25)*np.pi)**2.0)
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_other_cells(no_pol):
     xsShallow,MMI=no_pol
     with nd.Cell(name='PhaseShifter_wp') as PS:
@@ -229,7 +236,7 @@ def test_other_cells(no_pol):
     assert np.allclose(T1,np.cos(0.5*np.pi*psl)**2.0)
     assert np.allclose(T2,np.cos((0.5*psl-0.25)*np.pi)**2.0)
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_twopol_basic(two_pol):
     xsShallow,MMI=two_pol
 
@@ -239,7 +246,7 @@ def test_twopol_basic(two_pol):
     assert mod.get_T('a0_TE','b0_TE') == pt.approx(1.0, 1e-8)
     assert mod.get_T('a0_TM','b0_TM') == pt.approx(1.0, 1e-8)
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_twopol_MMI(two_pol):
     xsShallow,MMI=two_pol
 
@@ -284,7 +291,7 @@ def test_twopol_MMI(two_pol):
     #assert mod.get_T('a0_TM','b0_TM') == pt.approx(1.0, 1e-8)
 
 
-@pt.mark.skipif('solver' not in sys.modules, reason="Requires GensSol module")
+@pt.mark.skipif(skip, reason=reason)
 def test_twopol_MZM(two_pol):
     xsShallow,MMI=two_pol
 

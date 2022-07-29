@@ -1,8 +1,10 @@
-image: sphinxdoc/sphinx
+stages:
+    - deploy
 
 pages:
   stage: deploy
-  script:
+  image: sphinxdoc/sphinx
+  before_script:
   - pip install sphinx-rtd-theme
   - pip install nbsphinx
   - pip install notebook
@@ -11,6 +13,7 @@ pages:
   - pip install matplotlib
   - pip install pandas
   - apt-get update && apt-get install -y git pandoc
+  script:
   - sphinx-build -b html Docs public/
   artifacts:
     paths:

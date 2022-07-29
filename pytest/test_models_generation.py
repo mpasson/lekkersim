@@ -9,10 +9,16 @@ Created on Mon Apr 26 16:24:25 2021
 import numpy as np
 import pytest as pt
 
-import nazca as nd
+skip = False
+reason = ''
+try:
+    import nazca as nd
+except ModuleNotFoundError:
+    skip=True
+    reason = 'Missing Nazca'
 
 
-
+@pt.mark.skipif(skip, reason=reason)
 def test_ampl_lev0():
     """Generation of compact model from amplitude with fixed numbers
     """
@@ -28,7 +34,7 @@ def test_ampl_lev0():
     assert np.allclose(S.solve(wl=1.55).S, np.array([[[0.1+0.0j, 0.9+0.0j],[0.9+0.0j, 0.1+0.0j]]]))
     
     
-    
+@pt.mark.skipif(skip, reason=reason)
 def test_ampl_lev1():
     """Generation of compact model from amplitude with models returning numbers
     """
@@ -45,8 +51,9 @@ def test_ampl_lev1():
                      [1. +0.0j, 0. +0.0j, 0. +0.0j, 0. +0.0j],
                      [0. +0.0j, 0.9+0.0j, 0. +0.0j, 0. +0.0j]]])
     assert np.allclose(S.solve(wl=1.5).S, ref)
-    
-    
+
+
+@pt.mark.skipif(skip, reason=reason)
 def test_ampl_lev2():
     """Generation of compact model from amplitude with models returning functions
     """
@@ -70,8 +77,9 @@ def test_ampl_lev2():
                      [0.8+0.0j, 0. +0.0j, 0. +0.0j, 0. +0.0j],
                      [0. +0.0j, 0.7+0.0j, 0. +0.0j, 0. +0.0j]]])
     assert np.allclose(S.solve(wl=2.0).S, ref)
-    
-    
+
+
+@pt.mark.skipif(skip, reason=reason)
 def test_ampl_multiport():
     with nd.Cell(name='test_ampl_multiport') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -94,7 +102,9 @@ def test_ampl_multiport():
        [ 0.        +0.70710678j, -0.70710678+0.j        ,
          0.        +0.j        ,  0.        +0.j        ]])
     assert np.allclose(S.solve(wl=1.0).S2PD().values, ref)
-   
+
+
+@pt.mark.skipif(skip, reason=reason)
 def test_optloss_lev0():
     with nd.Cell(name='test_optloss_lev0') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -107,7 +117,8 @@ def test_optloss_lev0():
         
     assert np.allclose(S.solve(wl=1.0).S, ref)
     
-    
+
+@pt.mark.skipif(skip, reason=reason)
 def test_optlen_lev0():    
     with nd.Cell(name='test_optlen_lev0') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -120,6 +131,8 @@ def test_optlen_lev0():
     
     assert np.allclose(S.solve(wl=1.0).S, ref)
 
+
+@pt.mark.skipif(skip, reason=reason)
 def test_both_lev0():    
     with nd.Cell(name='test_both_lev0') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -133,6 +146,7 @@ def test_both_lev0():
     assert np.allclose(S.solve(wl=1.0).S, ref)
     
 
+@pt.mark.skipif(skip, reason=reason)
 def test_optloss_lev1():
     with nd.Cell(name='test_optloss_lev1') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -152,7 +166,9 @@ def test_optloss_lev1():
         [ 0.        +0.j        , -0.60007609-0.19497654j,
           0.        +0.j        ,  0.        +0.j        ]]])
     assert np.allclose(S.solve(wl=1.0).S, ref)
-    
+
+
+@pt.mark.skipif(skip, reason=reason)
 def test_optloss_lev2():
     with nd.Cell(name='test_optloss_lev2') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -187,9 +203,7 @@ def test_optloss_lev2():
     assert np.allclose(S.solve(wl=2.0).S, ref)
     
 
-
-
-    
+@pt.mark.skipif(skip, reason=reason)
 def test_optlen_lev1():
     with nd.Cell(name='test_optlen_lev1') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -213,6 +227,7 @@ def test_optlen_lev1():
     assert np.allclose(S.solve(wl=1.3).S, ref)
 
 
+@pt.mark.skipif(skip, reason=reason)
 def test_optlen_lev2():
     with nd.Cell(name='test_optlen_lev2') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -248,7 +263,8 @@ def test_optlen_lev2():
 
     assert np.allclose(S.solve(wl=1.4).S, ref)
     
-    
+
+@pt.mark.skipif(skip, reason=reason)
 def test_ampl_allowed1():    
     with nd.Cell(name='test_ampl_allowed1') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -261,7 +277,9 @@ def test_ampl_allowed1():
         [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
         [1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j]]])
     assert np.allclose(S.solve(wl=1.0).S2PD().values, ref)
-    
+
+
+@pt.mark.skipif(skip, reason=reason)
 def test_ampl_allowed2():    
     with nd.Cell(name='test_ampl_allowed2') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
@@ -275,8 +293,9 @@ def test_ampl_allowed2():
         [0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
         [1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j]]])
     assert np.allclose(S.solve(wl=1.0).S2PD().values, ref)
-    
- 
+
+
+@pt.mark.skipif(skip, reason=reason)
 def test_loss_allowed1():    
     with nd.Cell(name='test_loss_allowed3') as T:
         nd.Pin('a0').put(0.0, 0.0, 180.0)
