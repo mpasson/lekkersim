@@ -1,8 +1,10 @@
+import os
 import pytest as pt
 import numpy as np
 from solver import FPRGaussian
 import pickle
 
+file_dir=os.path.dirname(os.path.abspath(__file__))
 
 @pt.fixture
 def fpr1():
@@ -78,7 +80,8 @@ def test_init2(fpr2):
 
 def test_s_matrix_1(fpr1):
     """Tests the S-matrix generation for the symmetric FPR"""
-    with open('./references/s_matrix_fpr_gaussian.pkl', 'rb') as f:
+    file = os.path.join(file_dir, 'references', 's_matrix_fpr_gaussian.pkl')
+    with open(file, 'rb') as f:
         ref = pickle.load(f)
 
     mod = fpr1.solve(wl=1.55)
@@ -88,7 +91,8 @@ def test_s_matrix_1(fpr1):
 
 def test_s_matrix_2(fpr2):
     """Tests the S-matrix generation for the asymmetric FPR"""
-    with open('./references/s_matrix_fpr_gaussian_asym.pkl', 'rb') as f:
+    file = os.path.join(file_dir, 'references', 's_matrix_fpr_gaussian_asym.pkl')
+    with open(file, 'rb') as f:
         ref = pickle.load(f)
 
     mod = fpr2.solve(wl=1.55)

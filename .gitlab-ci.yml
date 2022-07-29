@@ -8,12 +8,8 @@ run_test:
   before_script:
     - pip install -r requirements.txt
     - pip install pytest
-    - cd pytest
   script:
-    - ls
-    - pwd
-    - pip freeze
-    - python -c "import solver"
+    - python -m pytest pytest/
 
 pages:
   stage: deploy
