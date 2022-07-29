@@ -1,6 +1,12 @@
 # GenSol package
 
-Open source tool for linear simulation of photonic circuits based on the scattering matrix method. 
+GenSol is a open source package for linear simulation of photonic circuit, based on the well known scattering matrix method.
+It features include:
+    - A collection of pre-defined building blocks for easy definition of circuits;
+    - Easy calculation of S-parameters of a photonic circuit;
+    - Parametric building blocks;
+    - Hierarchical circuit definition;
+    - Monitors inside the circuit for calculation of power flow.
 
 ## Installation
 After cloning, just add teh repository folder to the PYTHONPATH. 
