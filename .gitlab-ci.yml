@@ -1,4 +1,4 @@
-image: sphinxdoc/sphinx:4.5.0
+image: sphinxdoc/sphinx
 
 pages:
   stage: deploy
