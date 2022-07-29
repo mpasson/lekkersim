@@ -1,8 +1,8 @@
 .. currentmodule:: solver
 
-*************
-API Reference
-*************
+*******************
+Full API Reference
+*******************
 
 Direct methods
 ===============

@@ -1,9 +1,7 @@
 import numpy as np
 import pytest
 import importlib.util
-spec = importlib.util.spec_from_file_location("solver", "../solver/__init__.py")
-sv = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(sv)
+import solver as sv
 
 
 A=np.array([[ 0.00000000e+00+0.j, 0.00000000e+00+0.j, 4.32978028e-17+0.70710678j, 7.07106781e-01+0.j],

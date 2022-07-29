@@ -9,9 +9,8 @@ run_test:
     - pip install -r requirements.txt
     - pip install pytest
   script:
-    - ls
     - pwd
-    - pip freeze
+    - python -m pytest pytest/
 
 pages:
   stage: deploy
