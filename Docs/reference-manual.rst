@@ -72,7 +72,6 @@ Functional Models
 
    Waveguide
    UserWaveguide
-   GeneralWaveguide
    BeamSplitter
    Splitter1x2
    Splitter1x2Gen
@@ -83,7 +82,9 @@ Functional Models
    LinearAttenuator
    Mirror
    PerfectMirror
+   FPR
    FPR_NxM
+   FPRGaussian
    TH_PhaseShifter
    Model_from_NazcaCM
 

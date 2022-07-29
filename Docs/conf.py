@@ -38,7 +38,7 @@ extensions = [
 
 ### AutoSummary settings
 
-autoclass_content = 'both'
+autoclass_content = 'class'
 
 
 # Add any paths that contain templates here, relative to this directory.

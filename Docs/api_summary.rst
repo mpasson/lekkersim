@@ -43,7 +43,6 @@ Classes and Methods for building a circuit:
 
    Waveguide
    UserWaveguide
-   GeneralWaveguide
    BeamSplitter
    Splitter1x2
    Splitter1x2Gen
@@ -54,7 +53,9 @@ Classes and Methods for building a circuit:
    LinearAttenuator
    Mirror
    PerfectMirror
+   FPR
    FPR_NxM
+   FPRGaussian
    TH_PhaseShifter
 
 Circuit Simulation

@@ -12,7 +12,7 @@
 """File containing the model calls and related methods
 """
 from __future__ import annotations
-from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING
+from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING, Union
 
 import matplotlib.axes
 import numpy as np
@@ -67,12 +67,6 @@ class Model:
     The only use case for using this class directly is to call it without arguments to create an empy
     model that will be eliminated if prune is called
 
-    Args:
-        pin_dic (dictionary): list of strings containing the model's pin names
-        param_dic (dictionary): dictionary {'param_name':param_value} containing the definition of
-            the model's parameters.
-        Smatrix (ndarray) : Fixed S_matrix of the model
-
     """
 
     def __init__(
@@ -81,7 +75,15 @@ class Model:
         param_dic: Dict[str, Any] = None,
         Smatrix: np.ndarray = None,
     ) -> None:
-        """Creator of the class"""
+        """Initialize the model
+
+        Args:
+            pin_dic (dictionary): list of strings containing the model's pin names
+            param_dic (dictionary): dictionary {'param_name':param_value} containing the definition of
+                the model's parameters.
+            Smatrix (ndarray) : Fixed S_matrix of the model
+
+        """
         self.pin_dic = {} if pin_dic is None else pin_dic
         self.N = len(self.pin_dic)
         if Smatrix is not None:
@@ -235,7 +237,7 @@ class Model:
         Each mode will have the same behavior.
 
         Args:
-            mode_list (list) : list of strings containing the modenames
+            mode_list (list) : list of strings containing the modenames.
 
         Returns:
             Model : new model with expanded modes
@@ -430,6 +432,17 @@ class SolvedModel(Model):
         int_func: Callable = None,
         monitor_mapping: Dict[str, Tuple[solver.Structure, str]] = None,
     ) -> None:
+        """Initialize the model
+
+        Args:
+            pin_dic (dictionary): list of strings containing the model's pin names
+            param_dic (dictionary): dictionary {'param_name':param_value} containing the definition of
+                the model's parameters.
+            Smatrix (ndarray) : Fixed S_matrix of the model
+            int_func (Callable): function for returning the modal coefficient in between two part of the scattering matrix
+            monitor_mapping (Dict): Dictionry mapping the name of the monitor to the connected pin
+
+        """
         super().__init__(pin_dic=pin_dic, param_dic=param_dic, Smatrix=Smatrix)
         self.solved_params = deepcopy(param_dic)
         self.ns = np.shape(Smatrix)[0]
@@ -573,16 +586,16 @@ class SolvedModel(Model):
 
 
 class Waveguide(Model):
-    """Model of a simple waveguide
-
-    Args:
-        L (float) : length of the waveguide
-        n (float or complex): effective index of the waveguide
-        wl (float) : default wavelength of the waveguide
-    """
+    """Model of a simple waveguide"""
 
     def __init__(self, L: float, n: float = 1.0, wl: float = 1.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            L (float) : length of the waveguide
+            n (float or complex): effective index of the waveguide
+            wl (float) : default wavelength of the waveguide
+        """
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
         self.S = np.identity(self.N, complex)
@@ -609,17 +622,7 @@ class Waveguide(Model):
 
 
 class UserWaveguide(Model):
-    """Template for a user defined waveguide
-
-    Args:
-        L (float): length of the waveguide
-        func (function): index function of the waveguide
-        param_dic (dict): dictionary of the default parameters to be used (common to all modes)
-        allowedmodes (dict): Dict of allowed modes and settings. Form is name:extra.
-            extra is a dictionary containing the extra parameters to be passed to func
-            Default is for 1 mode, with no name and no parameters
-
-    """
+    """Template for a user defined waveguide"""
 
     def __init__(
         self,
@@ -628,6 +631,17 @@ class UserWaveguide(Model):
         param_dic: Dict[str, Any] = None,
         allowedmodes: Dict[str, Dict] = None,
     ) -> None:
+        """Initialize the model
+
+        Args:
+            L (float): length of the waveguide
+            func (function): index function of the waveguide
+            param_dic (dict): dictionary of the default parameters to be used (common to all modes)
+            allowedmodes (dict): Dict of allowed modes and settings. Form is name:extra.
+                extra is a dictionary containing the extra parameters to be passed to func
+                Default is for 1 mode, with no name and no parameters
+        """
+
         self.allowed = {"": {}} if allowedmodes is None else allowedmodes
         self.pin_dic = {}
 
@@ -663,17 +677,17 @@ class UserWaveguide(Model):
 
 
 class BeamSplitter(Model):
-    """Model of variable ration beam splitter
-
-    Args:
-        ratio (float) : Power coupling coefficient. It is also the splitting ratio if t is not provided.
-        t (float): Power transmission coefficient. If None (default) it is calculated from the ratio assuming
-            no loss in the component.
-        phase (float) : phase shift of the transmitted ray (in unit of pi). Default to 0.0
-    """
+    """Model of variable ration beam splitter"""
 
     def __init__(self, ratio: float = 0.5, t: float = None, phase: float = 0.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            ratio (float) : Power coupling coefficient. It is also the splitting ratio if t is not provided.
+            t (float): Power transmission coefficient. If None (default) it is calculated from the ratio assuming
+                no loss in the component.
+            phase (float) : phase shift of the transmitted ray (in unit of pi). Default to 0.0
+        """
         self.pin_dic = {"a0": 0, "a1": 1, "b0": 2, "b1": 3}
         self.N = 4
         self.ratio = ratio
@@ -698,7 +712,7 @@ class Splitter1x2(Model):
     """Model of 1x2 Splitter"""
 
     def __init__(self) -> None:
-        """Creator"""
+        """Initialize the model"""
         self.pin_dic = {"a0": 0, "b0": 1, "b1": 2}
         self.N = 3
         self.S = (
@@ -715,15 +729,16 @@ class Splitter1x2(Model):
 
 class Splitter1x2Gen(Model):
     """Model of 1x2 Splitter with possible reflection between the 2 port side.
-        TODO: verify this model makes sense
-
-    Args:
-        cross (float) : ratio of reflection (power ratio)
-        phase (float) : phase shift of the reflected ray (in unit of pi)
+    TODO: verify this model makes sense
     """
 
     def __init__(self, cross: float = 0.0, phase: float = 0.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            cross (float) : ratio of reflection (power ratio)
+            phase (float) : phase shift of the reflected ray (in unit of pi)
+        """
         self.pin_dic = {"a0": 0, "b0": 1, "b1": 2}
         self.N = 3
         self.param_dic = {}
@@ -742,15 +757,15 @@ class Splitter1x2Gen(Model):
 
 
 class PhaseShifter(Model):
-    """Model of multimode variable phase shifter
-
-    Args:
-        param_name (str): name of the parameter of the Phase Shifter
-        param_default (float): default value of the Phase Shift in pi units
-    """
+    """Model of multimode variable phase shifter"""
 
     def __init__(self, param_name: str = "PS", param_default: float = 0.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            param_name (str): name of the parameter of the Phase Shifter
+            param_default (float): default value of the Phase Shift in pi units
+        """
         self.param_dic = {}
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
@@ -774,7 +789,7 @@ class PushPullPhaseShifter(Model):
     """Model of multimode variable phase shifter"""
 
     def __init__(self, param_name: str = "PS") -> None:
-        """Creator
+        """Initialize the model
 
         Args:
             param_name (str) : name of the parameter of the Phase Shifter
@@ -806,18 +821,18 @@ class PushPullPhaseShifter(Model):
 
 
 class PolRot(Model):
-    """Model of a 2 modes polarization rotator
-
-    If angle is provided the rotation is fixed to that value. If not, the rotation is assumed
-        variable and the angle will be fetched form the parameter dictionary.
-
-    Args:
-        angle (float) : fixed value of the rotation angle (in pi units). Default is None
-        angle_name (str) : name of the angle parameter
-    """
+    """Model of a 2 modes polarization rotator"""
 
     def __init__(self, angle: float = None, angle_name: str = "angle") -> None:
-        """Creator:"""
+        """Initialize the model
+
+        If angle is provided the rotation is fixed to that value. If not, the rotation is assumed
+            variable and the angle will be fetched form the parameter dictionary.
+
+        Args:
+            angle (float) : fixed value of the rotation angle (in pi units). Default is None
+            angle_name (str) : name of the angle parameter
+        """
         self.pin_dic = {"a0_pol0": 0, "a0_pol1": 1, "b0_pol0": 2, "b0_pol1": 3}
         self.N = 4
         self.param_dic = {}
@@ -836,6 +851,7 @@ class PolRot(Model):
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
+
         Returns:
             ndarray: Scattering matrix of the model
         """
@@ -852,14 +868,14 @@ class PolRot(Model):
 
 
 class Attenuator(Model):
-    """Model of attenuator
-
-    Args:
-        loss: value of the loss (in dB)
-    """
+    """Model of attenuator in dB"""
 
     def __init__(self, loss: float = 0.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            loss: value of the loss (in dB)
+        """
         self.param_dic = {}
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
@@ -871,17 +887,17 @@ class Attenuator(Model):
 
 
 class LinearAttenuator(Model):
-    """Model of attenuator
-
-    Args:
-        c (float): fraction of power transmitted:
-            1.0 -> no loss
-            0.3 -> 30% of the power is transmitted
-            0.0 -> no light transmitted
-    """
+    """Model of attenuator in absolute unit"""
 
     def __init__(self, c: float = 1.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            c (float): fraction of power transmitted:
+                1.0 -> no loss
+                0.3 -> 30% of the power is transmitted
+                0.0 -> no light transmitted
+        """
         self.param_dic = {}
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
@@ -892,15 +908,15 @@ class LinearAttenuator(Model):
 
 
 class Mirror(Model):
-    """Model of partially reflected Mirror
-
-    Args:
-        ref (float) : ratio of reflected power
-        phase (float): phase shift of the reflected ray (in pi units)
-    """
+    """Model of partially reflected Mirror"""
 
     def __init__(self, ref: float = 0.5, phase: float = 0.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            ref (float) : ratio of reflected power
+            phase (float): phase shift of the reflected ray (in pi units)
+        """
         self.pin_dic = {"a0": 0, "b0": 1}
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
@@ -916,14 +932,14 @@ class Mirror(Model):
 
 
 class PerfectMirror(Model):
-    """Model of perfect mirror (only one port), 100% reflection
-
-    Args:
-        phase (float): phase of the reflected ray (in pi unit)
-    """
+    """Model of perfect mirror (only one port), 100% reflection"""
 
     def __init__(self, phase: float = 0.0) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            phase (float): phase of the reflected ray (in pi unit)
+        """
         self.pin_dic = {"a0": 0}
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
@@ -934,16 +950,16 @@ class PerfectMirror(Model):
 
 
 class FPR_NxM(Model):
-    """Model of Free Propagation Region. TODO: check this model makes sense
-
-    Args:
-        N (int) : number of input ports
-        M (int) : number of output ports
-        phi (float) : phase difference between adjacent ports
-    """
+    """Model of Free Propagation Region. TODO: check this model makes sense"""
 
     def __init__(self, N: int, M: int, phi: float = 0.1) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            N (int) : number of input ports
+            M (int) : number of output ports
+            phi (float) : phase difference between adjacent ports
+        """
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
         self.pin_dic = {f"a{i}": i for i in range(N)}
@@ -965,17 +981,17 @@ class FPR_NxM(Model):
 
 
 class Ring(Model):
-    """Model of ring resonator filter
-
-    Args:
-        R (float) : radius of the ring
-        n (float) : effective index of the waveguide in the ring
-        alpha (float) : one trip loss coefficient (remaining complex amplitude)
-        t (float) : transmission of the beam splitter (complex amplitude)
-    """
+    """Model of ring resonator filter"""
 
     def __init__(self, R: float, n: float, alpha: float, t: float) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            R (float) : radius of the ring
+            n (float) : effective index of the waveguide in the ring
+            alpha (float) : one trip loss coefficient (remaining complex amplitude)
+            t (float) : transmission of the beam splitter (complex amplitude)
+        """
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
         self.S = np.identity(self.N, complex)
@@ -1003,18 +1019,7 @@ class Ring(Model):
 
 
 class TH_PhaseShifter(Model):
-    """Model of thermal phase shifter (dispersive waveguide + phase shifter)
-
-    Args:
-        L (float) : length of the waveguide
-        Neff (function): function returning the effective index of the wavegude. It must be a function of
-            wl,R,w, and pol
-        wl (float) : default wavelength of the waveguide
-        w  (float) : default width of the waveguide
-        R  (float) : default bending radius of the waveguide
-        pol (int)  : default mode of the waveguide
-        param_name (str) : name of the parameter of the Phase Shifter
-    """
+    """Model of thermal phase shifter (dispersive waveguide + phase shifter)"""
 
     def __init__(
         self,
@@ -1026,7 +1031,18 @@ class TH_PhaseShifter(Model):
         pol: int = None,
         param_name: str = "PS",
     ) -> None:
-        """Creator"""
+        """Initialize the model
+
+        Args:
+            L (float) : length of the waveguide
+            Neff (function): function returning the effective index of the wavegude. It must be a function of
+                wl,R,w, and pol
+            wl (float) : default wavelength of the waveguide
+            w  (float) : default width of the waveguide
+            R  (float) : default bending radius of the waveguide
+            pol (int)  : default mode of the waveguide
+            param_name (str) : name of the parameter of the Phase Shifter
+        """
         self.pin_dic = {"a0": 0, "b0": 1}
         self.N = 2
         self.Neff = Neff
@@ -1053,6 +1069,8 @@ class TH_PhaseShifter(Model):
 
 
 class AWGfromVPI(Model):
+    """Define custom model from a VPI scattering matrix format"""
+
     def __init__(self, filename: str, pol: str = "TE", fsr: float = 1.0) -> None:
         """Instantiate an AWG from a VPI S-matrix.
 
@@ -1131,7 +1149,7 @@ class FPR(Model):
     def __init__(
         self, n: int, m: int, R: float, d1: float, d2: float, Ri: float = None
     ) -> None:
-        """Creator
+        """Initialize the model
 
         Args:
             n (int): Number of inputs arms.
@@ -1179,25 +1197,25 @@ class FPRGaussian(Model):
     """Simplified model of FPR circle mount based on Gaussian beams."""
 
     def __init__(
-            self,
-            n: int,
-            m: int,
-            R: float,
-            d1: float,
-            d2: float,
-            w1: float,
-            w2: float,
-            n_slab: float,
-            Ri: float = None,
+        self,
+        n: int,
+        m: int,
+        R: float,
+        d1: float,
+        d2: float,
+        w1: float,
+        w2: float,
+        n_slab: float,
+        Ri: float = None,
     ) -> None:
-        """Creator
+        """Initialize the model
 
         Args:
             n (int): Number of inputs arms.
             m (int): Number of output arms.
-            R (float): Radius the output part of FPR (input and output are on the same radius) in [um].
-            d1 (float): Center-to-center distance of inputs on the input plane in [um].
-            d2 (float): Center-to-center distance of output on the output plane in [um].
+            R (float): Radius the output part of FPR (input and output are on the same radius).
+            d1 (float): Center-to-center distance of inputs on the input plane.
+            d2 (float): Center-to-center distance of output on the output plane in.
             n_slab (float | callable): Effective index of the slab mode.
             R_i (float): Input radius. If it is not specified it is set equal to the output one. Default is None.
 
@@ -1220,7 +1238,9 @@ class FPRGaussian(Model):
 
         self.t1 = self.d1 / Ri * line(n)
         self.t2 = self.d2 / R * line(m)
-        self.pos1 = [(Ri * (1 - np.cos(self.t1[i])), Ri * np.sin(self.t1[i])) for i in range(n)]
+        self.pos1 = [
+            (Ri * (1 - np.cos(self.t1[i])), Ri * np.sin(self.t1[i])) for i in range(n)
+        ]
         self.pos2 = [(R * np.cos(self.t2[i]), R * np.sin(self.t2[i])) for i in range(m)]
 
         self.S = np.zeros((n + m, n + m), dtype=complex)
@@ -1249,7 +1269,7 @@ class FPRGaussian(Model):
                 wl=lam,
                 z0=self.pos1[i][0],
                 x0=self.pos1[i][1],
-                theta=-np.rad2deg(self.t1[i])
+                theta=-np.rad2deg(self.t1[i]),
             )
             for j in range(m):
                 beam2 = GaussianBeam(
@@ -1258,11 +1278,13 @@ class FPRGaussian(Model):
                     wl=lam,
                     z0=self.pos2[j][0],
                     x0=self.pos2[j][1],
-                    theta=np.rad2deg(self.t2[j])
+                    theta=np.rad2deg(self.t2[j]),
                 )
 
                 def to_integrate(x):
-                    integrand = beam1.field(z=z, x=x) * np.conjugate(beam2.field(z=z, x=x))
+                    integrand = beam1.field(z=z, x=x) * np.conjugate(
+                        beam2.field(z=z, x=x)
+                    )
                     return np.array([integrand.real, integrand.imag])
 
                 res = quad_vec(to_integrate, -np.inf, np.inf)
@@ -1288,12 +1310,12 @@ class FPRGaussian(Model):
         y_out = [el[1] for el in self.pos2]
         if ax in None:
             fig, ax = plt.subplots()
-        ax.scatter(x_in, y_in, label='input')
-        ax.scatter(x_out, y_out, label='output')
-        ax.legend(loc='lower center')
-        ax.set_xlabel('x [$\mu$m]')
-        ax.set_ylabel('y [$\mu$m]')
-        ax.set_title(f'FPR: R$_i$={self.Ri} $\mu$m, R$_o$={self.R} $\mu$m')
+        ax.scatter(x_in, y_in, label="input")
+        ax.scatter(x_out, y_out, label="output")
+        ax.legend(loc="lower center")
+        ax.set_xlabel("x [$\mu$m]")
+        ax.set_ylabel("y [$\mu$m]")
+        ax.set_title(f"FPR: R$_i$={self.Ri} $\mu$m, R$_o$={self.R} $\mu$m")
 
         return ax
 
@@ -1302,7 +1324,7 @@ class CWA(Model):
     """Simple model fo a Coupled Waveguide Array"""
 
     def __init__(self, N: int, L: float, n: float = 1.0, k: float = 0.1):
-        """Creator
+        """Initialize the model
 
         Args:
             N (int): Number of waveguides in the array.
@@ -1346,12 +1368,12 @@ class Model_from_NazcaCM(Model):
     def __init__(
         self,
         cell: nd.Cell,
-        ampl_model=None,
-        loss_model=None,
-        optlength_model=None,
-        allowed=None,
-    ):
-        """Creator of the class
+        ampl_model: str = None,
+        loss_model: str = None,
+        optlength_model: str = None,
+        allowed: Dict[str, Dict[str, Any]] = None,
+    ) -> None:
+        """Initialize the model
 
         This class is for building scattering matrices from the connectivity infomation built in nazca.
 
@@ -1533,7 +1555,7 @@ class Model_from_NazcaCM(Model):
                     self.CM[tup] = self.__class__.generator(OMt, AMt)
 
     @staticmethod
-    def generator(OM, AM):
+    def generator(OM: Callable[..., float], AM: Callable[..., float]) -> Callable:
         """Static method for generating the function creating the scattering matrix element from the compact models
 
         Args:
@@ -1545,7 +1567,7 @@ class Model_from_NazcaCM(Model):
 
         """
 
-        def TOT(**kwargs):
+        def TOT(**kwargs) -> complex:
             OML = (
                 Model_from_NazcaCM.filter_eval(OM, kwargs) if callable(OM) else copy(OM)
             )
@@ -1557,7 +1579,7 @@ class Model_from_NazcaCM(Model):
         return TOT
 
     @staticmethod
-    def wraps(func):
+    def wraps(func: Callable[..., complex]) -> Callable[..., complex]:
         """Static method for generating the function creating the scattering matrix element from the amplitude
         compact model.
 
@@ -1579,8 +1601,8 @@ class Model_from_NazcaCM(Model):
         return wrapper
 
     @staticmethod
-    def filter_eval(func, kwargs):
-        """Static method for evaluating a funtion filtering the keywork arguments.
+    def filter_eval(func: Callable, kwargs: Dict[str, Any]) -> Any:
+        """Static method for evaluating a function filtering the keywork arguments.
 
         Allow to call a function with as input a dictionary bigger than the argument the function can accept.
         If this happen, however, a warning is logged.
@@ -1609,8 +1631,13 @@ class Model_from_NazcaCM(Model):
 
     @classmethod
     def check_init(
-        cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None
-    ):
+        cls,
+        cell: nd.Cell,
+        ampl_model: str = None,
+        loss_model: str = None,
+        optlength_model: str = None,
+        allowed: Dict[str, Dict[str, Any]] = None,
+    ) -> Model_from_NazcaCM:
         """Alternative Creator. Mainly used for debugging
 
         This creator will directly try to solve the obtained model before returning.
@@ -1644,8 +1671,13 @@ class Model_from_NazcaCM(Model):
 
     @classmethod
     def nazca_init(
-        cls, cell, ampl_model=None, loss_model=None, optlength_model=None, allowed=None
-    ):
+        cls,
+        cell: nd.Cell,
+        ampl_model: str = None,
+        loss_model: str = None,
+        optlength_model: str = None,
+        allowed: Dict[str, Dict[str, Any]] = None,
+    ) -> Union[Model_from_NazcaCM, solver.Solver]:
         """Alternative Creator to be used inside Nazca Integration
 
         This alternative creator will check if a model can be obtained from the Nazca cell. If not, an empty Solver will
@@ -1676,7 +1708,7 @@ class Model_from_NazcaCM(Model):
         else:
             return obj
 
-    def create_S(self):
+    def create_S(self) -> np.ndarray:
         """Creates the scattering matrix
 
         Returns:
