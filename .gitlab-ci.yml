@@ -1,5 +1,17 @@
 stages:
-    - deploy
+  - test
+  - deploy
+
+run_test:
+  stage: test
+  image: python
+  before_script:
+    - pip install -r requirements.txt
+    - pip install pytest
+  script:
+    - ls
+    - pwd
+    - pip freeze
 
 pages:
   stage: deploy
