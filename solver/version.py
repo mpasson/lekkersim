@@ -5,16 +5,7 @@ import os
 mdir = os.path.dirname(os.path.abspath(__file__))
 
 try:
-    subprocess.check_output(["git", "--version"], cwd=mdir).strip().decode("utf-8")
-    git = True
-except subprocess.CalledProcessError:
-    git = False
-
-
-def get_version():
-    if not git:
-        return 'no version available', True
-    version = (
+    __version__ = (
         subprocess.check_output(["git", "describe"], cwd=mdir).strip().decode("utf-8")
         + "-dev"
         )
@@ -24,8 +15,6 @@ def get_version():
         .decode("utf-8")
         == ""
     )
-    return version, git_clean
-
-
-__version__, git_clean = get_version()
-
+except subprocess.CalledProcessError:
+    __version__ = 'No version available'
+    git_clean = True

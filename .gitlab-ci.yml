@@ -9,6 +9,7 @@ run_test:
     - pip install -r requirements.txt
     - pip install pytest
   script:
+    - pwd
     - python -m pytest pytest/
 
 pages:
