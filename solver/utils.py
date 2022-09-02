@@ -57,13 +57,13 @@ def line(N):
 
 class GaussianBeam:
     def __init__(
-            self,
-            w0,
-            n,
-            wl,
-            z0=0.0,
-            x0=0.0,
-            theta=0.0,
+        self,
+        w0,
+        n,
+        wl,
+        z0=0.0,
+        x0=0.0,
+        theta=0.0,
     ):
         """Gaussian beam for propagation in 2D slabs.
 
@@ -153,8 +153,12 @@ class GaussianBeam:
         k_x = 2 * np.pi * self.n / self.wl
         _waist = self.waist(_z)
 
-        _amplitude = np.sqrt(np.sqrt(2 / np.pi) / _waist) * np.exp(-_x * _x / (_waist * _waist))
-        _phase = np.exp(-1j * (k_z * _z + k_x * _x * _x / (2 * self.curvature(_z)) - self.gouy(_z)))
+        _amplitude = np.sqrt(np.sqrt(2 / np.pi) / _waist) * np.exp(
+            -_x * _x / (_waist * _waist)
+        )
+        _phase = np.exp(
+            -1j * (k_z * _z + k_x * _x * _x / (2 * self.curvature(_z)) - self.gouy(_z))
+        )
 
         _field = _amplitude * _phase
 

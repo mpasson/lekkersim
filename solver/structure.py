@@ -1,4 +1,9 @@
+from __future__ import annotations
+from typing import List, Dict, Tuple, Any
+
 import numpy as np
+import pandas
+import solver
 from solver.scattering import S_matrix
 from copy import deepcopy
 from copy import copy
@@ -16,7 +21,13 @@ class Structure:
         param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters. Default is empty dict
     """
 
-    def __init__(self, pin_list=[], model=None, solver=None, param_mapping=None):
+    def __init__(
+        self,
+        pin_list: List[str] = [],
+        model: solver.Model = None,
+        solver: solver.Solver = None,
+        param_mapping: Dict[str, str] = None,
+    ) -> None:
         """Creator"""
         self.pin_list = []
         self.pin_dic = {}
@@ -47,7 +58,7 @@ class Structure:
         for oldname, newname in param_mapping.items():
             self.param_mapping[newname] = oldname
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Formatter for printing"""
         if self.model is not None:
             return f"Structure (id={id(self)}) containing {str(self.model)}"
@@ -57,7 +68,7 @@ class Structure:
             return f"{self.__class__.__name__} instance at {id(self)}>"
 
     @property
-    def pin(self):
+    def pin(self) -> Dict[str, Tuple[Structure, str]]:
         """Alllows the feeding of the sintax structure.pin['pin_name'] where the tuple of structure and pin is required
 
         Returns:
@@ -67,15 +78,15 @@ class Structure:
         return dic
 
     @property
-    def pin_count(self):
+    def pin_count(self) -> int:
         """Number of pins in a structure"""
         return len(self.pin_list)
 
-    def get_pin_basenames(self):
+    def get_pin_basenames(self) -> str:
         """Return the set of the basename of the pins"""
         return set([pin[1].split("_")[0] for pin in self.pin_list])
 
-    def get_pin_modenames(self, target):
+    def get_pin_modenames(self, target) -> List[str]:
         """Return list of mode names given a pin basename"""
         li = []
         for pin in self.pin_list:
@@ -87,7 +98,7 @@ class Structure:
                 li.append(modename)
         return li
 
-    def get_pins(self, basename=None):
+    def get_pins(self, basename=None) -> List[Tuple[Structure, str]]:
         """Return list of the pins tuple
 
         Args:
@@ -101,7 +112,7 @@ class Structure:
         else:
             return [pin for pin in self.pin_list if pin.split("_")[0] == basename]
 
-    def update_params(self, param_dic):
+    def update_params(self, param_dic: Dict[str, Any]) -> None:
         """Updated the parametes dictionary of the represented optic componet
 
         Args:
@@ -123,7 +134,7 @@ class Structure:
         if self.solver is not None:
             self.solver.update_params(update_dic)
 
-    def createS(self):
+    def createS(self) -> np.ndarray:
         """Creates the scattering matrix of the components
 
         Returns:
@@ -140,26 +151,26 @@ class Structure:
         self.ns = np.shape(self.Smatrix)[0]
         return self.Smatrix
 
-    def print_pindic(self):
+    def print_pindic(self) -> None:
         """Print the mappping between the pins and the entries of the scatterng matrix"""
         for (st, pin), i in self.pin_dic.items():
             print("(%50s, %5s) : %3i" % (st, pin, i))
 
-    def print_conn(self):
+    def print_conn(self) -> None:
         """Print the connection of this structure to other ones"""
         for (st1, pin1), (st2, pin2) in self.conn_dict.items():
             print("(%50s, %5s) --> (%50s, %5s)" % (st1, pin1, st2, pin2))
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the mapping that keeps track of the solving"""
         self.gone_to = self
         self.param_dic = {}
 
-    def add_pin(self, pin):
+    def add_pin(self, pin: Tuple[Structure, str]) -> None:
         """Add pin to structure
 
         Args:
-            pin (str) : name of the pin
+            pin (tuple) : pin to be added
 
         Returns:
             None
@@ -171,7 +182,7 @@ class Structure:
             self.pin_dic[pin] = self.N
             self.N += 1
 
-    def sel_input(self, pin_list):
+    def sel_input(self, pin_list: List[Tuple[Structure, str]]) -> None:
         """Divide pins to be connected providing inputs pins
 
         Args:
@@ -186,7 +197,7 @@ class Structure:
             self.in_list.append(pin)
             self.out_list.remove(pin)
 
-    def sel_output(self, pin_list):
+    def sel_output(self, pin_list: List[Tuple[Structure, str]]) -> None:
         """Divide pins to be connected providing output pins
 
         Args:
@@ -202,7 +213,11 @@ class Structure:
             self.out_list.append(pin)
             self.in_list.remove(pin)
 
-    def split_in_out(self, in_pins=None, out_pins=None):
+    def split_in_out(
+        self,
+        in_pins: List[Tuple[Structure, str]] = None,
+        out_pins: List[Tuple[Structure, str]] = None,
+    ) -> None:
         """Created the scattering matrix object with left pins separated from right pins
 
         Args:
@@ -242,7 +257,7 @@ class Structure:
                     :, self.pin_dic[p], self.pin_dic[q]
                 ]
 
-    def get_S_back(self):
+    def get_S_back(self) -> None:
         """Recreates the scattering matrix as ndarray"""
         self.Smatrix = np.concatenate(
             [
@@ -260,7 +275,7 @@ class Structure:
         self.in_pins = {}
         self.out_pins = {}
 
-    def print_pins(self):
+    def print_pins(self) -> None:
         """Print all pins of the structures, divided in self pins and contained pins"""
         print("Self pins:")
         for c, pinname in self.pin_list:
@@ -275,7 +290,9 @@ class Structure:
                     if c is cc:
                         print(c, pinname)
 
-    def add_conn(self, pin, target, target_pin):
+    def add_conn(
+        self, pin: str, target: Structure, target_pin: Tuple[Structure, str]
+    ) -> None:
         """Add connection between a self pin and a pin in another structure
 
         Args:
@@ -295,7 +312,7 @@ class Structure:
         if target not in self.connected_to:
             self.connected_to.append(target)
 
-    def remove_pin(self, pin):
+    def remove_pin(self, pin: str) -> None:
         """Remove pin from structure
 
         Args:
@@ -314,7 +331,7 @@ class Structure:
         else:
             raise Exception(f"Pin {pin} not in conn_dict")
 
-    def cut_connections(self, target):
+    def cut_connections(self, target: Structure) -> None:
         """Remove all connection to target structure. Pins in self are kept
 
         Args:
@@ -336,7 +353,7 @@ class Structure:
                 else:
                     raise Exception(f"Pin {pin} not in conn_dict")
 
-    def remove_connections(self, target):
+    def remove_connections(self, target: Structure) -> None:
         """Remove all connection to target structure. Remove also from self all pins involved in the connections
 
         Args:
@@ -355,7 +372,7 @@ class Structure:
             if t is target:
                 self.remove_pin(pin)
 
-    def get_out_to(self, st):
+    def get_out_to(self, st: Structure) -> List[Tuple[Structure, str]]:
         """Find pins of self with are connected to a target structure
 
         Args:
@@ -371,7 +388,7 @@ class Structure:
                 pin_list.append((loc_c, loc_name))
         return pin_list
 
-    def get_in_from(self, st):
+    def get_in_from(self, st: Structure) -> List[Tuple[Structure, str]]:
         """Find pins of self with are connected from a target structure
 
         Args:
@@ -387,7 +404,7 @@ class Structure:
                 pin_list.append((loc_c, loc_name))
         return pin_list
 
-    def join(self, st):
+    def join(self, st: Structure) -> Structure:
         """Join two structures to create the one cotaining the merged structure
 
         Args:
@@ -488,7 +505,9 @@ class Structure:
 
         return new_st
 
-    def intermediate(self, st, pin_mapping):
+    def intermediate(
+        self, st: Structure, pin_mapping: Dict[str, Tuple[Structure, str]]
+    ) -> None:
         """Used to generate the function for monitoring the modes between two structures
 
         This function is use to generate tge function to coumpe the modes amplitude at selected internal ports between 2 structures.
@@ -522,7 +541,7 @@ class Structure:
         self.split_in_out(self.in_list, self.out_list)
         st.split_in_out(st.in_list, st.out_list)
 
-        def solve_inter(dic):
+        def solve_inter(dic: Dict[str, complex]) -> Tuple[np.ndarray]:
             """This function calculates the couefficient of the internal modes
 
             Args:
@@ -545,7 +564,7 @@ class Structure:
 
         return solve_inter, st.in_pins
 
-    def get_model(self, pin_mapping=None):
+    def get_model(self, pin_mapping: Dict[str, Tuple[Structure, str]] = None):
         """Retunrn model corresponding to structure
 
         Args:
@@ -570,6 +589,32 @@ class Structure:
             pin_dic=pin_dic, param_dic=self.param_dic, Smatrix=self.Smatrix
         )
         return MOD
+
+    def raise_pins(self, pini: List[str] = None, pino: List[str] = None):
+        """Raises  some pins of the structure into the solver
+
+        Args:
+            pini (list): List of the pins to be raised. If None, all the the pins are raised.
+            pino (list): List of the names of raised pins. If none, the names are preserved.
+
+        Returns:
+            None
+
+        Raises:
+            RuntimeError: if trying to raise pins on a composite structure
+            ValueError: if len(pini)!=len(pino)
+        """
+        if pini is None:
+            pini = []
+            for st, pin in self.pin_list:
+                if st != self:
+                    raise RuntimeError("Cannnot raise pins of composite structure")
+                pini.append(pin)
+        pino = pini if pino is None else pino
+        if len(pini) != len(pino):
+            raise ValueError("pini and pino have different lengths")
+        pin_mapping = {_pino: (self, _pini) for _pino, _pini in zip(pino, pini)}
+        solver.sol_list[-1].map_pins(pin_mapping)
 
     # def return_model(self):
     #    return self.model

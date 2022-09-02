@@ -24,5 +24,3 @@ from solver.scattering import S_matrix
 from solver.structure import Structure
 from solver.sol import *
 from solver.model import *
-
-

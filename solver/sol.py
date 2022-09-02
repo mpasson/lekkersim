@@ -33,13 +33,16 @@ class Solver:
 
     """
 
+    structures: List[Structure]
+
     space = ""
     depth = 0
 
     def __init__(
         self,
         structures: List[Structure] = None,
-        connections: List[tuple] = None,
+        connections: Dict[Tuple[Structure, str], Tuple[Structure, str]] = None,
+        pin_mapping: Dict[str, Tuple[Structure, str]] = None,
         param_dic: Dict[str, Any] = None,
         name: str = None,
         param_mapping: Dict[str, str] = None,
@@ -49,7 +52,7 @@ class Solver:
         self.connections = connections if connections is not None else {}
         self.connections_list = []
         self.param_dic = param_dic if param_dic is not None else {}
-        self.pin_mapping = {}
+        self.pin_mapping = pin_mapping if pin_mapping is not None else {}
         self.default_params = {"wl": None}
         self.default_params.update(self.param_dic)
         self.param_mapping = {} if param_mapping is None else param_mapping
@@ -282,32 +285,29 @@ class Solver:
                 pinname = list(self.pin_mapping.keys())[
                     list(self.pin_mapping.values()).index((st, pin))
                 ]
-                print("(%50s, %5s) --> %5s" % (st, pin, pinname))
+                print("  (%50s, %5s) --> %5s" % (st, pin, pinname))
             except ValueError:
-                print("(%50s, %5s)" % (st, pin))
-        print("")
+                print("  (%50s, %5s)" % (st, pin))
 
     def show_structures(self) -> None:
         """Print all structures in the solver"""
         print("Structures and pins of solver: %50s)" % (self))
         for st in self.structures:
-            print("%50s" % (st))
-        print("")
+            print("  %50s" % (st))
 
     def show_connections(self) -> None:
         """Print all connected pins in the solver"""
         print("Connection of solver: %50s)" % (self))
         for c1, c2 in self.connections.items():
-            print("(%50s, %5s) <--> (%50s, %5s)" % (c1 + c2))
-        print("")
+            print("  (%50s, %5s) <--> (%50s, %5s)" % (c1 + c2))
 
     def show_pin_mapping(self) -> None:
         """If a pin mapping is defined, print only mapped pins"""
         try:
             for pinname, (st, pin) in self.pin_mapping.items():
-                print("%5s --> (%50s, %5s)" % (pinname, st, pin))
+                print("  %5s --> (%50s, %5s)" % (pinname, st, pin))
         except AttributeError:
-            print("No mapping defined")
+            print("  No mapping defined")
 
     def map_pins(self, pin_mapping: Dict[str, Tuple[Structure, str]]):
         """Add mapping of pins
@@ -435,7 +435,7 @@ class Solver:
         Args:
             source_pin (str): pin of model to be connected
             target_pin (tuple): tuple (structure (Structure) , pin (str)) existing structure and pin to which to connect pins of model
-            param_mapping (dict): dictionary of {oldname (str) : newname (str)} containning the mapping of the names of the parameters
+            param_mapping (dict): dictionary of {oldname (str) : newname (str)} containing the mapping of the names of the parameters
 
         Returns:
             Structure: the Structure instance created from the Solver
@@ -645,7 +645,9 @@ class Solver:
         self.param_dic.update(update_dic)
         self.param_dic.update(start_dic)
 
-    def add_param(self, old_name: str, func: Callable, default: Dict[str, Any] = None) -> None:
+    def add_param(
+        self, old_name: str, func: Callable, default: Dict[str, Any] = None
+    ) -> None:
         """Define a paramter of the solver in term of new paramter(s)
 
         Args:
@@ -688,11 +690,51 @@ class Solver:
                     not_empty.append(st)
         return len(not_empty) == 0
 
+    def split(self) -> List:
+        """Identify sub-circuits inside the solver and splits them into multiple solvers
+
+        Returns:
+            list: list of the solvers containing the sub_circuits
+        """
+        sets = []
+        for st in self.structures:
+            connected_sets = []
+            for _set in sets:
+                for target in st.connected_to:
+                    if target in _set:
+                        _set.add(st)
+                        connected_sets.append(_set)
+            for _set in connected_sets:
+                sets.remove(_set)
+            if len(connected_sets) == 0:
+                sets.append(set([st] + st.connected_to))
+            else:
+                sets.append(set().union(*connected_sets))
+        solvers = []
+        for i, _set in enumerate(sets):
+            connections = {
+                t1: t2 for t1, t2 in self.connections.items() if t1[0] in _set
+            }
+            mapping = {
+                name: pin for name, pin in self.pin_mapping.items() if pin[0] in _set
+            }
+            solvers.append(
+                Solver(
+                    name=f"{self.name}_{i}",
+                    structures=list(_set),
+                    connections=connections,
+                    pin_mapping=mapping,
+                    param_mapping=self.param_mapping,
+                    param_dic=self.param_dic,
+                )
+            )
+        return solvers
+
 
 class Pin:
     """Helper class for more user friendly pin mapping (same as Nazca sintax"""
 
-    def __init__(self, name:str, pin: Tuple[Structure, str]=None):
+    def __init__(self, name: str, pin: Tuple[Structure, str] = None):
         """
 
         Args:
@@ -702,7 +744,7 @@ class Pin:
         self.name = name
         self.pin = None
 
-    def put(self, pin: Tuple[Structure, str]=None):
+    def put(self, pin: Tuple[Structure, str] = None):
         """Maps the pins in the tuple to self.name
 
         Args:
@@ -738,7 +780,9 @@ def connect(tup1: Tuple[Structure, str], tup2: Tuple[Structure, str]) -> None:
     sol_list[-1].connect(tup1[0], tup1[1], tup2[0], tup2[1])
 
 
-def connect_all(structure1: Structure, pin1: str, structure2:Structure, pin2:str) -> None:
+def connect_all(
+    structure1: Structure, pin1: str, structure2: Structure, pin2: str
+) -> None:
     """Connect in the active solver the two structures using all the pins with the matching basename
 
     Args:
@@ -753,7 +797,7 @@ def connect_all(structure1: Structure, pin1: str, structure2:Structure, pin2:str
     sol_list[-1].connect_all(structure1, pin1, structure2, pin2)
 
 
-def add_param(old_name: str, func: Callable, default: Dict[str, Any]=None) -> None:
+def add_param(old_name: str, func: Callable, default: Dict[str, Any] = None) -> None:
     """Define a paramter of the active solver in term of new paramter(s)
 
     Args:
@@ -808,7 +852,7 @@ def solve(**kwargs) -> SolvedModel:
     return sol_list[-1].solve(**kwargs)
 
 
-def add_structure_to_monitors(structure:Structure, name: str="Monitor") -> None:
+def add_structure_to_monitors(structure: Structure, name: str = "Monitor") -> None:
     """Add structure to the ones to be monitored for internal modes. It effects the active solver
 
     Args:

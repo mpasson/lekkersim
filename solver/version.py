@@ -8,7 +8,7 @@ try:
     __version__ = (
         subprocess.check_output(["git", "describe"], cwd=mdir).strip().decode("utf-8")
         + "-dev"
-        )
+    )
     git_clean = (
         subprocess.check_output(["git", "diff-index", "HEAD"], cwd=mdir)
         .strip()
@@ -16,5 +16,5 @@ try:
         == ""
     )
 except subprocess.CalledProcessError:
-    __version__ = 'No version available'
+    __version__ = "No version available"
     git_clean = True
