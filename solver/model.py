@@ -12,6 +12,7 @@
 """File containing the model calls and related methods
 """
 from __future__ import annotations
+import functools
 from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING, Union
 
 import matplotlib.axes
@@ -1459,8 +1460,8 @@ class Model_from_NazcaCM(Model):
                         else "_".join([target.basename, modeo])
                     )
                     tup = (pin_in, pin_out)
-                    self.CM[tup] = self.__class__.wraps(
-                        self.__class__.filter_eval(CM, allowed[mode])
+                    self.CM[tup] = (
+                        self.wraps(functools.partial(CM, **allowed[mode]))
                         if callable(CM)
                         else CM
                     )
@@ -1542,25 +1543,54 @@ class Model_from_NazcaCM(Model):
                         else "_".join([target.basename, modeo])
                     )
                     tup = (pin_in, pin_out)
-                    OMt = (
-                        self.__class__.filter_eval(OM, allowed[mode])
-                        if callable(OM)
-                        else OM
-                    )
-                    AMt = (
-                        self.__class__.filter_eval(AM, allowed[mode])
-                        if callable(AM)
-                        else AM
-                    )
+                    OMt = functools.partial(OM, **allowed[mode]) if callable(OM) else OM
+                    AMt = functools.partial(AM, **allowed[mode]) if callable(AM) else AM
                     self.CM[tup] = self.__class__.generator(OMt, AMt)
 
     @staticmethod
-    def generator(OM: Callable[..., float], AM: Callable[..., float]) -> Callable:
+    def call_partial(func: functools.partial, *args, **kwargs) -> Any:
+        """Evaluate a partial function with args ad kwargs provided and the args and kwargs saved at partial creation
+
+        If any of the keywork arguments is not supported by the original function (the one used to create the partual),
+        the kwyword is ignored and a warning is logged.
+
+        Args:
+            func (functools.partial): partial function to be used
+            args: positional arguments
+            kwargs: keyword arguments
+
+        Returns:
+            Any: whatever the function returns after the unaccepted keyworkd arguments are removed.
+        """
+        while True:
+            to_remove = getattr(func, "to_remove", [])
+            for key in to_remove:
+                func.keywords.pop(key, None)
+                kwargs.pop(key, None)
+            try:
+                return func(*args, **kwargs)
+            except TypeError as e:
+                if "got an unexpected keyword argument" not in e.args[0]:
+                    raise e
+                else:
+                    var = e.args[0].split("'")[-2]
+                try:
+                    func.to_remove.append(var)
+                except AttributeError:
+                    func.to_remove = [var]
+                logger.warning(
+                    f'Function "{func.func.__name__}" in  file "{func.func.__code__.co_filename.split("/")[-1]}", line {func.func.__code__.co_firstlineno} does not support argument "{var}", so it is ignored. To remove this warning, add **kwargs to the function definition.'
+                )
+
+    @staticmethod
+    def generator(
+        OM: functools.partial, AM: functools.partial
+    ) -> Callable[..., complex]:
         """Static method for generating the function creating the scattering matrix element from the compact models
 
         Args:
-            OM (function): Compact model for Optical Length
-            AM (function): Compact model for Loss
+            OM (functools.partial): Compact model for Optical Length
+            AM (functools.partial): Compact model for Loss
 
         Returns:
             function: function to crete the element of the scattering matrix.
@@ -1569,22 +1599,26 @@ class Model_from_NazcaCM(Model):
 
         def TOT(**kwargs) -> complex:
             OML = (
-                Model_from_NazcaCM.filter_eval(OM, kwargs) if callable(OM) else copy(OM)
+                Model_from_NazcaCM.call_partial(OM, **kwargs)
+                if callable(OM)
+                else copy(OM)
             )
             AML = (
-                Model_from_NazcaCM.filter_eval(AM, kwargs) if callable(AM) else copy(AM)
+                Model_from_NazcaCM.call_partial(AM, **kwargs)
+                if callable(AM)
+                else copy(AM)
             )
             return 10.0 ** (0.05 * AML) * np.exp(2.0j * np.pi / kwargs.get("wl") * OML)
 
         return TOT
 
     @staticmethod
-    def wraps(func: Callable[..., complex]) -> Callable[..., complex]:
+    def wraps(func: functools.partial) -> Callable[..., complex]:
         """Static method for generating the function creating the scattering matrix element from the amplitude
         compact model.
 
         Args:
-            func (function): Compact model for Amplitude
+            func (functools.partial): Compact model for Amplitude
 
         Returns:
             function: function to create the element of the scattering matrix.
@@ -1592,42 +1626,13 @@ class Model_from_NazcaCM(Model):
 
         def wrapper(**kwargs):
             Inner = (
-                Model_from_NazcaCM.filter_eval(func, kwargs)
+                Model_from_NazcaCM.call_partial(func, **kwargs)
                 if callable(func)
                 else copy(func)
             )
             return Inner
 
         return wrapper
-
-    @staticmethod
-    def filter_eval(func: Callable, kwargs: Dict[str, Any]) -> Any:
-        """Static method for evaluating a function filtering the keywork arguments.
-
-        Allow to call a function with as input a dictionary bigger than the argument the function can accept.
-        If this happen, however, a warning is logged.
-
-        Args:
-            func (function): function to be called.
-            kwargs (dict): dictionary containing the argument to be passed to func
-
-        Returns:
-            any: result of calling func with the right parameters
-
-        """
-        intargs = kwargs.copy()
-        argspec = inspect.getfullargspec(func)
-        if not argspec.varkw:
-            to_pop = []
-            for key in intargs:
-                if key not in argspec.args:
-                    to_pop.append(key)
-            for key in to_pop:
-                intargs.pop(key)
-                logger.warning(
-                    f'Function "{func.__name__}" in  file "{func.__code__.co_filename.split("/")[-1]}", line {func.__code__.co_firstlineno} does not support argument "{key}", so it is ignored. To remove this warning, add **kwargs to the function definition.'
-                )
-        return func(**intargs)
 
     @classmethod
     def check_init(

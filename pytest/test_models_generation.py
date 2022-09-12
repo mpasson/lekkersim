@@ -74,11 +74,8 @@ def test_ampl_lev2():
         nd.Pin("a0").put(0.0, 0.0, 180.0)
         nd.Pin("b0").put(0.0, 0.0, 0.0)
 
-        def MOD(pol=0, mode=0):
-            def InMod(wl):
-                return 1.0 - 0.1 * pol - 0.1 * wl
-
-            return InMod
+        def MOD(wl, pol=0, mode=0):
+            return 1.0 - 0.1 * pol - 0.1 * wl
 
         nd.connect_path(T.pin["a0"], T.pin["b0"], MOD, "ampl")
 
@@ -218,11 +215,8 @@ def test_optloss_lev2():
         nd.Pin("b0").put(0.0, 0.0, 0.0)
         nd.connect_path(T.pin["a0"], T.pin["b0"], 1.55, "optlen")
 
-        def optloss(pol=0, mode=0):
-            def innerloss(wl):
-                return -3.0 - pol - wl
-
-            return innerloss
+        def optloss(wl, pol=0, mode=0):
+            return -3.0 - pol - wl
 
         nd.connect_path(T.pin["a0"], T.pin["b0"], optloss, "optloss")
 
@@ -286,11 +280,8 @@ def test_optlen_lev2():
         nd.Pin("a0").put(0.0, 0.0, 180.0)
         nd.Pin("b0").put(0.0, 0.0, 0.0)
 
-        def optlen(pol=0, mode=0):
-            def len(wl):
-                return 1.55 + 0.5 * pol - wl
-
-            return len
+        def optlen(wl, pol=0, mode=0):
+            return 1.55 + 0.5 * pol - wl
 
         nd.connect_path(T.pin["a0"], T.pin["b0"], optlen, "optlen")
         nd.connect_path(T.pin["a0"], T.pin["b0"], -3.0, "optloss")
