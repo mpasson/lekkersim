@@ -28,7 +28,6 @@ from copy import copy
 import pandas as pd
 from scipy.interpolate import interp1d
 import io
-import inspect
 from scipy.integrate import quad_vec
 import matplotlib.pyplot as plt
 
@@ -57,6 +56,14 @@ def diag_blocks(array_list: List[np.ndarray]) -> np.ndarray:
         M[m : m + n, m : m + n] = A
         m += n
     return M
+
+
+class ProtectedPartial(functools.partial):
+    """Like partial, but keywords provided at creation cannot be overwritten al call time"""
+
+    def __call__(self, /, *args, **keywords):
+        keywords = {**keywords, **self.keywords}
+        return self.func(*self.args, *args, **keywords)
 
 
 class Model:
@@ -1461,7 +1468,7 @@ class Model_from_NazcaCM(Model):
                     )
                     tup = (pin_in, pin_out)
                     self.CM[tup] = (
-                        self.wraps(functools.partial(CM, **allowed[mode]))
+                        self.wraps(ProtectedPartial(CM, **allowed[mode]))
                         if callable(CM)
                         else CM
                     )
@@ -1543,16 +1550,16 @@ class Model_from_NazcaCM(Model):
                         else "_".join([target.basename, modeo])
                     )
                     tup = (pin_in, pin_out)
-                    OMt = functools.partial(OM, **allowed[mode]) if callable(OM) else OM
-                    AMt = functools.partial(AM, **allowed[mode]) if callable(AM) else AM
+                    OMt = ProtectedPartial(OM, **allowed[mode]) if callable(OM) else OM
+                    AMt = ProtectedPartial(AM, **allowed[mode]) if callable(AM) else AM
                     self.CM[tup] = self.__class__.generator(OMt, AMt)
 
     @staticmethod
     def call_partial(func: functools.partial, *args, **kwargs) -> Any:
         """Evaluate a partial function with args ad kwargs provided and the args and kwargs saved at partial creation
 
-        If any of the keywork arguments is not supported by the original function (the one used to create the partual),
-        the kwyword is ignored and a warning is logged.
+        If any of the keywork arguments is not supported by the original function (the one used to create the partial),
+        the keyword is ignored and a warning is logged.
 
         Args:
             func (functools.partial): partial function to be used

@@ -64,7 +64,7 @@ def test_ampl_lev1():
             ]
         ]
     )
-    assert np.allclose(S.solve(wl=1.5).S, ref)
+    assert np.allclose(S.solve(wl=1.5, pol=5).S, ref)
 
 
 @pt.mark.skipif(skip, reason=reason)
