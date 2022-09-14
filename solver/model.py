@@ -1585,8 +1585,16 @@ class Model_from_NazcaCM(Model):
                     func.to_remove.append(var)
                 except AttributeError:
                     func.to_remove = [var]
+                obj = func
+                while True:
+                    try:
+                        name = obj.__name__
+                        break
+                    except AttributeError:
+                        obj = obj.func
+                code = obj.__code__
                 logger.warning(
-                    f'Function "{func.func.__name__}" in  file "{func.func.__code__.co_filename.split("/")[-1]}", line {func.func.__code__.co_firstlineno} does not support argument "{var}", so it is ignored. To remove this warning, add **kwargs to the function definition.'
+                    f'Function "{name}" in  file "{code.co_filename.split("/")[-1]}", line {code.co_firstlineno} does not support argument "{var}", so it is ignored. To remove this warning, add **kwargs to the function definition.'
                 )
 
     @staticmethod
