@@ -10,13 +10,22 @@ It features include:
 
 ## Installation
 After cloning, just add teh repository folder to the PYTHONPATH. 
-The package depends on the following python packages:
-- NumPy (tested on 1.18.2)
-- SciPy (tested on 1.4.1)
-- Pandas (tested on 1.0.3)
+
+Requirements are in the attached [requirements.txt](requirements.txt) file. They can be installed by runnig:
+    
+    pip install -r requirements.txt
 
 ## Documentation
 The full documentation of the software is available [Here](https://marco_passoni.gitlab.io/gensol/index.html)
 
+### Building documentation yourself
+You can build your own local documentation by running the command [localdocs](localdocs). In this case, you need the following extra packages:
+ - Python packages:
+   - ```sphinx```
+   - ```sphinx-rtd-theme```
+   - ```nbsphinx```
+   - ```notebook```
+ - System packages:
+   - ```pandoc```
 
 
