@@ -13,23 +13,26 @@
 """
 from __future__ import annotations
 import functools
-from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING, Union
+from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING, Union, Optional, Set
 
-import matplotlib.axes
+from copy import deepcopy
+from copy import copy
+import yaml
+import io
+
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.axes
+import pandas as pd
+from scipy.interpolate import interp1d, LinearNDInterpolator
+from scipy.integrate import quad_vec
+
 import solver.structure
 from solver import sol_list
 from solver import logger
 import solver
 import solver.log
 from solver.utils import line, GaussianBeam
-from copy import deepcopy
-from copy import copy
-import pandas as pd
-from scipy.interpolate import interp1d
-import io
-from scipy.integrate import quad_vec
-import matplotlib.pyplot as plt
 
 
 if TYPE_CHECKING:
@@ -1368,6 +1371,165 @@ class CWA(Model):
         self.S[: self.NW, self.NW :] = S
         self.S[self.NW :, : self.NW] = S
         return self.S
+
+
+class Model_from_InPulse(Model):
+    """Class for model from InPulse S-Matrix RAW DATA file"""
+
+    def __init__(
+        self,
+        file: str,
+        parameter_name_mapping: Optional[Dict[str, str]] = None,
+        mode_mapping: Optional[Dict[str, str]] = None,
+    ) -> None:
+        """
+        Initialize the model
+
+        Args:
+            file (str): Path of the file to be loaded.
+            parameter_name_mapping (dict[str,str]): mapping of the parameter name between the file and the model.
+                The format is {'<file-parameter-name>':'<model-parameter-name>'}
+                Parameters not provided retain theur original name.
+                Example
+                    Wavelength is usually called 'wl' in gensol, but it may be 'wavelength in the file'.
+                    To uniform the model to the other provide the mapping {"wavelength":"wl"}
+            mode_mapping (dict[str,str]): mapping between the mode names in the file and the model.
+                The format is {'<file-mode-name>':'<model-mode-name>'}
+                If nothing is provided, all the modes are loaded with their original name.
+                This will create multiple pins in the model with name '<pin-name>_<mode-name>'
+                If a dictionary is provided, only the mapped modes are loaded and the names are changed accordingly.
+                If a mode is mapped to the empty string ("" or ''), the result port name is just <pin-name>
+
+        Returns:
+            None
+        """
+        self._file = file
+        parameter_name_mapping = (
+            {} if parameter_name_mapping is None else parameter_name_mapping
+        )
+        pin_dic, param_dic = self._process_file()
+        self.parameters_names = [
+            parameter_name_mapping.get(par, par) for par in self.parameters_names
+        ]
+        if mode_mapping is not None:
+            pin_mapping = {}
+            for pin in pin_dic:
+                name, mode = pin.split("_")
+                new_mode = mode_mapping.get(mode)
+                if new_mode is not None:
+                    pin_mapping[pin] = name if new_mode == "" else f"{name}_{new_mode}"
+
+            pin_dic = {target: i for i, (pin, target) in enumerate(pin_mapping.items())}
+
+            new_map_columns = {}
+            for (pin_in, pin_out), column in self.map_columns.items():
+                new_in = pin_mapping.get(pin_in)
+                new_out = pin_mapping.get(pin_out)
+                if new_in is not None and new_out is not None:
+                    new_map_columns[(new_in, new_out)] = column
+            self.map_columns = new_map_columns
+
+        super().__init__(pin_dic=pin_dic, param_dic=param_dic)
+
+    def __get_pin_dic(self, port_modes: Dict) -> Dict[str, int]:
+        """
+        Creates the pin dictionary of the model from the file
+
+        Args:
+            port_modes (dict): The nested dictionary containing the "port_modes" part of the metadata
+
+        Returns:
+            dict: pin dictionary in the form {<pin-name> : <pin-number>}
+        """
+        pin_dic = {}
+        _i = 0
+        for pin, modes in port_modes.items():
+            for mode in modes:
+                pin_dic[f"{pin}_{mode}"] = _i
+                _i += 1
+        return pin_dic
+
+    def __get_pin_map(
+        self, smatrix_map: Dict
+    ) -> Tuple[Set[str], Dict[Tuple[str, str], str]]:
+        """
+        Retrieve the mapping between the ports and the columns in the data section.
+
+        Args:
+            smatrix_map (dict): The nested dictionary containing the "smatrix_map" part of the metadata
+
+        Returns:
+            set: set of the columns names
+            map_columns: map between pairs of pins and the related column
+        """
+        map_columns = {}
+        columns = set()
+        for pin, target in smatrix_map.items():
+            for pin_target, modes in target.items():
+                for modein, modes_out in modes.items():
+                    for modeout, column in modes_out.items():
+                        if column:
+                            map_columns[
+                                (f"{pin}_{modein}", f"{pin_target}_{modeout}")
+                            ] = column
+                            columns.add(column)
+        return columns, map_columns
+
+    def _process_file(self) -> Tuple[Dict, Dict]:
+        """
+        Load the data from the file and proccess the content
+
+        Args;
+            None
+
+        Returns:
+            dict: pin dictionry of the model
+            dict: parameters dictionary of the models
+        """
+        with open(self._file, "r") as file:
+            text = file.read()
+        metadata, data = text.split("---")
+        metadata = metadata.replace("\t", "    ")
+        metadata = yaml.safe_load(metadata)
+
+        pin_dic = self.__get_pin_dic(metadata["port_modes"])
+        columns, self.map_columns = self.__get_pin_map(metadata["smatrix_map"])
+
+        param_dic = {
+            name: parameter_info["mean"]
+            for name, parameter_info in metadata.get("csm_parameters", {}).items()
+        }
+
+        data = io.StringIO(data)
+        data = pd.read_csv(data)
+        self.parameters_names = [col for col in data.columns if ":" not in col]
+        parameters_values = data[self.parameters_names].values
+        self.functions_columns = {}
+        for column in columns:
+            ampl = np.asarray(data[f"{column}:abs2"].values)
+            phase = np.asarray(data[f"{column}:phase"].values)
+            amplitude = np.sqrt(ampl) * np.exp(1.0j * phase)
+            self.functions_columns[column] = LinearNDInterpolator(
+                parameters_values, amplitude
+            )
+
+        return pin_dic, param_dic
+
+    def create_S(self) -> np.ndarray:
+        """Returns the scattering matrix of the model"""
+        S = np.zeros((self.N, self.N), dtype=complex)
+        parameters_values = tuple(
+            self.param_dic[parameter] for parameter in self.parameters_names
+        )
+        amplitudes = {
+            col: func(*parameters_values)
+            for col, func in self.functions_columns.items()
+        }
+
+        for (pin_in, pin_out), column in self.map_columns.items():
+            S[self.pin_dic[pin_in], self.pin_dic[pin_out]] = amplitudes[column]
+        self.S = S
+        return S
 
 
 class Model_from_NazcaCM(Model):
