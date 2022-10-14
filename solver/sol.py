@@ -40,11 +40,11 @@ class Solver:
 
     def __init__(
         self,
+        name: str = None,
         structures: List[Structure] = None,
         connections: Dict[Tuple[Structure, str], Tuple[Structure, str]] = None,
         pin_mapping: Dict[str, Tuple[Structure, str]] = None,
         param_dic: Dict[str, Any] = None,
-        name: str = None,
         param_mapping: Dict[str, str] = None,
     ) -> None:
         """Creator"""
@@ -402,7 +402,7 @@ class Solver:
 
         for st in self.structures:
             st.reset()
-        mod = self.total.get_model(self.pin_mapping)
+        mod = self.total.get_model(self.pin_mapping, name=self.name)
         mod.solved_params = deepcopy(self.param_dic)
         if func is not None:
             mod.set_intermediate(func, monitor_mapping)

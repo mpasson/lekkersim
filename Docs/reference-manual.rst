@@ -61,6 +61,8 @@ Methods
     SolvedModel.get_full_output
     SolvedModel.get_monitor
     SolvedModel.set_intermediate
+    SolvedModel.get_full_data
+    SolvedModel.export_InPulse
 
 
 
@@ -70,23 +72,26 @@ Functional Models
 .. autosummary::
    :toctree: generated/
 
-   Waveguide
-   UserWaveguide
-   BeamSplitter
-   Splitter1x2
-   Splitter1x2Gen
-   PhaseShifter
-   PushPullPhaseShifter
-   PolRot
-   Attenuator
-   LinearAttenuator
-   Mirror
-   PerfectMirror
-   FPR
-   FPR_NxM
-   FPRGaussian
-   TH_PhaseShifter
-   Model_from_NazcaCM
+    Attenuator
+    BeamSplitter
+    FPR
+    FPRGaussian
+    FPR_NxM
+    LinearAttenuator
+    LinearNDInterpolator
+    Mirror
+    Model_from_InPulse
+    Model_from_NazcaCM
+    PerfectMirror
+    PhaseShifter
+    PolRot
+    ProtectedPartial
+    PushPullPhaseShifter
+    Splitter1x2
+    Splitter1x2Gen
+    TH_PhaseShifter
+    UserWaveguide
+    Waveguide
 
 Solver
 =============

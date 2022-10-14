@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, Optional
 
 import numpy as np
 import pandas
@@ -564,11 +564,16 @@ class Structure:
 
         return solve_inter, st.in_pins
 
-    def get_model(self, pin_mapping: Dict[str, Tuple[Structure, str]] = None):
+    def get_model(
+        self,
+        pin_mapping: Optional[Dict[str, Tuple[Structure, str]]] = None,
+        name: Optional[str] = None,
+    ):
         """Retunrn model corresponding to structure
 
         Args:
             pin_mapping (dict) : dictionary contain the information of pin mapping {pin_name (str) : (structure (Structure), pin (str))}
+            name (str): name to assign at the solved model
 
         Returns:
             SolvedModel : model object containing the scattering matrix od the structure
@@ -586,7 +591,10 @@ class Structure:
         #        Smod[:,i,j]=self.Smatrix[:,self.pin_dic[pin_mapping[pin_name]],self.pin_dic[pin_mapping[pin_namej]]]
         pin_dic = {name: self.pin_dic[pin] for name, pin in pin_mapping.items()}
         MOD = mod.SolvedModel(
-            pin_dic=pin_dic, param_dic=self.param_dic, Smatrix=self.Smatrix
+            pin_dic=pin_dic,
+            param_dic=self.param_dic,
+            Smatrix=self.Smatrix,
+            name=name,
         )
         return MOD
 

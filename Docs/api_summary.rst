@@ -41,22 +41,25 @@ Classes and Methods for building a circuit:
 .. rubric:: Available Models
 .. autosummary::
 
-   Waveguide
-   UserWaveguide
-   BeamSplitter
-   Splitter1x2
-   Splitter1x2Gen
-   PhaseShifter
-   PushPullPhaseShifter
-   PolRot
-   Attenuator
-   LinearAttenuator
-   Mirror
-   PerfectMirror
-   FPR
-   FPR_NxM
-   FPRGaussian
-   TH_PhaseShifter
+    Attenuator
+    BeamSplitter
+    FPR
+    FPRGaussian
+    FPR_NxM
+    LinearAttenuator
+    LinearNDInterpolator
+    Mirror
+    Model_from_NazcaCM
+    PerfectMirror
+    PhaseShifter
+    PolRot
+    ProtectedPartial
+    PushPullPhaseShifter
+    Splitter1x2
+    Splitter1x2Gen
+    TH_PhaseShifter
+    UserWaveguide
+    Waveguide
 
 Circuit Simulation
 ===================
@@ -88,10 +91,16 @@ Calsses and Methods for extraction of the data after the simulation is run:
     
     SolvedModel.get_data
     SolvedModel.get_full_output
-    
+    SolvedModel.get_full_data
+
 .. rubric:: Data from monitors
 .. autosummary::
     
     SolvedModel.get_monitor
 
-
+Export and import of models
+==============================
+.. autosummary::
+    
+    Model_from_InPulse
+    SolvedModel.export_InPulse

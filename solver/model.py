@@ -19,6 +19,7 @@ from copy import deepcopy
 from copy import copy
 import yaml
 import io
+import datetime
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -359,7 +360,10 @@ class Model:
             self.param_dic.update(up_dic)
             S_list.append(self.create_S())
         return SolvedModel(
-            pin_dic=self.pin_dic, param_dic=kargs, Smatrix=np.array(S_list)
+            pin_dic=self.pin_dic,
+            param_dic=kargs,
+            Smatrix=np.array(S_list),
+            name=type(self).__name__,
         )
 
     def show_free_pins(self) -> None:
@@ -419,10 +423,15 @@ class Model:
             try:
                 pinname, modename = _pin.split("_")
             except ValueError:
-                pinname, modename = pin, ""
+                pinname, modename = _pin, ""
             if pinname == pin:
                 li.append((pinname, modename))
         return li
+
+    def get_pin_basenames(self) -> List[str]:
+        """Returns a list of the basenames of the pins"""
+        pin_basenamens = set([pinname.split("_")[0] for pinname in self.pin_dic])
+        return list(pin_basenamens)
 
     def __str__(self):
         """Formatter function for printing"""
@@ -437,11 +446,12 @@ class SolvedModel(Model):
 
     def __init__(
         self,
-        pin_dic: Dict[str, int] = None,
-        param_dic: Dict[str, Any] = None,
-        Smatrix: np.ndarray = None,
-        int_func: Callable = None,
-        monitor_mapping: Dict[str, Tuple[solver.Structure, str]] = None,
+        pin_dic: Optional[Dict[str, int]] = None,
+        param_dic: Optional[Dict[str, Any]] = None,
+        Smatrix: Optional[np.ndarray] = None,
+        int_func: Optional[Callable] = None,
+        monitor_mapping: Optional[Dict[str, Tuple[solver.Structure, str]]] = None,
+        name: Optional[str] = None,
     ) -> None:
         """Initialize the model
 
@@ -452,6 +462,7 @@ class SolvedModel(Model):
             Smatrix (ndarray) : Fixed S_matrix of the model
             int_func (Callable): function for returning the modal coefficient in between two part of the scattering matrix
             monitor_mapping (Dict): Dictionry mapping the name of the monitor to the connected pin
+            name (str): name of the solved model
 
         """
         super().__init__(pin_dic=pin_dic, param_dic=param_dic, Smatrix=Smatrix)
@@ -459,6 +470,7 @@ class SolvedModel(Model):
         self.ns = np.shape(Smatrix)[0]
         self.int_func = int_func
         self.monitor_mapping = {} if monitor_mapping is None else monitor_mapping
+        self.name = name
 
     def set_intermediate(
         self,
@@ -556,6 +568,138 @@ class SolvedModel(Model):
             params[pin] = np.abs(output[:, i]) ** 2.0 if power else output[:, i]
         pan = pd.DataFrame.from_dict(params)
         return pan
+
+    def get_full_data(self) -> pd.DataFrame:
+        """Returns the scattering matrix for all the solved parametes in form of padas DataFrame"""
+        params = {}
+        if self.ns == 1:
+            params = deepcopy(self.solved_params)
+        else:
+            for name, values in self.solved_params.items():
+                if len(values) == 1:
+                    params[name] = np.array([values[0] for i in range(self.ns)])
+                elif len(values) == self.ns:
+                    params[name] = values
+                else:
+                    raise Exception("Not able to convert to pandas")
+        for p1, i1 in self.pin_dic.items():
+            for p2, i2 in self.pin_dic.items():
+                params[(p1, p2)] = self.S[:, i1, i2]
+        return pd.DataFrame(params)
+
+    def _build_metadata(
+        self,
+        parameter_name_mapping: Optional[Dict[str, str]] = None,
+        units: Optional[Dict[str, str]] = None,
+    ) -> Dict:
+        """Builds the metadata dict for the InPulse scattering matrix export
+
+        Args:
+            parameter_name_mapping (dict): mapping between parameter name in the model and exported file.
+                The for of the dictionary is {<model-parameter-name>:<exported-parameter-name>}.
+                Not mapped parameter are exported with their origina name.
+            units (dict): Units of the exported parameters, in the form: {<exported-parameter-name>:<unit>}
+                For parameters with no units explicit map to None is advised.
+
+        Returns:
+            dict: nested dictionary of the metadata
+        """
+        metadata = {
+            "_schema": "InPulse S-Matrix RAW DATA",
+            "_schema_version": "1.0",
+            "_date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "_description": "Scattering matrix model exported from gensol",
+            "units": {
+                "abs2": None,
+                "phase": "rad",
+            },
+        }
+        parameter_name_mapping = (
+            {} if parameter_name_mapping is None else parameter_name_mapping
+        )
+        units = {} if units is None else units
+        solved_parameters_units = {
+            parameter_name_mapping.get(par, par): None for par in self.solved_params
+        }
+        for par in solved_parameters_units:
+            if par not in units:
+                logger.warning(
+                    f"Export to InPulse SM: parameter '{par}' has no unit. If None unit is correct, provide it explicitly."
+                )
+            else:
+                solved_parameters_units[par] = units[par]
+        metadata["units"].update(solved_parameters_units)
+        metadata["port_modes"] = {
+            name: [_[1] for _ in self.get_pin_modes(name)]
+            for name in self.get_pin_basenames()
+        }
+
+        metadata["smatrix_map"] = {
+            pinin: {
+                pinout: {
+                    modein[1]: {
+                        modeout[1]: f"{pinin}_{modein[1]}//{pinout}_{modeout[1]}"
+                        for modeout in self.get_pin_modes(pinout)
+                    }
+                    for modein in self.get_pin_modes(pinin)
+                }
+                for pinout in self.get_pin_basenames()
+            }
+            for pinin in self.get_pin_basenames()
+        }
+
+        return metadata
+
+    def _build_data(self) -> pd.DataFrame:
+        """Builds the dataframe used to export data to InPulse scattering matrix"""
+        full_data = self.get_full_data()
+        for column in full_data.columns:
+            if column in self.solved_params:
+                continue
+            col = full_data.pop(column)
+            fullin, fullout = column
+            fullin = fullin.split("_")
+            fullout = fullout.split("_")
+            (pinin, modein) = (fullin[0], "") if len(fullin) == 1 else fullin
+            (pinout, modeout) = (fullout[0], "") if len(fullout) == 1 else fullout
+            name = f"{pinin}_{modein}//{pinout}_{modeout}"
+            full_data[f"{name}:abs2"] = np.abs(col) ** 2.0
+            full_data[f"{name}:phase"] = np.angle(col)
+        return full_data
+
+    def export_InPulse(
+        self,
+        filename: str = "exported_model.csvy",
+        parameter_name_mapping: Optional[Dict[str, str]] = None,
+        units: Optional[Dict[str, str]] = None,
+    ) -> str:
+        """Export scattering matrix in InPulse format
+
+        Args:
+            filename (str): name of the file to export. Default to exported_model.csvy
+            parameter_name_mapping (dict): mapping between parameter name in the model and exported file.
+                The for of the dictionary is {<model-parameter-name>:<exported-parameter-name>}.
+                Not mapped parameter are exported with their origina name.
+            units (dict): Units of the exported parameters, in the form: {<exported-parameter-name>:<unit>}
+                For parameters with no units explicit map to None is advised.
+
+        Returs:
+            str: string representing the scattering matrix in InPulse
+        """
+        metadata = self._build_metadata(
+            units=units, parameter_name_mapping=parameter_name_mapping
+        )
+        metadata = yaml.dump(metadata)
+
+        data = self._build_data()
+        if parameter_name_mapping is not None:
+            data.rename(columns=parameter_name_mapping, inplace=True)
+        data = data.to_csv(index=False)
+
+        to_export = f"{metadata}---\n{data}"
+        with open(filename, "w") as f:
+            f.write(to_export)
+        return to_export
 
     def get_monitor(
         self, input_dic: Dict[str, float], power: bool = True
@@ -1021,7 +1165,7 @@ class Ring(Model):
         wl = self.param_dic["wl"]
         n = self.n
         t = self.t
-        ex = np.exp(-4.0j * np.pi ** 2.0 / wl * n * self.R)
+        ex = np.exp(-4.0j * np.pi**2.0 / wl * n * self.R)
         b = (-self.alpha + t * ex) / (-self.alpha * t + ex)
         self.S = np.zeros((self.N, self.N), complex)
         self.S[0, 1] = b
@@ -1186,7 +1330,7 @@ class FPR(Model):
         T1, T2 = np.meshgrid(t1, t2, indexing="ij")
         DY = R * np.sin(T2) - Ri * np.sin(T1)
         DX = R * np.cos(T2) - Ri * (1.0 - np.cos(T1))
-        self.DR = np.sqrt(DY ** 2.0 + DX ** 2.0)
+        self.DR = np.sqrt(DY**2.0 + DX**2.0)
         self.S = np.zeros((n + m, n + m), dtype=complex)
 
     def create_S(self) -> np.ndarray:
@@ -1391,7 +1535,7 @@ class Model_from_InPulse(Model):
                 The format is {'<file-parameter-name>':'<model-parameter-name>'}
                 Parameters not provided retain theur original name.
                 Example
-                    Wavelength is usually called 'wl' in gensol, but it may be 'wavelength in the file'.
+                    Wavelength is usually called 'wl' in gensol, but it may be 'wavelength' in the file.
                     To uniform the model to the other provide the mapping {"wavelength":"wl"}
             mode_mapping (dict[str,str]): mapping between the mode names in the file and the model.
                 The format is {'<file-mode-name>':'<model-mode-name>'}
@@ -1414,10 +1558,13 @@ class Model_from_InPulse(Model):
         if mode_mapping is not None:
             pin_mapping = {}
             for pin in pin_dic:
-                name, mode = pin.split("_")
-                new_mode = mode_mapping.get(mode)
-                if new_mode is not None:
-                    pin_mapping[pin] = name if new_mode == "" else f"{name}_{new_mode}"
+                try:
+                    name, mode = pin.split("_")
+                except ValueError:
+                    name, mode = pin, ""
+                mode = mode_mapping.get(mode)
+                if mode is not None:
+                    pin_mapping[pin] = name if mode == "" else f"{name}_{mode}"
 
             pin_dic = {target: i for i, (pin, target) in enumerate(pin_mapping.items())}
 
@@ -1428,6 +1575,11 @@ class Model_from_InPulse(Model):
                 if new_in is not None and new_out is not None:
                     new_map_columns[(new_in, new_out)] = column
             self.map_columns = new_map_columns
+
+        if not pin_dic:
+            raise ValueError(
+                "Loaded model from InPulse has no pins. Hint: check mode mapping."
+            )
 
         super().__init__(pin_dic=pin_dic, param_dic=param_dic)
 
@@ -1445,7 +1597,8 @@ class Model_from_InPulse(Model):
         _i = 0
         for pin, modes in port_modes.items():
             for mode in modes:
-                pin_dic[f"{pin}_{mode}"] = _i
+                name = pin if mode == "" else f"{pin}_{mode}"
+                pin_dic[name] = _i
                 _i += 1
         return pin_dic
 
@@ -1469,9 +1622,13 @@ class Model_from_InPulse(Model):
                 for modein, modes_out in modes.items():
                     for modeout, column in modes_out.items():
                         if column:
-                            map_columns[
-                                (f"{pin}_{modein}", f"{pin_target}_{modeout}")
-                            ] = column
+                            name1 = pin if modein == "" else f"{pin}_{modein}"
+                            name2 = (
+                                pin_target
+                                if modeout == ""
+                                else f"{pin_target}_{modeout}"
+                            )
+                            map_columns[(name1, name2)] = column
                             columns.add(column)
         return columns, map_columns
 
@@ -1509,9 +1666,14 @@ class Model_from_InPulse(Model):
             ampl = np.asarray(data[f"{column}:abs2"].values)
             phase = np.asarray(data[f"{column}:phase"].values)
             amplitude = np.sqrt(ampl) * np.exp(1.0j * phase)
-            self.functions_columns[column] = LinearNDInterpolator(
-                parameters_values, amplitude
-            )
+            if len(self.parameters_names) >= 2:
+                self.functions_columns[column] = LinearNDInterpolator(
+                    parameters_values, amplitude
+                )
+            else:
+                self.functions_columns[column] = interp1d(
+                    np.squeeze(parameters_values), amplitude
+                )
 
         return pin_dic, param_dic
 
