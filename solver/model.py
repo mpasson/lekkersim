@@ -244,8 +244,7 @@ class Model:
     def expand_mode(self, mode_list: List[str]):
         """This function expands the model by adding additional modes.
 
-        For each pin a number of pins equal the length of mode_list will be created. The pin names will be
-            "{pinname}_{modename}}".
+        For each pin a number of pins equal the length of mode_list will be created. The pin names will be "{pinname}_{modename}}".
         Each mode will have the same behavior.
 
         Args:
@@ -274,7 +273,7 @@ class Model:
         Args:
             input_dic (dict): dictionary {pin_name (str) : input_amplitude (complex)}.
                 Dictionary containing the complex amplitudes at each input port. Missing port are assumed
-                    with amplitude 0.0.
+                with amplitude 0.0.
             power (bool): If True, returned values are power transmissions. If False, complex amplitudes
                 are instead returned. Default is True.
 
@@ -1534,9 +1533,9 @@ class Model_from_InPulse(Model):
             parameter_name_mapping (dict[str,str]): mapping of the parameter name between the file and the model.
                 The format is {'<file-parameter-name>':'<model-parameter-name>'}
                 Parameters not provided retain theur original name.
-                Example
-                    Wavelength is usually called 'wl' in gensol, but it may be 'wavelength' in the file.
-                    To uniform the model to the other provide the mapping {"wavelength":"wl"}
+                Example:
+                Wavelength is usually called 'wl' in gensol, but it may be 'wavelength' in the file.
+                To uniform the model to the other provide the mapping {"wavelength":"wl"}
             mode_mapping (dict[str,str]): mapping between the mode names in the file and the model.
                 The format is {'<file-mode-name>':'<model-mode-name>'}
                 If nothing is provided, all the modes are loaded with their original name.
