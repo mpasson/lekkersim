@@ -21,6 +21,7 @@ It features include:
    :numbered:
 
    installation
+   how_it_works
 
 .. toctree::
    :maxdepth: 2
