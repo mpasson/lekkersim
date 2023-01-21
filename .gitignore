@@ -9,7 +9,7 @@ Docs/jupyter/.ipynb_checkpoints/
 jupyter/*.html
 tests
 .gitlab-ci.yml.back
-docs/
+docs-build/
 Docs/generated/
 pytest/.coverage
 pytest/htmlcov
