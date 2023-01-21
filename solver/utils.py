@@ -5,8 +5,18 @@ Created on Wed Mar 31 09:48:24 2021
 
 @author: marco
 """
+import functools
+
 import numpy as np
 import types
+
+
+class ProtectedPartial(functools.partial):
+    """Like partial, but keywords provided at creation cannot be overwritten al call time"""
+
+    def __call__(self, /, *args, **keywords):
+        keywords = {**keywords, **self.keywords}
+        return self.func(*self.args, *args, **keywords)
 
 
 def map_args(func, varsmap={}):

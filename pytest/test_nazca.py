@@ -4,23 +4,18 @@ import pytest as pt
 skip = False
 reason = ""
 
-try:
-    import solver as sv
-except ModuleNotFoundError:
-    skip = True
-    reason = "Missing solver"
+import solver as sv
 
 try:
     import nazca as nd
     from nazca import demofab as demo
 
-    nd.get_solver
 except ModuleNotFoundError:
     skip = True
     reason = "Missing Nazca"
 except AttributeError:
     skip = True
-    reason = "Wring branch of Nazca"
+    reason = "Wrong version of Nazca"
 
 
 @pt.fixture
@@ -35,17 +30,17 @@ def no_pol():
                     3.5
                     - 0.5 * pol
                     - 0.1 * mode
-                    - 0.5 / (1 + width ** 2)
-                    + 0.5 / wl ** 2.0
+                    - 0.5 / (1 + width**2)
+                    + 0.5 / wl**2.0
                 )
             else:
                 return (
                     3.5
                     - 0.5 * pol
                     - 0.1 * mode
-                    - 0.5 / (1 + width ** 2)
+                    - 0.5 / (1 + width**2)
                     + 1.0 / (0.2 * radius)
-                    + 0.5 / wl ** 2.0
+                    + 0.5 / wl**2.0
                 )
 
     xs = nd.add_xsection("Shallow")
@@ -67,17 +62,17 @@ def two_pol():
                     3.5
                     - 0.5 * pol
                     - 0.1 * mode
-                    - 0.5 / (1 + width ** 2)
-                    + 0.5 / wl ** 2.0
+                    - 0.5 / (1 + width**2)
+                    + 0.5 / wl**2.0
                 )
             else:
                 return (
                     3.5
                     - 0.5 * pol
                     - 0.1 * mode
-                    - 0.5 / (1 + width ** 2)
+                    - 0.5 / (1 + width**2)
                     + 1.0 / (0.2 * radius)
-                    + 0.5 / wl ** 2.0
+                    + 0.5 / wl**2.0
                 )
 
     xs = nd.add_xsection("Shallow")
@@ -90,7 +85,7 @@ def two_pol():
 @pt.mark.skipif(skip, reason=reason)
 def test_single(no_pol):
     strt = demo.shallow.strt(100.0)
-    sol = nd.get_solver(strt)
+    sol = sv.get_solver_from_nazca(strt)
     mod = sol.solve(wl=1.55)
     assert mod.get_T("a0", "b0") == pt.approx(1.0, 1e-8)
 
@@ -112,7 +107,7 @@ def test_1levl_circuit(no_pol):
         return C
 
     add_drop_1 = add_drop(20.0)
-    sol = nd.get_solver(add_drop_1)
+    sol = sv.get_solver_from_nazca(add_drop_1)
 
     wl_l = np.linspace(1.54, 1.56, 201)
     T = [sol.solve(wl=wl).get_T("a0", "b0") for wl in wl_l]
@@ -122,7 +117,7 @@ def test_1levl_circuit(no_pol):
         [
             np.exp(
                 -4.0j
-                * np.pi ** 2.0
+                * np.pi**2.0
                 / wl
                 * demo.xsShallow.index.Neff(wl=wl, radius=20.0)
                 * 20.0
@@ -165,7 +160,7 @@ def test_2levl_circuit(no_pol):
         nd.Pin("b1", pin=r1.pin["b1"]).put()
         nd.Pin("b2", pin=r2.pin["a1"]).put()
 
-    sol = nd.get_solver(DF, fullreturn=True)
+    sol = sv.get_solver_from_nazca(DF, fullreturn=True)
 
     wl_l = np.linspace(1.54, 1.56, 201)
     t = np.sqrt(0.5)
@@ -175,7 +170,7 @@ def test_2levl_circuit(no_pol):
         [
             np.exp(
                 -4.0j
-                * np.pi ** 2.0
+                * np.pi**2.0
                 / wl
                 * demo.xsShallow.index.Neff(wl=wl, radius=20.0)
                 * 20.0
@@ -188,7 +183,7 @@ def test_2levl_circuit(no_pol):
         [
             np.exp(
                 -4.0j
-                * np.pi ** 2.0
+                * np.pi**2.0
                 / wl
                 * demo.xsShallow.index.Neff(wl=wl, radius=25.0)
                 * 25.0
@@ -238,7 +233,7 @@ def test_params(no_pol):
         nd.Pin("b0", pin=m2.pin["b0"]).put()
         nd.Pin("b1", pin=m2.pin["b1"]).put()
 
-    sol = nd.get_solver(MZM_bal)
+    sol = sv.get_solver_from_nazca(MZM_bal)
 
     psl = np.linspace(0.0, 1.0, 101)
     T1 = [sol.solve(wl=1.55, PS1=ps).get_T("a0", "b0") for ps in psl]
@@ -299,7 +294,7 @@ def test_other_cells(no_pol):
         nd.Pin("b0", pin=m2.pin["b0"]).put()
         nd.Pin("b1", pin=m2.pin["b1"]).put()
 
-    sol = nd.get_solver(MZM_bal)
+    sol = sv.get_solver_from_nazca(MZM_bal)
 
     psl = np.linspace(0.0, 1.0, 101)
     T1 = [sol.solve(wl=1.55, PS1=ps).get_T("a0", "b0") for ps in psl]
@@ -313,7 +308,7 @@ def test_twopol_basic(two_pol):
     xsShallow, MMI = two_pol
 
     strt = demo.shallow.strt(100.0)
-    sol = nd.get_solver(
+    sol = sv.get_solver_from_nazca(
         strt, allowed={"TE": dict(pol=0, mode=0), "TM": dict(pol=1, mode=0)}
     )
     mod = sol.solve(wl=1.55)
@@ -325,7 +320,7 @@ def test_twopol_basic(two_pol):
 def test_twopol_MMI(two_pol):
     xsShallow, MMI = two_pol
 
-    sol = nd.get_solver(
+    sol = sv.get_solver_from_nazca(
         MMI, allowed={"TE": dict(pol=0, mode=0), "TM": dict(pol=1, mode=0)}
     )
     mod = sol.solve(wl=1.55)
@@ -480,7 +475,7 @@ def test_twopol_MZM(two_pol):
         nd.Pin("b0", pin=m2.pin["b0"]).put()
         nd.Pin("b1", pin=m2.pin["b1"]).put()
 
-    sol = nd.get_solver(
+    sol = sv.get_solver_from_nazca(
         MZM_bal,
         infolevel=0,
         drc=True,

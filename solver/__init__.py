@@ -19,8 +19,9 @@ logger = logging.getLogger(__name__)
 sol_list = []
 
 from .version import __version__, git_clean
-from solver.log import logfile, debugfile, logger
-from solver.scattering import S_matrix
-from solver.structure import Structure
-from solver.sol import *
-from solver.model import *
+from .log import logfile, debugfile, logger
+from .scattering import S_matrix
+from .structure import Structure
+from .sol import *
+from .model import *
+from .nazca_integration import get_solver_from_nazca, Model_from_NazcaCM
