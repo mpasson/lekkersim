@@ -81,7 +81,7 @@ Functional Models
     LinearNDInterpolator
     Mirror
     Model_from_InPulse
-    Model_from_NazcaCM
+    ..Model_from_NazcaCM
     PerfectMirror
     PhaseShifter
     PolRot

@@ -49,7 +49,7 @@ Classes and Methods for building a circuit:
     LinearAttenuator
     LinearNDInterpolator
     Mirror
-    Model_from_NazcaCM
+    ..Model_from_NazcaCM
     PerfectMirror
     PhaseShifter
     PolRot

@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../."))
 # -- Project information -----------------------------------------------------
 
 project = "GenSol Documentation"
-copyright = "2020-2022 Marco Passoni, 2020-2022 Bright Photonics"
+copyright = "2020-2023 Marco Passoni, 2020-2023 Bright Photonics"
 author = "Marco Passoni"
 
 
