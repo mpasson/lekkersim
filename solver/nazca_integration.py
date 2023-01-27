@@ -1,4 +1,5 @@
-from typing import Any, Callable, Self, Union
+from __future__ import annotations
+from typing import Any, Callable, Union
 
 import numpy as np
 from copy import copy
@@ -52,152 +53,164 @@ class Model_from_NazcaCM(Model):
             allowed (dict): mapping {Mode:extra}. The allowed mode in the cell and the extra information to pass to
                 the compact model to build the optical length.
         """
+        self.cell = cell
+        self.ampl_model = ampl_model
+        self.loss_model = loss_model
+        self.optlength_model = optlength_model
+        self.allowed = allowed
+
         self.name = getattr(cell, "cell_name", cell.name)
         self.pin_dic = {}
         self.param_dic = {}
         self.default_params = {}
-        opt_conn = {}
-        n = 0
 
+        if self._search_amplitude_model():
+            return
+        self._search_length_and_loss_model()
+
+    def _search_amplitude_model(self):
+        """Creates scattering matrix compact model from amplitude model"""
+        opt_conn = {}
         # Checking for ampl model
-        for name, pin in cell.pin.items():
-            for mode, extra_in in allowed.items():
-                opt = list(pin.path_nb_iter(ampl_model, extra=extra_in))
+        for name, pin in self.cell.pin.items():
+            for mode, extra_in in self.allowed.items():
+                opt = list(pin.path_nb_iter(self.ampl_model, extra=extra_in))
                 if len(opt) != 0:
                     opt_conn[(pin, mode)] = opt
-                    n += 1
-        if n != 0:
-            n = 0
-            self.CM = {}
-            pins = set([pin for pin, mode in opt_conn])
-            for pi in pins:
-                for mi in allowed:
-                    pin_in = pi.basename if mi == "" else "_".join([pi.basename, mi])
-                    self.pin_dic[pin_in] = n
-                    n += 1
-                    for po in pins:
-                        for mo in allowed:
-                            pin_out = (
-                                po.basename if mo == "" else "_".join([po.basename, mo])
-                            )
-                            tup = tup = (pin_in, pin_out)
-                            self.CM[tup] = 0.0
+        if len(opt_conn) == 0:
+            return False
 
-            logger.debug(f"Model for {self.name}: using amplitude model {ampl_model}")
-            self.N = len(self.pin_dic)
-            for (pin, mode), conn in opt_conn.items():
-                for stuff in conn:
-                    target = stuff[0]
-                    CM = stuff[1]
-                    extra_out = stuff[5]
-                    pin_in = (
-                        pin.basename if mode == "" else "_".join([pin.basename, mode])
-                    )
-                    try:
-                        modeo = (
-                            mode
-                            if extra_out is None
-                            else list(allowed.keys())[
-                                list(allowed.values()).index(extra_out)
-                            ]
+        n = 0
+        self.CM = {}
+        pins = set([pin for pin, mode in opt_conn])
+        for pi in pins:
+            for mi in self.allowed:
+                pin_in = pi.basename if mi == "" else "_".join([pi.basename, mi])
+                self.pin_dic[pin_in] = n
+                n += 1
+                for po in pins:
+                    for mo in self.allowed:
+                        pin_out = (
+                            po.basename if mo == "" else "_".join([po.basename, mo])
                         )
-                    except ValueError:
-                        logger.error(
-                            f"Model for {self.name}: mode {extra_out} is not in allowed {allowed}: ignored"
-                        )
-                        continue
-                    pin_out = (
-                        target.basename
-                        if modeo == ""
-                        else "_".join([target.basename, modeo])
-                    )
-                    tup = (pin_in, pin_out)
-                    self.CM[tup] = (
-                        self.wraps(ProtectedPartial(CM, **allowed[mode]))
-                        if callable(CM)
-                        else CM
-                    )
-        else:
-            opt_conn = {}
-            for name, pin in cell.pin.items():
-                for mode, extra_in in allowed.items():
-                    opt = {
-                        (x[0], str(x[-1])): x[1:]
-                        for x in pin.path_nb_iter(optlength_model, extra=extra_in)
-                    }
-                    lss = {
-                        (x[0], str(x[-1])): x[1:]
-                        for x in pin.path_nb_iter(loss_model, extra=extra_in)
-                    }
-                    for target in set(opt.keys()).union(set(lss.keys())):
-                        if (pin, mode) not in opt_conn:
-                            opt_conn[(pin, mode)] = {}
-                        tup1 = (
-                            opt[target]
-                            if target in opt
-                            else (0.0, None, None, None, allowed[mode])
-                        )
-                        tup2 = (
-                            lss[target]
-                            if target in lss
-                            else (0.0, None, None, None, allowed[mode])
-                        )
-                        opt_conn[(pin, mode)][target] = tup1 + tup2
-            logger.debug(
-                f"Model for {self.name}: using optical length model {optlength_model} and loss model {loss_model}"
-            )
-            pins = set([pin for pin, mode in opt_conn])
-            self.CM = {}
-            for pi in pins:
-                for mi in allowed:
-                    pin_in = pi.basename if mi == "" else "_".join([pi.basename, mi])
-                    self.pin_dic[pin_in] = n
-                    n += 1
-                    for po in pins:
-                        for mo in allowed:
-                            pin_out = (
-                                po.basename if mo == "" else "_".join([po.basename, mo])
-                            )
-                            tup = tup = (pin_in, pin_out)
-                            self.CM[tup] = 0.0
+                        tup = tup = (pin_in, pin_out)
+                        self.CM[tup] = 0.0
 
-            self.N = len(self.pin_dic)
-
-            for (pin, mode), conn in opt_conn.items():
-                for (target, extra_target), stuff in conn.items():
-                    OM = stuff[0]
-                    extra_om = stuff[4]
-                    AM = stuff[5]
-                    extra_am = stuff[9]
-                    if extra_om != extra_am:
-                        if extra_om == allowed[mode]:
-                            extra_om = extra_am
-
-                    pin_in = (
-                        pin.basename if mode == "" else "_".join([pin.basename, mode])
+        logger.debug(f"Model for {self.name}: using amplitude model {self.ampl_model}")
+        self.N = len(self.pin_dic)
+        for (pin, mode), conn in opt_conn.items():
+            for stuff in conn:
+                target = stuff[0]
+                CM = stuff[1]
+                extra_out = stuff[5]
+                pin_in = pin.basename if mode == "" else "_".join([pin.basename, mode])
+                try:
+                    modeo = (
+                        mode
+                        if extra_out is None
+                        else list(self.allowed.keys())[
+                            list(self.allowed.values()).index(extra_out)
+                        ]
                     )
-                    try:
-                        modeo = (
-                            mode
-                            if extra_om is None
-                            else list(allowed.keys())[
-                                list(allowed.values()).index(extra_om)
-                            ]
-                        )
-                    except ValueError:
-                        logger.error(
-                            f"Model for {self.name}: mode {extra_om} is not in allowed {allowed}: ignored"
-                        )
-                        continue
-                    pin_out = (
-                        target.basename
-                        if modeo == ""
-                        else "_".join([target.basename, modeo])
+                except ValueError:
+                    logger.error(
+                        f"Model for {self.name}: mode {extra_out} is not in allowed {self.allowed}: ignored"
                     )
-                    tup = (pin_in, pin_out)
-                    OMt = ProtectedPartial(OM, **allowed[mode]) if callable(OM) else OM
-                    AMt = ProtectedPartial(AM, **allowed[mode]) if callable(AM) else AM
-                    self.CM[tup] = self.__class__.generator(OMt, AMt)
+                    continue
+                pin_out = (
+                    target.basename
+                    if modeo == ""
+                    else "_".join([target.basename, modeo])
+                )
+                tup = (pin_in, pin_out)
+                self.CM[tup] = (
+                    self.wraps(ProtectedPartial(CM, **self.allowed[mode]))
+                    if callable(CM)
+                    else CM
+                )
+        return True
+
+    def _search_length_and_loss_model(self):
+        """Creates scattering matrix compact model from optical length and loss models"""
+        opt_conn = {}
+        n = 0
+        for name, pin in self.cell.pin.items():
+            for mode, extra_in in self.allowed.items():
+                opt = {
+                    (x[0], str(x[-1])): x[1:]
+                    for x in pin.path_nb_iter(self.optlength_model, extra=extra_in)
+                }
+                lss = {
+                    (x[0], str(x[-1])): x[1:]
+                    for x in pin.path_nb_iter(self.loss_model, extra=extra_in)
+                }
+                for target in set(opt.keys()).union(set(lss.keys())):
+                    if (pin, mode) not in opt_conn:
+                        opt_conn[(pin, mode)] = {}
+                    tup1 = (
+                        opt[target]
+                        if target in opt
+                        else (0.0, None, None, None, self.allowed[mode])
+                    )
+                    tup2 = (
+                        lss[target]
+                        if target in lss
+                        else (0.0, None, None, None, self.allowed[mode])
+                    )
+                    opt_conn[(pin, mode)][target] = tup1 + tup2
+        logger.debug(
+            f"Model for {self.name}: using optical length model {self.optlength_model} and loss model {self.loss_model}"
+        )
+        pins = set([pin for pin, mode in opt_conn])
+        self.CM = {}
+        for pi in pins:
+            for mi in self.allowed:
+                pin_in = pi.basename if mi == "" else "_".join([pi.basename, mi])
+                self.pin_dic[pin_in] = n
+                n += 1
+                for po in pins:
+                    for mo in self.allowed:
+                        pin_out = (
+                            po.basename if mo == "" else "_".join([po.basename, mo])
+                        )
+                        tup = tup = (pin_in, pin_out)
+                        self.CM[tup] = 0.0
+
+        self.N = len(self.pin_dic)
+
+        for (pin, mode), conn in opt_conn.items():
+            for (target, extra_target), stuff in conn.items():
+                OM = stuff[0]
+                extra_om = stuff[4]
+                AM = stuff[5]
+                extra_am = stuff[9]
+                if extra_om != extra_am:
+                    if extra_om == self.allowed[mode]:
+                        extra_om = extra_am
+
+                pin_in = pin.basename if mode == "" else "_".join([pin.basename, mode])
+                try:
+                    modeo = (
+                        mode
+                        if extra_om is None
+                        else list(self.allowed.keys())[
+                            list(self.allowed.values()).index(extra_om)
+                        ]
+                    )
+                except ValueError:
+                    logger.error(
+                        f"Model for {self.name}: mode {extra_om} is not in allowed {self.allowed}: ignored"
+                    )
+                    continue
+                pin_out = (
+                    target.basename
+                    if modeo == ""
+                    else "_".join([target.basename, modeo])
+                )
+                tup = (pin_in, pin_out)
+                OMt = ProtectedPartial(OM, **self.allowed[mode]) if callable(OM) else OM
+                AMt = ProtectedPartial(AM, **self.allowed[mode]) if callable(AM) else AM
+                self.CM[tup] = self.__class__.generator(OMt, AMt)
 
     @staticmethod
     def call_partial(func: functools.partial, *args, **kwargs) -> Any:
@@ -302,7 +315,7 @@ class Model_from_NazcaCM(Model):
         loss_model: str = None,
         optlength_model: str = None,
         allowed: dict[str, dict[str, Any]] = None,
-    ) -> Self:
+    ) -> Model_from_NazcaCM:
         """Alternative Creator. Mainly used for debugging
 
         This creator will directly try to solve the obtained model before returning.
@@ -342,7 +355,7 @@ class Model_from_NazcaCM(Model):
         loss_model: str = None,
         optlength_model: str = None,
         allowed: dict[str, dict[str, Any]] = None,
-    ) -> Union[Self, Solver]:
+    ) -> Union[Model_from_NazcaCM, Solver]:
         """Alternative Creator to be used inside Nazca Integration
 
         This alternative creator will check if a model can be obtained from the Nazca cell. If not, an empty Solver will
