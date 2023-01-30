@@ -3,13 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-GenSol: Generic linear Solver for photonic integrated circuits
+LekkerSIM: Photonic circuits linear simulator
 ==================================================================
 
-GenSol is a open source package for linear simulation of photonic circuit, based on the well known scattering matrix method.
+LekkerSIM is a open source package for linear simulation of photonic circuit, based on the well known scattering matrix method.
 It features include:
-    - A collection of pre-defined building blocks for easy definition of circuits;
     - Easy calculation of S-parameters of a photonic circuit;
+    - A collection of pre-defined building blocks for easy definition of circuits;
     - Parametric building blocks;
     - Hierarchical circuit definition;
     - Monitors inside the circuit for calculation of power flow.

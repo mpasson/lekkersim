@@ -4,3 +4,36 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools-git-versioning]
 enabled = true
+
+[project]
+name = "lekkersim"
+description = "The lekker tool for photonic circuit simulation."
+license = { text = "AGPLv3+" }
+requires-python = ">=3.10"
+authors = [
+  { name = "Marco Passoni", email = "mpasson91@gmail.com" },
+]
+keywords = []
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: AGPLv3+ License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "matplotlib>=3.5.1",
+    "numpy>=1.23.1",
+    "pandas>=1.4.2",
+    "PyYAML>=6.0",
+    "scipy>=1.8.0",
+    "setuptools_git_versioning>=1.13.1",
+]
+dynamic = ["version"]
