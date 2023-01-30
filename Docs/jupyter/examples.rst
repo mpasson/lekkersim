@@ -8,5 +8,3 @@ Examples
    Parametric.ipynb
    debug.ipynb 
    Monitors.ipynb
-   Nazca Integration.ipynb
-   Nazca Multiple Polarization.ipynb

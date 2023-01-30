@@ -17,8 +17,6 @@ std.setFormatter(fmt)
 
 logger.addHandler(std)
 logger.info(f"version {sv.__version__}")
-if not sv.git_clean:
-    logger.error("repository not clean")
 
 
 class DuplicateFilter:
