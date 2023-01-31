@@ -2,16 +2,16 @@ import numpy as np
 import pytest
 import importlib.util
 import matplotlib.pyplot as plt
-import solver as sv
+import lekkersim as lk
 
 
 def Ring(r, L):
-    with sv.Solver() as S:
-        bm = sv.BeamSplitter(ratio=r).put()
-        wg = sv.Waveguide(L).put("a0", bm.pin["b1"])
-        sv.connect(wg.pin["b0"], bm.pin["a1"])
-        sv.raise_pins()
-        sv.add_structure_to_monitors(wg)
+    with lk.Solver() as S:
+        bm = lk.BeamSplitter(ratio=r).put()
+        wg = lk.Waveguide(L).put("a0", bm.pin["b1"])
+        lk.connect(wg.pin["b0"], bm.pin["a1"])
+        lk.raise_pins()
+        lk.add_structure_to_monitors(wg)
     return S
 
 
@@ -27,11 +27,11 @@ def test_singlemonitor():
 def test_doublesolver():
     ring1 = Ring(0.1, 100.0)
     ring2 = Ring(0.1, 120.0)
-    with sv.Solver() as S:
+    with lk.Solver() as S:
         r1 = ring1.put()
         r2 = ring2.put()
-        sv.connect(r1.pin["b0"], r2.pin["a0"])
-        sv.raise_pins()
+        lk.connect(r1.pin["b0"], r2.pin["a0"])
+        lk.raise_pins()
     S.solve()
     assert True
 

@@ -1,7 +1,7 @@
 import os
 import pytest as pt
 import numpy as np
-from solver import FPRGaussian
+from lekkersim import FPRGaussian
 import pickle
 
 file_dir = os.path.dirname(os.path.abspath(__file__))

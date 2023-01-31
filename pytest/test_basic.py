@@ -1,27 +1,27 @@
 import numpy as np
 import pytest
 import importlib.util
-import solver as sv
+import lekkersim as lk
 
 
 def test_waveguide():
-    with sv.Solver() as S:
-        WG = sv.Waveguide(10.0, 2.5)
+    with lk.Solver() as S:
+        WG = lk.Waveguide(10.0, 2.5)
         wg = WG.put()
-        sv.Pin("a0").put(wg.pin["a0"])
-        sv.Pin("b0").put(wg.pin["b0"])
+        lk.Pin("a0").put(wg.pin["a0"])
+        lk.Pin("b0").put(wg.pin["b0"])
 
     T = S.solve(wl=1.55).get_T("a0", "b0")
     assert T == pytest.approx(1.0, 1e-8)
 
 
 def test_single_composition():
-    with sv.Solver() as S:
-        WG = sv.Waveguide(0.05, 2.5)
+    with lk.Solver() as S:
+        WG = lk.Waveguide(0.05, 2.5)
         for i in range(10):
             wg = WG.put()
-            sv.Pin(f"a{i}").put(wg.pin["a0"])
-            sv.Pin(f"b{i}").put(wg.pin["b0"])
+            lk.Pin(f"a{i}").put(wg.pin["a0"])
+            lk.Pin(f"b{i}").put(wg.pin["b0"])
 
     M = S.solve(wl=1.55)
     for i in range(10):
@@ -40,14 +40,14 @@ def test_single_composition():
 
 
 def test_composition():
-    with sv.Solver() as S:
-        WG = sv.Waveguide(0.05, 2.5)
+    with lk.Solver() as S:
+        WG = lk.Waveguide(0.05, 2.5)
         for i in range(10):
             wg = WG.put()
-            sv.Pin(f"a{i}").put(wg.pin["a0"])
+            lk.Pin(f"a{i}").put(wg.pin["a0"])
             for j in range(i):
                 wg = WG.put("a0", wg.pin["b0"])
-            sv.Pin(f"b{i}").put(wg.pin["b0"])
+            lk.Pin(f"b{i}").put(wg.pin["b0"])
 
     M = S.solve(wl=1.55)
     for i in range(10):
@@ -66,12 +66,12 @@ def test_composition():
 
 
 def test_get_output():
-    BST = sv.Structure(model=sv.BeamSplitter())
-    BSB = sv.Structure(model=sv.BeamSplitter())
-    BSC = sv.Structure(model=sv.BeamSplitter())
-    SPC = sv.Structure(model=sv.Splitter1x2())
+    BST = lk.Structure(model=lk.BeamSplitter())
+    BSB = lk.Structure(model=lk.BeamSplitter())
+    BSC = lk.Structure(model=lk.BeamSplitter())
+    SPC = lk.Structure(model=lk.Splitter1x2())
 
-    Sol = sv.Solver(structures=[SPC, BSB, BSC, BST])
+    Sol = lk.Solver(structures=[SPC, BSB, BSC, BST])
 
     Sol.connect(SPC, "b0", BSB, "b1")
     Sol.connect(BSB, "b0", BSC, "b1")

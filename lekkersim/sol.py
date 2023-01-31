@@ -12,11 +12,11 @@ from typing import Any, List, Dict, Tuple, Callable
 import numpy as np
 from copy import copy
 from copy import deepcopy
-from solver.structure import Structure
-from solver import sol_list
-from solver import logger
-from solver.utils import map_args
-from solver.model import SolvedModel
+from lekkersim.structure import Structure
+from lekkersim import sol_list
+from lekkersim import logger
+from lekkersim.utils import map_args
+from lekkersim.model import SolvedModel
 
 
 class Solver:

@@ -3,12 +3,12 @@ from typing import List, Dict, Tuple, Any, Optional
 
 import numpy as np
 import pandas
-import solver
-from solver.scattering import S_matrix
+import lekkersim
+from lekkersim.scattering import S_matrix
 from copy import deepcopy
 from copy import copy
-import solver.model as mod
-from solver.log import logger
+import lekkersim.model as mod
+from lekkersim.log import logger
 
 
 class Structure:
@@ -24,8 +24,8 @@ class Structure:
     def __init__(
         self,
         pin_list: List[str] = [],
-        model: solver.Model = None,
-        solver: solver.Solver = None,
+        model: lekkersim.Model = None,
+        solver: lekkersim.Solver = None,
         param_mapping: Dict[str, str] = None,
     ) -> None:
         """Creator"""
@@ -622,7 +622,7 @@ class Structure:
         if len(pini) != len(pino):
             raise ValueError("pini and pino have different lengths")
         pin_mapping = {_pino: (self, _pini) for _pino, _pini in zip(pino, pini)}
-        solver.sol_list[-1].map_pins(pin_mapping)
+        lekkersim.sol_list[-1].map_pins(pin_mapping)
 
     # def return_model(self):
     #    return self.model

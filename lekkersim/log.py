@@ -1,7 +1,7 @@
 import logging
-from solver import logger
+from lekkersim import logger
 import __main__
-import solver as sv
+import lekkersim as lk
 
 # cleaning logger. Needed if run within Spyder for some reason
 logger.handlers.clear()
@@ -16,7 +16,7 @@ std.setFormatter(fmt)
 
 
 logger.addHandler(std)
-logger.info(f"version {sv.__version__}")
+logger.info(f"version {lk.__version__}")
 
 
 class DuplicateFilter:
@@ -63,9 +63,7 @@ def logfile(filename=None, stdout=False, level=logging.INFO):
     han.setLevel(level)
     logger.removeHandler(std)
     log_filter_off()
-    logger.info(f"version {sv.__version__}")
-    if not sv.git_clean:
-        logger.error("repository not clean")
+    logger.info(f"version {lk.__version__}")
     log_filter_on()
     if stdout:
         logger.addHandler(std)

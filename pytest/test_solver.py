@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 import importlib.util
-import solver as sv
+import lekkersim as lk
 
 
 A = np.array(
@@ -44,7 +44,7 @@ A = np.array(
 
 
 def test_simple_model():
-    BS = sv.BeamSplitter()
+    BS = lk.BeamSplitter()
     S = BS.create_S()
     assert np.allclose(S, A)
     S = BS.create_S()
@@ -58,7 +58,7 @@ def test_simple_model():
 
 
 def test_parametric_block():
-    PS = sv.PhaseShifter()
+    PS = lk.PhaseShifter()
     assert PS.solve().get_PH("a0", "b0") == pytest.approx(0.0, 1e-8)
     assert PS.solve(PS=1.0).get_PH("a0", "b0") == pytest.approx(np.pi, 1e-8)
     assert np.allclose(
@@ -70,11 +70,11 @@ def test_parametric_block():
 
 
 def test_MZM():
-    with sv.Solver(name="MZM_BB") as MZM_BB_sol:
-        BM = sv.BeamSplitter()
-        WG = sv.Waveguide(L=500, n=2.5)
-        PS = sv.PhaseShifter()
-        AT = sv.Attenuator(loss=0.0)
+    with lk.Solver(name="MZM_BB") as MZM_BB_sol:
+        BM = lk.BeamSplitter()
+        WG = lk.Waveguide(L=500, n=2.5)
+        PS = lk.PhaseShifter()
+        AT = lk.Attenuator(loss=0.0)
 
         bm1 = BM.put()
         t_ = WG.put("a0", bm1.pin["b0"])
@@ -85,14 +85,14 @@ def test_MZM():
         t_ = WG.put("a0", bm1.pin["b1"])
         t_ = PS.put("a0", t_.pin["b0"], param_mapping={"PS": "PS2"})
         t_ = AT.put("a0", t_.pin["b0"])
-        sv.connect(t_.pin["b0"], bm2.pin["a1"])
+        lk.connect(t_.pin["b0"], bm2.pin["a1"])
 
-        sv.Pin("a0").put(bm1.pin["a0"])
-        sv.Pin("a1").put(bm1.pin["a1"])
-        sv.Pin("b0").put(bm2.pin["b0"])
-        sv.Pin("b1").put(bm2.pin["b1"])
+        lk.Pin("a0").put(bm1.pin["a0"])
+        lk.Pin("a1").put(bm1.pin["a1"])
+        lk.Pin("b0").put(bm2.pin["b0"])
+        lk.Pin("b1").put(bm2.pin["b1"])
 
-        sv.set_default_params({"PS1": 0.0, "PS2": 0.5, "DP": 0.0})
+        lk.set_default_params({"PS1": 0.0, "PS2": 0.5, "DP": 0.0})
 
     psl = np.linspace(0.0, 1.0, 5)
     assert np.allclose(
@@ -122,7 +122,7 @@ def test_MZM():
 
 
 if __name__ == "__main__":
-    # PS=sv.PhaseShifter()
+    # PS=lk.PhaseShifter()
     # a=PS.solve(PS=np.linspace(0.0,1.0,101)).get_data('a0','b0')['Phase']
     # print(a.to_numpy())
     pytest.main([__file__, "-s", "-v"])  # -s: show print output

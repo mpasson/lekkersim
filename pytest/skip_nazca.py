@@ -4,7 +4,7 @@ import pytest as pt
 skip = False
 reason = ""
 
-import solver as sv
+import lekkersim as lk
 
 try:
     import nazca as nd
@@ -85,7 +85,7 @@ def two_pol():
 @pt.mark.skipif(skip, reason=reason)
 def test_single(no_pol):
     strt = demo.shallow.strt(100.0)
-    sol = sv.get_solver_from_nazca(strt)
+    sol = lk.get_solver_from_nazca(strt)
     mod = sol.solve(wl=1.55)
     assert mod.get_T("a0", "b0") == pt.approx(1.0, 1e-8)
 
@@ -107,7 +107,7 @@ def test_1levl_circuit(no_pol):
         return C
 
     add_drop_1 = add_drop(20.0)
-    sol = sv.get_solver_from_nazca(add_drop_1)
+    sol = lk.get_solver_from_nazca(add_drop_1)
 
     wl_l = np.linspace(1.54, 1.56, 201)
     T = [sol.solve(wl=wl).get_T("a0", "b0") for wl in wl_l]
@@ -160,7 +160,7 @@ def test_2levl_circuit(no_pol):
         nd.Pin("b1", pin=r1.pin["b1"]).put()
         nd.Pin("b2", pin=r2.pin["a1"]).put()
 
-    sol = sv.get_solver_from_nazca(DF, fullreturn=True)
+    sol = lk.get_solver_from_nazca(DF, fullreturn=True)
 
     wl_l = np.linspace(1.54, 1.56, 201)
     t = np.sqrt(0.5)
@@ -210,12 +210,12 @@ def test_params(no_pol):
         wg = demo.shallow.strt(100.0).put(5.0, 0.0, 0.0)
         nd.Pin("a0", pin=wg.pin["a0"]).put()
         nd.Pin("b0", pin=wg.pin["b0"]).put()
-        with sv.Solver(name="THPS") as S:
-            wave = sv.UserWaveguide(
+        with lk.Solver(name="THPS") as S:
+            wave = lk.UserWaveguide(
                 100.0, demo.xsShallow.index.Neff, {}, {"": dict(pol=0, mode=0)}
             ).put()
-            ps = sv.PhaseShifter().put("a0", wave.pin["b0"])
-            sv.raise_pins()
+            ps = lk.PhaseShifter().put("a0", wave.pin["b0"])
+            lk.raise_pins()
         PS.model_info["model"] = S
 
     with nd.Cell(name="MZM") as MZM_bal:
@@ -233,7 +233,7 @@ def test_params(no_pol):
         nd.Pin("b0", pin=m2.pin["b0"]).put()
         nd.Pin("b1", pin=m2.pin["b1"]).put()
 
-    sol = sv.get_solver_from_nazca(MZM_bal)
+    sol = lk.get_solver_from_nazca(MZM_bal)
 
     psl = np.linspace(0.0, 1.0, 101)
     T1 = [sol.solve(wl=1.55, PS1=ps).get_T("a0", "b0") for ps in psl]
@@ -257,12 +257,12 @@ def test_other_cells(no_pol):
         nd.Pin("a0", pin=wg.pin["a0"]).put()
         nd.Pin("b0", pin=wg.pin["b0"]).put()
 
-        with sv.Solver(name="THPS") as S:
-            wave = sv.UserWaveguide(
+        with lk.Solver(name="THPS") as S:
+            wave = lk.UserWaveguide(
                 100.0, demo.xsShallow.index.Neff, {}, {"": dict(pol=0, mode=0)}
             ).put()
-            ps = sv.PhaseShifter().put("a0", wave.pin["b0"])
-            sv.raise_pins()
+            ps = lk.PhaseShifter().put("a0", wave.pin["b0"])
+            lk.raise_pins()
         PS.model_info["model"] = S
 
     with nd.Cell(name="DC_pad") as DCp:
@@ -294,7 +294,7 @@ def test_other_cells(no_pol):
         nd.Pin("b0", pin=m2.pin["b0"]).put()
         nd.Pin("b1", pin=m2.pin["b1"]).put()
 
-    sol = sv.get_solver_from_nazca(MZM_bal)
+    sol = lk.get_solver_from_nazca(MZM_bal)
 
     psl = np.linspace(0.0, 1.0, 101)
     T1 = [sol.solve(wl=1.55, PS1=ps).get_T("a0", "b0") for ps in psl]
@@ -308,7 +308,7 @@ def test_twopol_basic(two_pol):
     xsShallow, MMI = two_pol
 
     strt = demo.shallow.strt(100.0)
-    sol = sv.get_solver_from_nazca(
+    sol = lk.get_solver_from_nazca(
         strt, allowed={"TE": dict(pol=0, mode=0), "TM": dict(pol=1, mode=0)}
     )
     mod = sol.solve(wl=1.55)
@@ -320,7 +320,7 @@ def test_twopol_basic(two_pol):
 def test_twopol_MMI(two_pol):
     xsShallow, MMI = two_pol
 
-    sol = sv.get_solver_from_nazca(
+    sol = lk.get_solver_from_nazca(
         MMI, allowed={"TE": dict(pol=0, mode=0), "TM": dict(pol=1, mode=0)}
     )
     mod = sol.solve(wl=1.55)
@@ -433,17 +433,17 @@ def test_twopol_MZM(two_pol):
         nd.Pin("a0", pin=wg.pin["a0"]).put()
         nd.Pin("b0", pin=wg.pin["b0"]).put()
 
-        with sv.Solver(name="THPS") as S:
-            wave = sv.UserWaveguide(
+        with lk.Solver(name="THPS") as S:
+            wave = lk.UserWaveguide(
                 100.0,
                 demo.xsShallow.index.Neff,
                 {},
                 {"TE": dict(pol=0, mode=0), "TM": dict(pol=1, mode=0)},
             ).put()
-            ps = sv.PhaseShifter().expand_mode(["TE", "TM"]).put()
-            sv.connect(wave.pin["b0_TE"], ps.pin["a0_TE"])
-            sv.connect(wave.pin["b0_TM"], ps.pin["a0_TM"])
-            sv.raise_pins()
+            ps = lk.PhaseShifter().expand_mode(["TE", "TM"]).put()
+            lk.connect(wave.pin["b0_TE"], ps.pin["a0_TE"])
+            lk.connect(wave.pin["b0_TM"], ps.pin["a0_TM"])
+            lk.raise_pins()
         PS.model_info["model"] = S
 
     with nd.Cell(name="DC_pad") as DCp:
@@ -475,7 +475,7 @@ def test_twopol_MZM(two_pol):
         nd.Pin("b0", pin=m2.pin["b0"]).put()
         nd.Pin("b1", pin=m2.pin["b1"]).put()
 
-    sol = sv.get_solver_from_nazca(
+    sol = lk.get_solver_from_nazca(
         MZM_bal,
         infolevel=0,
         drc=True,

@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 import numpy.linalg as linalg
 
-import solver
+import lekkersim
 
 
 class S_matrix:

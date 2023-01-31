@@ -28,12 +28,12 @@ import pandas as pd
 from scipy.interpolate import interp1d, LinearNDInterpolator
 from scipy.integrate import quad_vec
 
-import solver.structure
-from solver import sol_list
-from solver import logger
-import solver
-import solver.log
-from solver.utils import line, GaussianBeam, ProtectedPartial
+import lekkersim.structure
+from lekkersim import sol_list
+from lekkersim import logger
+import lekkersim
+import lekkersim.log
+from lekkersim.utils import line, GaussianBeam, ProtectedPartial
 
 
 def diag_blocks(array_list: List[np.ndarray]) -> np.ndarray:
@@ -293,7 +293,7 @@ class Model:
 
     def put(
         self, source_pin: str = None, target_pin=None, param_mapping={}
-    ) -> solver.Structure:
+    ) -> lekkersim.Structure:
         """Function for putting a model in a Solver object, and eventually specify connections
 
          This function creates a Structure object for the model and place it in the current active Solver
@@ -310,13 +310,13 @@ class Model:
              Structure: the Structure instance created from the model
         """
         # ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
-        ST = solver.structure.Structure(model=self, param_mapping=param_mapping)
+        ST = lekkersim.structure.Structure(model=self, param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
         if (source_pin is not None) and (target_pin is not None):
             sol_list[-1].connect(ST, source_pin, target_pin[0], target_pin[1])
         return ST
 
-    def solve(self, **kargs) -> solver.SolvedModel:
+    def solve(self, **kargs) -> lekkersim.SolvedModel:
         """Function for returning the solved model
 
         This function is to align the behavior of the Model and Solver class.
@@ -437,7 +437,7 @@ class SolvedModel(Model):
         param_dic: Optional[Dict[str, Any]] = None,
         Smatrix: Optional[np.ndarray] = None,
         int_func: Optional[Callable] = None,
-        monitor_mapping: Optional[Dict[str, Tuple[solver.Structure, str]]] = None,
+        monitor_mapping: Optional[Dict[str, Tuple[lekkersim.Structure, str]]] = None,
         name: Optional[str] = None,
     ) -> None:
         """Initialize the model
@@ -462,7 +462,7 @@ class SolvedModel(Model):
     def set_intermediate(
         self,
         int_func: Callable,
-        monitor_mapping: Dict[str, Tuple[solver.Structure, str]],
+        monitor_mapping: Dict[str, Tuple[lekkersim.Structure, str]],
     ):
         """Methods for setting the function and mapping for monitors
 

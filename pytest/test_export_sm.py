@@ -2,17 +2,17 @@ import numpy as np
 import pytest
 import os
 
-import solver as sv
+import lekkersim as lk
 
 
 def test_save_and_load_1_paramter():
-    sol = sv.Waveguide(10.0).expand_mode(["TE", "TM"])
+    sol = lk.Waveguide(10.0).expand_mode(["TE", "TM"])
     mod = sol.solve(wl=[1.001, 1.002, 1.003])
     data = mod.export_InPulse(
         parameter_name_mapping={"wl": "wavelength"}, units={"wavelength": "um"}
     )
     out1 = sol.solve(wl=1.002).S2PD()
-    test = sv.Model_from_InPulse(
+    test = lk.Model_from_InPulse(
         "exported_model.csvy",
         parameter_name_mapping={"wavelength": "wl"},
         # mode_mapping={"TE": "TEE"},
@@ -26,10 +26,10 @@ def test_save_and_load_1_paramter():
 
 def test_save_and_load_2_paramter():
 
-    with sv.Solver("test") as sol:
-        _ = sv.Waveguide(10.0).put()
-        sv.PhaseShifter().put("a0", _.pin["b0"])
-        sv.raise_pins()
+    with lk.Solver("test") as sol:
+        _ = lk.Waveguide(10.0).put()
+        lk.PhaseShifter().put("a0", _.pin["b0"])
+        lk.raise_pins()
 
     wl = np.linspace(1.0, 1.02, 3)
     ps = np.linspace(0.0, 0.2, 3)
@@ -42,7 +42,7 @@ def test_save_and_load_2_paramter():
         units={"wavelength": "um", "PS": "unit of pi"},
     )
     out1 = sol.solve(wl=1.01, PS=0.1).S2PD()
-    test = sv.Model_from_InPulse(
+    test = lk.Model_from_InPulse(
         "exported_model.csvy",
         parameter_name_mapping={"wavelength": "wl"},
     )
