@@ -14,7 +14,11 @@ Its features include:
 
 ## Installation
 After cloning, just add the repository folder to the PYTHONPATH. 
-Requirements can be extracted from the included [pyproject.toml](pyproject.toml) file.
+
+Requirements are in the attached [requirements.txt](requirements.txt) file. They can be installed by running:
+    
+    pip install -r requirements.txt
+
 <!---
 ## Documentation
 The full documentation of the software is available [Here](https://marco_passoni.gitlab.io/gensol/index.html)
