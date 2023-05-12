@@ -14,15 +14,13 @@ Its features include:
 
 ## Installation
 After cloning, just add the repository folder to the PYTHONPATH. 
-
-Requirements are in the attached [requirements.txt](requirements.txt) file. They can be installed by running:
-    
-    pip install -r requirements.txt
-
+Requirements can be extracted from the included [pyproject.toml](pyproject.toml) file.
+<!---
 ## Documentation
 The full documentation of the software is available [Here](https://marco_passoni.gitlab.io/gensol/index.html)
+-->
 
-### Building documentation yourself
+## Building documentation yourself
 You can build your own local documentation by running the command [localdocs](localdocs). In this case, you need the following extra packages:
  - Python packages:
    - ```sphinx```
