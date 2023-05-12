@@ -13,7 +13,6 @@ It features include:
     - Parametric building blocks;
     - Hierarchical circuit definition;
     - Monitors inside the circuit for calculation of power flow.
-    - Loading and exporting scattering matrices in `InPulse <https://cordis.europa.eu/project/id/824980>`_ data format.
 
 .. toctree::
    :maxdepth: 1

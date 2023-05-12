@@ -29,4 +29,3 @@ from .scattering import S_matrix
 from .structure import Structure
 from .sol import *
 from .model import *
-from .nazca_integration import get_solver_from_nazca, Model_from_NazcaCM

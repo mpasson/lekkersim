@@ -1,4 +1,4 @@
-.. currentmodule:: solver
+.. currentmodule:: lekkersim
 
 *************
 Basic Syntax

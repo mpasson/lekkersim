@@ -1,3 +1,9 @@
+"""Code for Nazca integrazion
+
+IN order to work it require a custom version of Nazca that is not released. Do not use.
+"""
+
+
 from __future__ import annotations
 from typing import Any, Callable, Union
 
