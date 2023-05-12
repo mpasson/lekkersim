@@ -19,12 +19,10 @@ Requirements are in the attached [requirements.txt](requirements.txt) file. They
     
     pip install -r requirements.txt
 
-<!---
 ## Documentation
-The full documentation of the software is available [Here](https://marco_passoni.gitlab.io/gensol/index.html)
--->
+Full documentation is available on [Read the Docs](https://lekkersim.readthedocs.io)
 
-## Building documentation yourself
+### Building documentation yourself
 You can build your own local documentation by running the command [localdocs](localdocs). In this case, you need the following extra packages:
  - Python packages:
    - ```sphinx```
