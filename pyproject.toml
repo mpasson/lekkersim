@@ -5,15 +5,24 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools-git-versioning]
 enabled = true
 
+[tool.setuptools]
+py-modules = ['lekkersim']
+
 [project]
 name = "lekkersim"
 description = "The lekker tool for photonic circuit simulation."
+readme = "README.md"
 license = { text = "AGPLv3+" }
 requires-python = ">=3.10"
 authors = [
   { name = "Marco Passoni", email = "mpasson91@gmail.com" },
 ]
-keywords = []
+keywords = [
+  'photonics',
+  'simulation',
+  'scattering matrix',
+  'photonic circuits',
+]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
