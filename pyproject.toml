@@ -1,22 +1,17 @@
 [build-system]
-requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning<2", ]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.setuptools-git-versioning]
-enabled = true
-
-[tool.setuptools]
-py-modules = ['lekkersim']
-
-[project]
+[tool.poetry]
 name = "lekkersim"
 description = "The lekker tool for photonic circuit simulation."
 readme = "README.md"
-license = { text = "AGPLv3+" }
-requires-python = ">=3.10"
-authors = [
-  { name = "Marco Passoni", email = "mpasson91@gmail.com" },
-]
+version="0.0.0"
+authors = ["Marco Passoni <mpasson91@gmail.com>"]
+license = "AGPLv3+"
+packages = ["lekkersim"]
+repository = "https://github.com/mpasson/lekkersim"
+documentation = "https://lekkersim.readthedocs.io"
 keywords = [
   'photonics',
   'simulation',
@@ -37,12 +32,15 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Topic :: Scientific/Engineering :: Physics",
 ]
-dependencies = [
-    "matplotlib>=3.5.1",
-    "numpy>=1.23.1",
-    "pandas>=1.4.2",
-    "PyYAML>=6.0",
-    "scipy>=1.8.0",
-    "setuptools_git_versioning>=1.13.1",
-]
-dynamic = ["version"]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+dirty = true
+
+[tool.poetry.dependencies]
+python = "^3.9"
+matplotlib = "^3.5.1"
+numpy = "^1.23.1"
+pandas = "^1.4.2"
+PyYAML = "^6.0"
+scipy = "^1.8.0"
