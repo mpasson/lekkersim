@@ -35,7 +35,15 @@ classifiers = [
 [tool.poetry-dynamic-versioning]
 enable = true
 dirty = true
-format = '{base}.post{distance}+git-{commit}.{dirty}'
+format-jinja = """
+    {%- if distance == 0 and dirty==False -%}
+        {{ serialize_pep440(base, stage, revision) }}
+    {%- elif dirty==True -%}
+        {{ serialize_pep440(base, stage, revision, post=distance, metadata=[commit, 'dirty']) }}
+    {%- else -%}
+        {{ serialize_pep440(base, stage, revision, post=distance, metadata=[commit]) }}
+    {%- endif -%}
+"""
 
 [tool.poetry.dependencies]
 python = "^3.9"
