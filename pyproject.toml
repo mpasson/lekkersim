@@ -9,7 +9,6 @@ readme = "README.md"
 version="0.0.0"
 authors = ["Marco Passoni <mpasson91@gmail.com>"]
 license = "AGPLv3+"
-packages = ["lekkersim"]
 repository = "https://github.com/mpasson/lekkersim"
 documentation = "https://lekkersim.readthedocs.io"
 keywords = [
