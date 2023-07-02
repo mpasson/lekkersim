@@ -12,11 +12,17 @@
 """ Initialization file
 """
 import os
-import setuptools_git_versioning
 
-__version__ = setuptools_git_versioning.get_version(
-    root=os.path.join(*os.path.split(os.path.dirname(__file__))[:-1])
-)
+try:
+    from ._version import __version__
+except ModuleNotFoundError:
+    from hatch_vcs.version_source import VCSVersionSource
+    import toml
+
+    basedir = os.path.split(os.path.dirname(__file__))[0]
+    config = toml.load(os.path.join(basedir, "pyproject.toml"))
+    vcs_version = VCSVersionSource(basedir, config["tool"]["hatch"]["version"])
+    __version__ = vcs_version.get_version_data()["version"]
 
 import logging
 

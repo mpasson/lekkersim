@@ -14,3 +14,4 @@ Docs/generated/
 pytest/.coverage
 pytest/htmlcov
 .idea
+dist/*
