@@ -7,7 +7,6 @@ __pycache__
 Docs/jupyter/.ipynb_checkpoints/
 *.log
 jupyter/*.html
-lekkersim/_version.py
 tests
 .gitlab-ci.yml.back
 docs-build/
