@@ -53,6 +53,11 @@ doc = [
   "notebook>=6.5.2",
 ]
 
+[tool.hatch.build]
+include = [
+  "lekkersim/*",
+]
+
 [tool.hatch.version]
 source = "vcs"
 
