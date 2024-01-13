@@ -22,4 +22,3 @@ python:
       extra_requirements:
         - dev
         - doc
-  system_packages: true
