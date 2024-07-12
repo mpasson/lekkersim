@@ -9,12 +9,13 @@
 # -------------------------------------------
 
 
-"""File containing the model calls and related methods
-"""
+"""File containing the model calls and related methods"""
+
 from __future__ import annotations
-import functools
 from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING, Union, Optional, Set
 
+from collections import defaultdict
+import functools
 from copy import deepcopy
 from copy import copy
 import yaml
@@ -29,11 +30,18 @@ from scipy.interpolate import interp1d, LinearNDInterpolator
 from scipy.integrate import quad_vec
 
 import lekkersim.structure
+from lekkersim.pin import Pin
 from lekkersim import sol_list
 from lekkersim import logger
 import lekkersim
 import lekkersim.log
 from lekkersim.utils import line, GaussianBeam, ProtectedPartial
+
+
+def default_to_regular(d):
+    if isinstance(d, defaultdict):
+        d = {k: default_to_regular(v) for k, v in d.items()}
+    return d
 
 
 def diag_blocks(array_list: List[np.ndarray]) -> np.ndarray:
@@ -71,14 +79,14 @@ class Model:
 
     def __init__(
         self,
-        pin_dic: Dict[str, int] = None,
+        pin_dic: Dict[Pin, int] = None,
         param_dic: Dict[str, Any] = None,
         Smatrix: np.ndarray = None,
     ) -> None:
         """Initialize the model
 
         Args:
-            pin_dic (dictionary): list of strings containing the model's pin names
+            pin_dic (dictionary): Dictionary of pins and relative position in the scattering matrix
             param_dic (dictionary): dictionary {'param_name':param_value} containing the definition of
                 the model's parameters.
             Smatrix (ndarray) : Fixed S_matrix of the model
@@ -92,6 +100,19 @@ class Model:
         self.S = np.identity(self.N, complex) if Smatrix is None else Smatrix
         self.param_dic = {} if param_dic is None else param_dic
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
+
+    def update_pins(self) -> dict[str, Pin]:
+        pins = {}
+        for pin in self.pin_dic:
+            if pin.name not in pins:
+                pins[pin.name] = pin
+            else:
+                raise ValueError(
+                    f"In Model {self}: Pin {repr(pin)} and Pin {repr(pins[pin.name])} maps to same pin name."
+                )
+        self.pin = pins
+        return self.pin
 
     def is_empty(self) -> bool:
         """Checks if model is empy
@@ -165,7 +186,7 @@ class Model:
         Returns:
             Pandas DataFrame: Scattering Matrix with name of pins
         """
-        a = list(self.pin_dic.keys())
+        a = [pin.name for pin in self.pin_dic]
         ind = list(self.pin_dic.values())
         indsort = np.argsort(a)
         a = [a[i] for i in indsort]
@@ -193,7 +214,16 @@ class Model:
             logger.warning(
                 f"{self}:Using get_T on a sweep solve. Consider using get_data"
             )
-        return np.abs(self.S[0, self.pin_dic[pin1], self.pin_dic[pin2]]) ** 2.0
+        return (
+            np.abs(
+                self.S[
+                    0,
+                    self.pin_dic[self.pin[pin1]],
+                    self.pin_dic[self.pin[pin2]],
+                ]
+            )
+            ** 2.0
+        )
 
     def get_PH(self, pin1: str, pin2: str) -> float:
         """Function for returning the phase of the transmission between two ports
@@ -211,7 +241,9 @@ class Model:
             logger.warning(
                 f"{self}:Using get_PH on a sweep solve. Consider using get_data"
             )
-        return np.angle(self.S[0, self.pin_dic[pin1], self.pin_dic[pin2]])
+        return np.angle(
+            self.S[0, self.pin_dic[self.pin[pin1]], self.pin_dic[self.pin[pin2]]]
+        )
 
     def get_A(self, pin1: str, pin2: str) -> complex:
         """Function for returning complex amplitude of the transmission between two ports
@@ -227,7 +259,7 @@ class Model:
             logger.warning(
                 f"{self}:Using get_A on a sweep solve. Consider using get_data"
             )
-        return self.S[0, self.pin_dic[pin1], self.pin_dic[pin2]]
+        return self.S[0, self.pin_dic[self.pin[pin1]], self.pin_dic[self.pin[pin2]]]
 
     def expand_mode(self, mode_list: List[str]):
         """This function expands the model by adding additional modes.
@@ -241,20 +273,24 @@ class Model:
         Returns:
             Model : new model with expanded modes
         """
+        for pin in self.pin_dic:
+            if pin.mode_name is not None:
+                raise Exception("Model already has modes")
         self.np = len(mode_list)
         self.mode_list = mode_list
         new_pin_dic = {}
-        for name, n in self.pin_dic.items():
+        for pin, n in self.pin_dic.items():
             for i, mode in enumerate(self.mode_list):
-                new_pin_dic[f"{name}_{mode}"] = i * self.N + n
+                new_pin_dic[Pin(pin.name, mode)] = i * self.N + n
         self.pin_dic = new_pin_dic
+        self.pin: dict[str, Pin] = {pin.name: pin for pin in self.pin_dic}
         self._create_S = self.create_S
         self.create_S = self._expand_S
         self.N = self.N * self.np
         return self
 
     def get_output(
-        self, input_dic: Dict[str, float], power: bool = True
+        self, input_dic: Dict[str, float | complex], power: bool = True
     ) -> Dict[str, float]:
         """Returns the outputs from all ports of the model given the inputs amplitudes
 
@@ -272,27 +308,31 @@ class Model:
             logger.warning(
                 f"{self}:Using get_output on a sweep solve. Consider using get_full_output"
             )
+        input_pin_dic: dict[Pin, float | complex] = {
+            self.pin[name]: value for name, value in input_dic.items()
+        }
+
         l1 = list(self.pin_dic.keys())
-        l2 = list(input_dic.keys())
+        l2 = list(input_pin_dic.keys())
         for pin in l2:
             l1.remove(pin)
         if l1 != []:
             for pin in l1:
-                input_dic[pin] = 0.0 + 0.0j
+                input_pin_dic[pin] = 0.0 + 0.0j
         u = np.zeros(self.N, complex)
         for pin, i in self.pin_dic.items():
-            u[i] = input_dic[pin]
+            u[i] = input_pin_dic[pin]
         d = np.dot(self.S[0, :, :], u)
         out_dic = {}
         for pin, i in self.pin_dic.items():
-            if power:
-                out_dic[pin] = np.abs(d[i]) ** 2.0
-            else:
-                out_dic[pin] = d[i]
+            out_dic[pin.name] = np.abs(d[i]) ** 2.0 if power else d[i]
         return out_dic
 
     def put(
-        self, source_pin: str = None, target_pin=None, param_mapping={}
+        self,
+        source_pin: Optional[str | Pin] = None,
+        target_pin: Optional[lekkersim.StructurePin] = None,
+        param_mapping: Optional[dict] = None,
     ) -> lekkersim.Structure:
         """Function for putting a model in a Solver object, and eventually specify connections
 
@@ -309,10 +349,13 @@ class Model:
          Returns:
              Structure: the Structure instance created from the model
         """
-        # ST=solver.structure.Structure(model=deepcopy(self),param_mapping=param_mapping)
+        if isinstance(source_pin, str):
+            source_pin = self.pin[source_pin]
+
+        param_mapping = param_mapping or {}
         ST = lekkersim.structure.Structure(model=self, param_mapping=param_mapping)
         sol_list[-1].add_structure(ST)
-        if (source_pin is not None) and (target_pin is not None):
+        if source_pin is not None and target_pin is not None:
             sol_list[-1].connect(ST, source_pin, target_pin[0], target_pin[1])
         return ST
 
@@ -360,7 +403,7 @@ class Model:
             print(f"{pin:5s}:{n:5}")
         print("")
 
-    def pin_mapping(self, pin_mapping: Dict[str, str]):
+    def pin_mapping(self, pin_mapping: Dict[Pin, Pin]):
         """Function for changing the names of the pins of a model
 
         Args:
@@ -394,31 +437,23 @@ class Model:
         """
         return self.pin_dic == {}
 
-    def get_pin_modes(self, pin: str) -> List[Tuple[str, str]]:
+    def get_pin_modes(self, basename: str) -> List[str]:
         """Parse the pins for locating the pins with the same base name
 
         Assumes for the pins a name in the form pinname_modename.
 
         Args:
-            pin (str): base name of the pin
+            basename (str): base name of the pin
 
         Returns:
             list: list of modenames for which pinname==pin
         """
-        li = []
-        for _pin in self.pin_dic:
-            try:
-                pinname, modename = _pin.split("_")
-            except ValueError:
-                pinname, modename = _pin, ""
-            if pinname == pin:
-                li.append((pinname, modename))
-        return li
+        return [pin.mode_name for pin in self.pin_dic if pin.basename == basename]
 
     def get_pin_basenames(self) -> List[str]:
         """Returns a list of the basenames of the pins"""
-        pin_basenamens = set([pinname.split("_")[0] for pinname in self.pin_dic])
-        return list(pin_basenamens)
+        basenames = [pin.basename for pin in self.pin_dic]
+        return list(set(basenames))
 
     def __str__(self):
         """Formatter function for printing"""
@@ -433,9 +468,9 @@ class SolvedModel(Model):
 
     def __init__(
         self,
-        pin_dic: Optional[Dict[str, int]] = None,
-        param_dic: Optional[Dict[str, Any]] = None,
-        Smatrix: Optional[np.ndarray] = None,
+        pin_dic: Dict[Pin, int],
+        param_dic: Dict[str, Any],
+        Smatrix: np.ndarray,
         int_func: Optional[Callable] = None,
         monitor_mapping: Optional[Dict[str, Tuple[lekkersim.Structure, str]]] = None,
         name: Optional[str] = None,
@@ -502,12 +537,12 @@ class SolvedModel(Model):
                     params[name] = values
                 else:
                     raise Exception("Not able to convert to pandas")
-        params["T"] = np.abs(self.S[:, self.pin_dic[pin1], self.pin_dic[pin2]]) ** 2.0
-        params["dB"] = 20.0 * np.log10(
-            np.abs(self.S[:, self.pin_dic[pin1], self.pin_dic[pin2]])
-        )
-        params["Phase"] = np.angle(self.S[:, self.pin_dic[pin1], self.pin_dic[pin2]])
-        params["Amplitude"] = self.S[:, self.pin_dic[pin1], self.pin_dic[pin2]]
+
+        i1, i2 = self.pin_dic[self.pin[pin1]], self.pin_dic[self.pin[pin2]]
+        params["T"] = np.abs(self.S[:, i1, i2]) ** 2.0
+        params["dB"] = 20.0 * np.log10(np.abs(self.S[:, i1, i2]))
+        params["Phase"] = np.angle(self.S[:, i1, i2])
+        params["Amplitude"] = self.S[:, i1, i2]
         pan = pd.DataFrame.from_dict(params)
         return pan
 
@@ -526,6 +561,11 @@ class SolvedModel(Model):
             pandas DataFrame: DataFrame with the outputs. It has one column for each parameter
                 given to solve plus one column for each pin.
         """
+
+        input_pin_dic: dict[Pin, float | complex] = {
+            self.pin[name]: value for name, value in input_dic.items()
+        }
+
         params = {}
         if self.ns == 1:
             params = deepcopy(self.solved_params)
@@ -539,28 +579,29 @@ class SolvedModel(Model):
                     raise Exception("Not able to convert to pandas")
 
         l1 = list(self.pin_dic.keys())
-        l2 = list(input_dic.keys())
+        l2 = list(input_pin_dic.keys())
         for pin in l2:
             l1.remove(pin)
         if l1 != []:
             for pin in l1:
-                input_dic[pin] = 0.0 + 0.0j
+                input_pin_dic[pin] = 0.0 + 0.0j
         u = np.zeros(self.N, complex)
         for pin, i in self.pin_dic.items():
-            u[i] = input_dic[pin]
+            u[i] = input_pin_dic[pin]
 
         output = np.matmul(self.S, u)
 
         for pin, i in self.pin_dic.items():
-            params[pin] = np.abs(output[:, i]) ** 2.0 if power else output[:, i]
+            params[pin.name] = np.abs(output[:, i]) ** 2.0 if power else output[:, i]
         pan = pd.DataFrame.from_dict(params)
         return pan
 
     def get_full_data(self) -> pd.DataFrame:
         """Returns the scattering matrix for all the solved parametes in form of padas DataFrame"""
-        params = {}
+        params: dict[Union[str, tuple], Any] = {}
         if self.ns == 1:
-            params = deepcopy(self.solved_params)
+            _copy = deepcopy(self.solved_params)
+            params.update(_copy)
         else:
             for name, values in self.solved_params.items():
                 if len(values) == 1:
@@ -617,23 +658,21 @@ class SolvedModel(Model):
                 solved_parameters_units[par] = units[par]
         metadata["units"].update(solved_parameters_units)
         metadata["port_modes"] = {
-            name: [_[1] for _ in self.get_pin_modes(name)]
+            name: [_ for _ in self.get_pin_modes(name)]
             for name in self.get_pin_basenames()
         }
 
-        metadata["smatrix_map"] = {
-            pinin: {
-                pinout: {
-                    modein[1]: {
-                        modeout[1]: f"{pinin}_{modein[1]}//{pinout}_{modeout[1]}"
-                        for modeout in self.get_pin_modes(pinout)
-                    }
-                    for modein in self.get_pin_modes(pinin)
-                }
-                for pinout in self.get_pin_basenames()
-            }
-            for pinin in self.get_pin_basenames()
-        }
+        metadata["smatrix_map"] = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(dict))
+        )
+
+        for pinin in self.pin_dic:
+            for pinout in self.pin_dic:
+                metadata["smatrix_map"][pinin.basename][pinout.basename][
+                    pinin.mode_name
+                ][pinout.mode_name] = f"{pinin}//{pinout}"
+
+        metadata["smatrix_map"] = default_to_regular(metadata["smatrix_map"])
 
         return metadata
 
@@ -645,11 +684,7 @@ class SolvedModel(Model):
                 continue
             col = full_data.pop(column)
             fullin, fullout = column
-            fullin = fullin.split("_")
-            fullout = fullout.split("_")
-            (pinin, modein) = (fullin[0], "") if len(fullin) == 1 else fullin
-            (pinout, modeout) = (fullout[0], "") if len(fullout) == 1 else fullout
-            name = f"{pinin}_{modein}//{pinout}_{modeout}"
+            name = f"{fullin}//{fullout}"
             full_data[f"{name}:abs2"] = np.abs(col) ** 2.0
             full_data[f"{name}:phase"] = np.angle(col)
         return full_data
@@ -704,6 +739,10 @@ class SolvedModel(Model):
             pandas DataFrame: DataFrame with the amplitude at the ports. It has one column for each
                 parameter given to solve plus two columns for monitor port.
         """
+        input_pin_dic: dict[Pin, float | complex] = {
+            self.pin[name]: value for name, value in input_dic.items()
+        }
+
         params = {}
         if self.ns == 1:
             params = deepcopy(self.solved_params)
@@ -716,7 +755,7 @@ class SolvedModel(Model):
                 else:
                     raise Exception("Not able to convert to pandas")
 
-        u, d = self.int_func(input_dic)
+        u, d = self.int_func(input_pin_dic)
         for pin, i in self.monitor_mapping.items():
             params[f"{pin}_i"] = np.abs(u[:, i]) ** 2.0 if power else u[:, i]
             params[f"{pin}_o"] = np.abs(d[:, i]) ** 2.0 if power else d[:, i]
@@ -738,13 +777,17 @@ class Waveguide(Model):
             n (float or complex): effective index of the waveguide
             wl (float) : default wavelength of the waveguide
         """
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.N = 2
         self.S = np.identity(self.N, complex)
         self.L = L
         self.param_dic = {"wl": wl}
         self.n = n
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
@@ -784,16 +827,12 @@ class UserWaveguide(Model):
                 Default is for 1 mode, with no name and no parameters
         """
 
-        self.allowed = {"": {}} if allowedmodes is None else allowedmodes
+        self.allowed = {None: {}} if allowedmodes is None else allowedmodes
         self.pin_dic = {}
 
         for i, mode in enumerate(self.allowed):
-            if mode == "":
-                self.pin_dic["a0"] = 2 * i
-                self.pin_dic["b0"] = 2 * i + 1
-            else:
-                self.pin_dic[f"a0_{mode}"] = 2 * i
-                self.pin_dic[f"b0_{mode}"] = 2 * i + 1
+            self.pin_dic[Pin("a0", mode)] = 2 * i
+            self.pin_dic[Pin("b0", mode)] = 2 * i + 1
 
         self.N = len(self.pin_dic)
         self.S = np.identity(self.N, complex)
@@ -802,6 +841,7 @@ class UserWaveguide(Model):
 
         self.index_func = func
         self.L = L
+        self.update_pins()
 
     def create_S(self) -> np.ndarray:
         """Created the scattering Matrix"""
@@ -830,7 +870,12 @@ class BeamSplitter(Model):
                 no loss in the component.
             phase (float) : phase shift of the transmitted ray (in unit of pi). Default to 0.0
         """
-        self.pin_dic = {"a0": 0, "a1": 1, "b0": 2, "b1": 3}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("a1"): 1,
+            Pin("b0"): 2,
+            Pin("b1"): 3,
+        }
         self.N = 4
         self.ratio = ratio
         self.phase = phase
@@ -844,6 +889,7 @@ class BeamSplitter(Model):
         # self.S[2:,:2]=np.array([[t,c],[c,-t]])
         self.S[:2, 2:] = np.exp(2.0j * np.pi * phase) * np.array([[t, c], [c, t]])
         self.S[2:, :2] = np.exp(2.0j * np.pi * phase) * np.array([[t, c], [c, t]])
+        self.update_pins()
 
     def __str__(self):
         """Formatter function for printing"""
@@ -855,7 +901,11 @@ class Splitter1x2(Model):
 
     def __init__(self) -> None:
         """Initialize the model"""
-        self.pin_dic = {"a0": 0, "b0": 1, "b1": 2}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+            Pin("b1"): 2,
+        }
         self.N = 3
         self.S = (
             1.0
@@ -864,6 +914,7 @@ class Splitter1x2(Model):
         )
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
     def __str__(self):
         return f"Model of 1x2 splitter (id={id(self)})"
@@ -881,7 +932,11 @@ class Splitter1x2Gen(Model):
             cross (float) : ratio of reflection (power ratio)
             phase (float) : phase shift of the reflected ray (in unit of pi)
         """
-        self.pin_dic = {"a0": 0, "b0": 1, "b1": 2}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+            Pin("b1"): 2,
+        }
         self.N = 3
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
@@ -896,6 +951,7 @@ class Splitter1x2Gen(Model):
             ],
             complex,
         )
+        self.update_pins()
 
 
 class PhaseShifter(Model):
@@ -909,11 +965,15 @@ class PhaseShifter(Model):
             param_default (float): default value of the Phase Shift in pi units
         """
         self.param_dic = {}
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.N = 2
         self.pn = param_name
         self.param_dic = {param_name: param_default}
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
@@ -937,11 +997,17 @@ class PushPullPhaseShifter(Model):
             param_name (str) : name of the parameter of the Phase Shifter
         """
         self.param_dic = {}
-        self.pin_dic = {"a0": 0, "b0": 1, "a1": 2, "b1": 3}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+            Pin("a1"): 2,
+            Pin("b1"): 3,
+        }
         self.N = 4
         self.pn = param_name
         self.param_dic = {param_name: 0.0}
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
@@ -975,7 +1041,12 @@ class PolRot(Model):
             angle (float) : fixed value of the rotation angle (in pi units). Default is None
             angle_name (str) : name of the angle parameter
         """
-        self.pin_dic = {"a0_pol0": 0, "a0_pol1": 1, "b0_pol0": 2, "b0_pol1": 3}
+        self.pin_dic = {
+            Pin("a0", mode_name="pol0"): 0,
+            Pin("a0", mode_name="pol1"): 1,
+            Pin("b0", mode_name="pol0"): 2,
+            Pin("b0", mode_name="pol1"): 3,
+        }
         self.N = 4
         self.param_dic = {}
         if angle is None:
@@ -990,6 +1061,7 @@ class PolRot(Model):
             self.S[:2, 2:] = np.array([[c, s], [-s, c]])
             self.S[2:, :2] = np.array([[c, -s], [s, c]])
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
@@ -1019,13 +1091,17 @@ class Attenuator(Model):
             loss: value of the loss (in dB)
         """
         self.param_dic = {}
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.N = 2
         self.loss = loss
         self.S = np.zeros((self.N, self.N), complex)
         self.S[0, 1] = 10.0 ** (-0.05 * loss)
         self.S[1, 0] = 10.0 ** (-0.05 * loss)
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
 
 class LinearAttenuator(Model):
@@ -1041,12 +1117,16 @@ class LinearAttenuator(Model):
                 0.0 -> no light transmitted
         """
         self.param_dic = {}
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.N = 2
         self.S = np.zeros((self.N, self.N), complex)
         self.S[0, 1] = np.sqrt(c)
         self.S[1, 0] = np.sqrt(c)
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
 
 class Mirror(Model):
@@ -1059,7 +1139,10 @@ class Mirror(Model):
             ref (float) : ratio of reflected power
             phase (float): phase shift of the reflected ray (in pi units)
         """
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
         self.N = 2
@@ -1071,6 +1154,7 @@ class Mirror(Model):
         self.S = np.array(
             [[t * np.exp(1.0j * p1), c], [-c, t * np.exp(-1.0j * p1)]], complex
         )
+        self.update_pins()
 
 
 class PerfectMirror(Model):
@@ -1082,13 +1166,14 @@ class PerfectMirror(Model):
         Args:
             phase (float): phase of the reflected ray (in pi unit)
         """
-        self.pin_dic = {"a0": 0}
+        self.pin_dic = {Pin("a0"): 0}
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
         self.N = 1
         self.phase = phase
         p1 = np.pi * self.phase
         self.S = np.array([[np.exp(1.0j * p1)]], complex)
+        self.update_pins()
 
 
 class FPR_NxM(Model):
@@ -1104,8 +1189,8 @@ class FPR_NxM(Model):
         """
         self.param_dic = {}
         self.default_params = deepcopy(self.param_dic)
-        self.pin_dic = {f"a{i}": i for i in range(N)}
-        self.pin_dic.update({f"b{i}": N + i for i in range(M)})
+        self.pin_dic = {Pin(f"a{i}"): i for i in range(N)}
+        self.pin_dic.update({Pin(f"b{i}"): N + i for i in range(M)})
         Sint = np.zeros((N, M), complex)
         for i in range(N):
             for j in range(M):
@@ -1120,6 +1205,7 @@ class FPR_NxM(Model):
             ],
             axis=0,
         )
+        self.update_pins()
 
 
 class Ring(Model):
@@ -1134,7 +1220,10 @@ class Ring(Model):
             alpha (float) : one trip loss coefficient (remaining complex amplitude)
             t (float) : transmission of the beam splitter (complex amplitude)
         """
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.N = 2
         self.S = np.identity(self.N, complex)
         self.R = R
@@ -1143,6 +1232,7 @@ class Ring(Model):
         self.t = t
         self.param_dic = {"wl": None}
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
@@ -1185,13 +1275,17 @@ class TH_PhaseShifter(Model):
             pol (int)  : default mode of the waveguide
             param_name (str) : name of the parameter of the Phase Shifter
         """
-        self.pin_dic = {"a0": 0, "b0": 1}
+        self.pin_dic = {
+            Pin("a0"): 0,
+            Pin("b0"): 1,
+        }
         self.N = 2
         self.Neff = Neff
         self.L = L
         self.pn = param_name
         self.param_dic = {"R": R, "w": w, "wl": wl, "pol": pol, param_name: 0.0}
         self.default_params = deepcopy(self.param_dic)
+        self.update_pins()
 
     def create_S(self) -> np.ndarray:
         """Function for returning the scattering matrix of the model
@@ -1308,9 +1402,9 @@ class FPR(Model):
         self.n, self.m = n, m
         self.d1, self.d2 = d1, d2
         self.R = R
-        d1 = {f"a{i:03}": i for i in range(n)}
-        d2 = {f"b{i:03}": n + i for i in range(m)}
-        dic = {**d1, **d2}
+        _d1 = {Pin(f"a{i:03}"): i for i in range(n)}
+        _d2 = {Pin(f"b{i:03}"): n + i for i in range(m)}
+        dic = {**_d1, **_d2}
         super().__init__(pin_dic=dic)
         t1 = self.d1 / Ri * np.array(line(n))
         t2 = self.d2 / R * np.array(line(m))
@@ -1373,9 +1467,9 @@ class FPRGaussian(Model):
         self.n_slab = n_slab
         self.w1 = w1
         self.w2 = w2
-        d1 = {f"a{i:03}": i for i in range(n)}
-        d2 = {f"b{i:03}": n + i for i in range(m)}
-        dic = {**d1, **d2}
+        _d1 = {Pin(f"a{i:03}"): i for i in range(n)}
+        _d2 = {Pin(f"b{i:03}"): n + i for i in range(m)}
+        dic = {**_d1, **_d2}
         super().__init__(pin_dic=dic)
 
         self.t1 = self.d1 / Ri * line(n)
@@ -1450,7 +1544,7 @@ class FPRGaussian(Model):
         x_out = [el[0] for el in self.pos2]
         y_in = [el[1] for el in self.pos1]
         y_out = [el[1] for el in self.pos2]
-        if ax in None:
+        if ax is None:
             fig, ax = plt.subplots()
         ax.scatter(x_in, y_in, label="input")
         ax.scatter(x_out, y_out, label="output")
@@ -1482,8 +1576,8 @@ class CWA(Model):
         self.n = n
         self.k = k
         self.L = L
-        d1 = {f"a{i}": i for i in range(N)}
-        d2 = {f"b{i}": N + i for i in range(N)}
+        d1 = {Pin(f"a{i}"): i for i in range(N)}
+        d2 = {Pin(f"b{i}"): N + i for i in range(N)}
         dic = {**d1, **d2}
         super().__init__(pin_dic=dic)
         i, j = list(range(N)), list(range(N))
@@ -1584,8 +1678,7 @@ class Model_from_InPulse(Model):
         _i = 0
         for pin, modes in port_modes.items():
             for mode in modes:
-                name = pin if mode == "" else f"{pin}_{mode}"
-                pin_dic[name] = _i
+                pin_dic[Pin(pin, mode)] = _i
                 _i += 1
         return pin_dic
 
@@ -1609,13 +1702,9 @@ class Model_from_InPulse(Model):
                 for modein, modes_out in modes.items():
                     for modeout, column in modes_out.items():
                         if column:
-                            name1 = pin if modein == "" else f"{pin}_{modein}"
-                            name2 = (
-                                pin_target
-                                if modeout == ""
-                                else f"{pin_target}_{modeout}"
-                            )
-                            map_columns[(name1, name2)] = column
+                            pin1 = Pin(pin, modein)
+                            pin2 = Pin(pin_target, modeout)
+                            map_columns[(pin1, pin2)] = column
                             columns.add(column)
         return columns, map_columns
 
@@ -1679,3 +1768,8 @@ class Model_from_InPulse(Model):
             S[self.pin_dic[pin_in], self.pin_dic[pin_out]] = amplitudes[column]
         self.S = S
         return S
+
+
+if __name__ == "__main__":
+    wg = Waveguide(n=1.0, L=100.0)
+    print(wg.solve(wl=1.55).S2PD())

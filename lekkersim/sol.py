@@ -12,7 +12,8 @@ from typing import Any, List, Dict, Tuple, Callable
 import numpy as np
 from copy import copy
 from copy import deepcopy
-from lekkersim.structure import Structure
+from lekkersim.pin import Pin
+from lekkersim.structure import Structure, StructurePin
 from lekkersim import sol_list
 from lekkersim import logger
 from lekkersim.utils import map_args
@@ -42,8 +43,8 @@ class Solver:
         self,
         name: str = None,
         structures: List[Structure] = None,
-        connections: Dict[Tuple[Structure, str], Tuple[Structure, str]] = None,
-        pin_mapping: Dict[str, Tuple[Structure, str]] = None,
+        connections: Dict[StructurePin, StructurePin] = None,
+        pin_mapping: Dict[Pin, StructurePin] = None,
         param_dic: Dict[str, Any] = None,
         param_mapping: Dict[str, str] = None,
     ) -> None:
@@ -218,19 +219,27 @@ class Solver:
         self.monitor_st[structure] = name
 
     def connect(
-        self, structure1: Structure, pin1: str, structure2: Structure, pin2: str
+        self,
+        structure1: Structure,
+        pin1: Pin | str,
+        structure2: Structure,
+        pin2: Pin | str,
     ) -> None:
         """Connect two different structures in the solver by the specified pins
 
         Args:
             structure1 (Structure) : first structure
-            pin1 (str) : pin of first structure
+            pin1 (Pin | str) : pin or pin name of first structure
             structure2 (Structure) : second structure
-            pin2 (str) : pin of second structure
+            pin2 (Pin | str) : pin or pin name of second structure
 
         Returns:
             None
         """
+        if isinstance(pin1, str):
+            pin1 = structure1.pin[pin1][1]
+        if isinstance(pin2, str):
+            pin2 = structure2.pin[pin2][1]
         if (structure1, pin1) in self.connections_list:
             if (structure1, pin1) in self.connections and self.connections[
                 (structure1, pin1)
@@ -252,15 +261,19 @@ class Solver:
         structure2.add_conn(pin2, structure1, pin1)
 
     def connect_all(
-        self, structure1: Structure, pin1: str, structure2: Structure, pin2: str
+        self,
+        structure1: Structure,
+        basename1: str,
+        structure2: Structure,
+        basename2: str,
     ) -> None:
         """Connect the two structures using all the pins with the matching basename
 
         Args:
             structure1 (Structure): first structure
-            pin1 (str): basename of pin in structure1
+            basename1 (str): basename of pin in structure1
             structure2 (Structure): second structure
-            pin2 (str): basename of pin in structure2
+            basename2 (str): basename of pin in structure2
 
         Returns:
             None
@@ -273,8 +286,8 @@ class Solver:
             )
         modes = modes1.intersection(modes2)
         for m in modes:
-            p1 = pin1 if m == "" else "_".join([pin1, m])
-            p2 = pin2 if m == "" else "_".join([pin2, m])
+            p1 = Pin(basename1, m)
+            p2 = Pin(basename2, m)
             self.connect(structure1, p1, structure2, p2)
 
     def show_free_pins(self) -> None:
@@ -309,16 +322,28 @@ class Solver:
         except AttributeError:
             print("  No mapping defined")
 
-    def map_pins(self, pin_mapping: Dict[str, Tuple[Structure, str]]):
+    def map_pins(self, pin_mapping: Dict[Pin | str, StructurePin]):
         """Add mapping of pins
 
+        it the pin mapping is provided with a string, only the basename can be set. For setting the mode name too, please use the Pin object
+
         Args:
-            pin_mapping (dict): dictionary of pin mapping in the form {pin_name (str) : (structure (Structure), pin (str) )}
+            pin_mapping (dict): dictionary of pin mapping in the form {pin object or pin name : (structure (Structure), pin (str) )}
 
         Returns:
             None
         """
-        self.pin_mapping.update(pin_mapping)
+        converted_pin_mapping = {}
+        for pin, (structure, target) in pin_mapping.items():
+            _to = Pin(pin) if isinstance(pin, str) else pin
+            _from = (
+                structure.pin[target]
+                if isinstance(target, str)
+                else (structure, target)
+            )
+            converted_pin_mapping[_to] = _from
+
+        self.pin_mapping.update(converted_pin_mapping)
 
     def solve(self, **kwargs) -> SolvedModel:
         """Calculates the scattering matrix of the solver
@@ -423,8 +448,8 @@ class Solver:
 
     def put(
         self,
-        source_pin: str = None,
-        target_pin: Tuple[Structure, str] = None,
+        source_pin: str | Pin = None,
+        target_pin: StructurePin = None,
         param_mapping: Dict[str, str] = None,
     ) -> Structure:
         """Function for putting a Solver in another Solver object, and eventually specify connections
@@ -440,6 +465,14 @@ class Solver:
         Returns:
             Structure: the Structure instance created from the Solver
         """
+        if isinstance(source_pin, str):
+            for pin in self.pin_mapping:
+                if pin.name == source_pin:
+                    source_pin = pin
+                    break
+            else:
+                raise ValueError(f"Pin {source_pin} not found in {self}")
+
         if param_mapping is None:
             param_mapping = {}
         # ST=Structure(solver=deepcopy(self),param_mapping=param_mapping)
@@ -731,36 +764,10 @@ class Solver:
         return solvers
 
 
-class Pin:
-    """Helper class for more user friendly pin mapping (same as Nazca sintax"""
-
-    def __init__(self, name: str, pin: Tuple[Structure, str] = None):
-        """
-
-        Args:
-            name (str) : name of the pin
-            pin (tuple) : tuple of (structure (Structure), pin (str)) containing the data to the pin to be mapped
-        """
-        self.name = name
-        self.pin = None
-
-    def put(self, pin: Tuple[Structure, str] = None):
-        """Maps the pins in the tuple to self.name
-
-        Args:
-            pin (tuple) : tuple of (structure (Structure), pin (str)) containing the data to the pin to be mapped
-        """
-        if pin is not None:
-            self.pin = pin
-
-        if self.pin is not None:
-            sol_list[-1].map_pins({self.name: pin})
-
-
 sol_list.append(Solver())
 
 
-def putpin(name: str, tup: Tuple[Structure, str]) -> None:
+def putpin(name: str, tup: StructurePin) -> None:
     """Maps a pin of the current active solver
 
     Args:
@@ -770,7 +777,7 @@ def putpin(name: str, tup: Tuple[Structure, str]) -> None:
     sol_list[-1].map_pins({name: tup})
 
 
-def connect(tup1: Tuple[Structure, str], tup2: Tuple[Structure, str]) -> None:
+def connect(tup1: StructurePin, tup2: StructurePin) -> None:
     """Connect two structures in the active Solver
 
     Args:

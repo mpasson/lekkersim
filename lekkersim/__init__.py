@@ -9,8 +9,8 @@
 # -------------------------------------------
 
 
-""" Initialization file
-"""
+"""Initialization file"""
+
 from ._version import __version__
 
 import logging
@@ -22,6 +22,6 @@ sol_list = []
 from .log import logfile, debugfile
 from .pin import Pin
 from .scattering import S_matrix
-from .structure import Structure
+from .structure import Structure, StructurePin
 from .sol import *
 from .model import *

@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import List, Dict, Tuple, Any, Optional
+from typing import List, Dict, Tuple, Any, Optional, TYPE_CHECKING
 
 import numpy as np
 import pandas
 import lekkersim
+from lekkersim.pin import Pin
 from lekkersim.scattering import S_matrix
 from copy import deepcopy
 from copy import copy
@@ -23,7 +24,7 @@ class Structure:
 
     def __init__(
         self,
-        pin_list: List[str] = [],
+        pin_list: List[Pin] = [],
         model: lekkersim.Model = None,
         solver: lekkersim.Solver = None,
         param_mapping: Dict[str, str] = None,
@@ -68,13 +69,15 @@ class Structure:
             return f"{self.__class__.__name__} instance at {id(self)}>"
 
     @property
-    def pin(self) -> Dict[str, Tuple[Structure, str]]:
+    def pin(self) -> Dict[str, StructurePin]:
         """Alllows the feeding of the sintax structure.pin['pin_name'] where the tuple of structure and pin is required
 
         Returns:
             dict: Dictionary of the pins, in the format {'pinname' : (self, pinname)}
         """
-        dic = {pin: (self, pin) for sl, pin in self.pin_list}
+        dic = {pin.name: (self, pin) for sl, pin in self.pin_list}
+        if len(dic) != len(self.pin_list):
+            raise ValueError(f"There are repeated pin names in structure {self}")
         return dic
 
     @property
@@ -82,23 +85,15 @@ class Structure:
         """Number of pins in a structure"""
         return len(self.pin_list)
 
-    def get_pin_basenames(self) -> str:
+    def get_pin_basenames(self) -> list[str]:
         """Return the set of the basename of the pins"""
-        return set([pin[1].split("_")[0] for pin in self.pin_list])
+        return list(set([pin.basename for pin in self.pin_list]))
 
     def get_pin_modenames(self, target) -> List[str]:
         """Return list of mode names given a pin basename"""
-        li = []
-        for pin in self.pin_list:
-            try:
-                pinname, modename = pin[1].split("_")
-            except ValueError:
-                pinname, modename = pin[1], ""
-            if pinname == target:
-                li.append(modename)
-        return li
+        return [_[1].mode_name for _ in self.pin_list if _[1].basename == target]
 
-    def get_pins(self, basename=None) -> List[Tuple[Structure, str]]:
+    def get_pins(self, basename=None) -> List[StructurePin]:
         """Return list of the pins tuple
 
         Args:
@@ -110,7 +105,7 @@ class Structure:
         if basename is None:
             return self.pin_list
         else:
-            return [pin for pin in self.pin_list if pin.split("_")[0] == basename]
+            return [pin for pin in self.pin_list if pin[1].basename == basename]
 
     def update_params(self, param_dic: Dict[str, Any]) -> None:
         """Updated the parametes dictionary of the represented optic componet
@@ -166,7 +161,7 @@ class Structure:
         self.gone_to = self
         self.param_dic = {}
 
-    def add_pin(self, pin: Tuple[Structure, str]) -> None:
+    def add_pin(self, pin: StructurePin) -> None:
         """Add pin to structure
 
         Args:
@@ -182,7 +177,7 @@ class Structure:
             self.pin_dic[pin] = self.N
             self.N += 1
 
-    def sel_input(self, pin_list: List[Tuple[Structure, str]]) -> None:
+    def sel_input(self, pin_list: List[StructurePin]) -> None:
         """Divide pins to be connected providing inputs pins
 
         Args:
@@ -197,7 +192,7 @@ class Structure:
             self.in_list.append(pin)
             self.out_list.remove(pin)
 
-    def sel_output(self, pin_list: List[Tuple[Structure, str]]) -> None:
+    def sel_output(self, pin_list: List[StructurePin]) -> None:
         """Divide pins to be connected providing output pins
 
         Args:
@@ -215,8 +210,8 @@ class Structure:
 
     def split_in_out(
         self,
-        in_pins: List[Tuple[Structure, str]] = None,
-        out_pins: List[Tuple[Structure, str]] = None,
+        in_pins: List[StructurePin] = None,
+        out_pins: List[StructurePin] = None,
     ) -> None:
         """Created the scattering matrix object with left pins separated from right pins
 
@@ -290,9 +285,7 @@ class Structure:
                     if c is cc:
                         print(c, pinname)
 
-    def add_conn(
-        self, pin: str, target: Structure, target_pin: Tuple[Structure, str]
-    ) -> None:
+    def add_conn(self, pin: Pin, target: Structure, target_pin: Pin) -> None:
         """Add connection between a self pin and a pin in another structure
 
         Args:
@@ -312,7 +305,7 @@ class Structure:
         if target not in self.connected_to:
             self.connected_to.append(target)
 
-    def remove_pin(self, pin: str) -> None:
+    def remove_pin(self, pin: StructurePin) -> None:
         """Remove pin from structure
 
         Args:
@@ -372,7 +365,7 @@ class Structure:
             if t is target:
                 self.remove_pin(pin)
 
-    def get_out_to(self, st: Structure) -> List[Tuple[Structure, str]]:
+    def get_out_to(self, st: Structure) -> List[StructurePin]:
         """Find pins of self with are connected to a target structure
 
         Args:
@@ -388,7 +381,7 @@ class Structure:
                 pin_list.append((loc_c, loc_name))
         return pin_list
 
-    def get_in_from(self, st: Structure) -> List[Tuple[Structure, str]]:
+    def get_in_from(self, st: Structure) -> List[StructurePin]:
         """Find pins of self with are connected from a target structure
 
         Args:
@@ -505,9 +498,7 @@ class Structure:
 
         return new_st
 
-    def intermediate(
-        self, st: Structure, pin_mapping: Dict[str, Tuple[Structure, str]]
-    ) -> None:
+    def intermediate(self, st: Structure, pin_mapping: Dict[Pin, StructurePin]) -> None:
         """Used to generate the function for monitoring the modes between two structures
 
         This function is use to generate tge function to coumpe the modes amplitude at selected internal ports between 2 structures.
@@ -541,7 +532,7 @@ class Structure:
         self.split_in_out(self.in_list, self.out_list)
         st.split_in_out(st.in_list, st.out_list)
 
-        def solve_inter(dic: Dict[str, complex]) -> Tuple[np.ndarray]:
+        def solve_inter(dic: Dict[Pin, complex]) -> Tuple[np.ndarray]:
             """This function calculates the couefficient of the internal modes
 
             Args:
@@ -566,7 +557,7 @@ class Structure:
 
     def get_model(
         self,
-        pin_mapping: Optional[Dict[str, Tuple[Structure, str]]] = None,
+        pin_mapping: Optional[Dict[Pin, StructurePin]] = None,
         name: Optional[str] = None,
     ):
         """Retunrn model corresponding to structure
@@ -598,7 +589,7 @@ class Structure:
         )
         return MOD
 
-    def raise_pins(self, pini: List[str] = None, pino: List[str] = None):
+    def raise_pins(self, pini: List[Pin] = None, pino: List[Pin] = None):
         """Raises  some pins of the structure into the solver
 
         Args:
@@ -624,16 +615,19 @@ class Structure:
         pin_mapping = {_pino: (self, _pini) for _pino, _pini in zip(pino, pini)}
         lekkersim.sol_list[-1].map_pins(pin_mapping)
 
-    # def return_model(self):
-    #    return self.model
 
-    # def get_T(self,pin1,pin2):
-    #    self.createS()
-    #    return np.abs(self.Smatrix[self.pin_dic[(self,pin1)],self.pin_dic[(self,pin2)]])**2.0
+StructurePin = tuple[Structure, Pin]
 
-    # def get_output(self,input_dic,power=True):
-    #    try:
-    #        ret=self.model.get_output(input_dic,power=power)
-    #        return ret
-    #    except AttributeError:
-    #        raise ValueError('This structure does not have a model')
+# def return_model(self):
+#    return self.model
+
+# def get_T(self,pin1,pin2):
+#    self.createS()
+#    return np.abs(self.Smatrix[self.pin_dic[(self,pin1)],self.pin_dic[(self,pin2)]])**2.0
+
+# def get_output(self,input_dic,power=True):
+#    try:
+#        ret=self.model.get_output(input_dic,power=power)
+#        return ret
+#    except AttributeError:
+#        raise ValueError('This structure does not have a model')
