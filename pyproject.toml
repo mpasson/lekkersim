@@ -6,18 +6,11 @@ build-backend = "hatchling.build"
 name = "lekkersim"
 description = "The lekker tool for photonic circuit simulation."
 readme = "README.md"
-authors = [
-  { name = "Marco Passoni", email = "mpasson91@gmail.com" },
-]
+authors = [{ name = "Marco Passoni", email = "mpasson91@gmail.com" }]
 license = "AGPL-3.0-or-later"
 repository = "https://github.com/mpasson/lekkersim"
 documentation = "https://lekkersim.readthedocs.io"
-keywords = [
-  'photonics',
-  'simulation',
-  'scattering matrix',
-  'photonic circuits',
-]
+keywords = ['photonics', 'simulation', 'scattering matrix', 'photonic circuits']
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
@@ -32,7 +25,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Topic :: Scientific/Engineering :: Physics",
 ]
-dynamic =["version"]
+dynamic = ["version"]
 dependencies = [
   "matplotlib>=3.5.1",
   "numpy>=1.23.1",
@@ -42,10 +35,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-  "toml>=0.10.2",
-  "hatch-vcs==0.3.0",
-]
+dev = ["toml>=0.10.2", "hatch-vcs==0.3.0", "pytest>=7.2.0"]
 doc = [
   "sphinx>=5.3.0",
   "sphinx-rtd-theme>=1.1.1",
@@ -54,9 +44,7 @@ doc = [
 ]
 
 [tool.hatch.build]
-include = [
-  "lekkersim/*",
-]
+include = ["lekkersim/*"]
 
 [tool.hatch.version]
 source = "vcs"
