@@ -738,6 +738,10 @@ class SolvedModel(Model):
             pandas DataFrame: DataFrame with the amplitude at the ports. It has one column for each
                 parameter given to solve plus two columns for monitor port.
         """
+        input_pin_dic: dict[Pin, float | complex] = {
+            self.pin[name]: value for name, value in input_dic.items()
+        }
+
         params = {}
         if self.ns == 1:
             params = deepcopy(self.solved_params)
@@ -750,7 +754,7 @@ class SolvedModel(Model):
                 else:
                     raise Exception("Not able to convert to pandas")
 
-        u, d = self.int_func(input_dic)
+        u, d = self.int_func(input_pin_dic)
         for pin, i in self.monitor_mapping.items():
             params[f"{pin}_i"] = np.abs(u[:, i]) ** 2.0 if power else u[:, i]
             params[f"{pin}_o"] = np.abs(d[:, i]) ** 2.0 if power else d[:, i]
