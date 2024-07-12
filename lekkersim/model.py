@@ -12,9 +12,10 @@
 """File containing the model calls and related methods"""
 
 from __future__ import annotations
-import functools
 from typing import Any, List, Dict, Tuple, Callable, TYPE_CHECKING, Union, Optional, Set
 
+from collections import defaultdict
+import functools
 from copy import deepcopy
 from copy import copy
 import yaml
@@ -35,6 +36,12 @@ from lekkersim import logger
 import lekkersim
 import lekkersim.log
 from lekkersim.utils import line, GaussianBeam, ProtectedPartial
+
+
+def default_to_regular(d):
+    if isinstance(d, defaultdict):
+        d = {k: default_to_regular(v) for k, v in d.items()}
+    return d
 
 
 def diag_blocks(array_list: List[np.ndarray]) -> np.ndarray:
@@ -651,23 +658,21 @@ class SolvedModel(Model):
                 solved_parameters_units[par] = units[par]
         metadata["units"].update(solved_parameters_units)
         metadata["port_modes"] = {
-            name: [_[1] for _ in self.get_pin_modes(name)]
+            name: [_ for _ in self.get_pin_modes(name)]
             for name in self.get_pin_basenames()
         }
 
-        metadata["smatrix_map"] = {
-            pinin: {
-                pinout: {
-                    modein[1]: {
-                        modeout[1]: f"{pinin}_{modein[1]}//{pinout}_{modeout[1]}"
-                        for modeout in self.get_pin_modes(pinout)
-                    }
-                    for modein in self.get_pin_modes(pinin)
-                }
-                for pinout in self.get_pin_basenames()
-            }
-            for pinin in self.get_pin_basenames()
-        }
+        metadata["smatrix_map"] = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(dict))
+        )
+
+        for pinin in self.pin_dic:
+            for pinout in self.pin_dic:
+                metadata["smatrix_map"][pinin.basename][pinout.basename][
+                    pinin.mode_name
+                ][pinout.mode_name] = f"{pinin}//{pinout}"
+
+        metadata["smatrix_map"] = default_to_regular(metadata["smatrix_map"])
 
         return metadata
 
@@ -679,11 +684,7 @@ class SolvedModel(Model):
                 continue
             col = full_data.pop(column)
             fullin, fullout = column
-            fullin = fullin.split("_")
-            fullout = fullout.split("_")
-            (pinin, modein) = (fullin[0], "") if len(fullin) == 1 else fullin
-            (pinout, modeout) = (fullout[0], "") if len(fullout) == 1 else fullout
-            name = f"{pinin}_{modein}//{pinout}_{modeout}"
+            name = f"{fullin}//{fullout}"
             full_data[f"{name}:abs2"] = np.abs(col) ** 2.0
             full_data[f"{name}:phase"] = np.angle(col)
         return full_data
@@ -1677,8 +1678,7 @@ class Model_from_InPulse(Model):
         _i = 0
         for pin, modes in port_modes.items():
             for mode in modes:
-                name = pin if mode == "" else f"{pin}_{mode}"
-                pin_dic[name] = _i
+                pin_dic[Pin(pin, mode)] = _i
                 _i += 1
         return pin_dic
 
@@ -1702,13 +1702,9 @@ class Model_from_InPulse(Model):
                 for modein, modes_out in modes.items():
                     for modeout, column in modes_out.items():
                         if column:
-                            name1 = pin if modein == "" else f"{pin}_{modein}"
-                            name2 = (
-                                pin_target
-                                if modeout == ""
-                                else f"{pin_target}_{modeout}"
-                            )
-                            map_columns[(name1, name2)] = column
+                            pin1 = Pin(pin, modein)
+                            pin2 = Pin(pin_target, modeout)
+                            map_columns[(pin1, pin2)] = column
                             columns.add(column)
         return columns, map_columns
 
